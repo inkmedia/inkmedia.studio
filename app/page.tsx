@@ -43,13 +43,14 @@ function Reveal({ children, className = "", delay = 0 }: { children: React.React
 
 function DepthCard({ project, index, progress }: { project: (typeof projects)[number]; index: number; progress: MotionValue<number> }) {
   const total = projects.length;
-  const center = (index + .5) / total;
-  const range = [center - .24, center, center + .22];
-  const opacity = useTransform(progress, range, [0, 1, 0]);
-  const scale = useTransform(progress, range, [.48, 1, 1.42]);
-  const y = useTransform(progress, range, [260, 0, -210]);
-  const rotateX = useTransform(progress, range, [9, 0, -7]);
-  const filter = useTransform(progress, range, ["blur(12px)", "blur(0px)", "blur(9px)"]);
+  const center = .08 + index * (.84 / (total - 1));
+  const phase = (value: number) => (value - center) / .21;
+  const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
+  const opacity = useTransform(progress, (value) => clamp(1 - Math.abs(phase(value)), 0, 1));
+  const scale = useTransform(progress, (value) => clamp(1 + phase(value) * .42, .48, 1.42));
+  const y = useTransform(progress, (value) => clamp(-phase(value) * 210, -210, 260));
+  const rotateX = useTransform(progress, (value) => clamp(-phase(value) * 7, -7, 9));
+  const filter = useTransform(progress, (value) => `blur(${clamp(Math.abs(phase(value)) * 9, 0, 12)}px)`);
   const pointerEvents = useTransform(progress, (value) => Math.abs(value - center) < .13 ? "auto" : "none");
 
   return <motion.article className="depth-project" style={{ opacity, zIndex: index + 2, pointerEvents }} aria-label={`${project.name} project`}>
