@@ -27,6 +27,13 @@ const chapters = [
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
+const heroStates = [
+  { label: "[ OPTIMISED ]", image: "/work/tejraj.webp" },
+  { label: "[ RESPONSIVE ]", image: "/work/goel-ganga.jpg" },
+  { label: "[ HIGH PERFORMANCE ]", image: "/work/house-of-memories.jpg" },
+  { label: "[ PIXEL PRECISE ]", image: "/work/kiara.webp" },
+];
+
 function Arrow() { return <span aria-hidden="true">↗</span>; }
 
 function Reveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
@@ -40,8 +47,14 @@ export default function Home() {
   const y = useMotionValue(-100);
   const cx = useSpring(x, { stiffness: 500, damping: 38 });
   const cy = useSpring(y, { stiffness: 500, damping: 38 });
+  const heroX = useMotionValue(0);
+  const heroY = useMotionValue(0);
+  const heroSmoothX = useSpring(heroX, { stiffness: 260, damping: 30 });
+  const heroSmoothY = useSpring(heroY, { stiffness: 260, damping: 30 });
   const [clock, setClock] = useState("—");
   const [sent, setSent] = useState(false);
+  const [heroActive, setHeroActive] = useState(2);
+  const [heroHover, setHeroHover] = useState(false);
 
   useEffect(() => {
     const updateClock = () => setClock(new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }).format(new Date()));
@@ -56,10 +69,20 @@ export default function Home() {
 
   function submit(event: FormEvent<HTMLFormElement>) { event.preventDefault(); setSent(true); }
 
+  function moveHero(event: React.PointerEvent<HTMLElement>) {
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const localX = event.clientX - bounds.left;
+    const localY = event.clientY - bounds.top;
+    heroX.set(localX);
+    heroY.set(localY);
+    const position = (localX / bounds.width) * .72 + (localY / bounds.height) * .28;
+    setHeroActive(Math.min(heroStates.length - 1, Math.floor(position * heroStates.length)));
+  }
+
   return (
     <main>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
-      {!reduce && <motion.div className="cursor" style={{ x: cx, y: cy }} aria-hidden="true" />}
+      {!reduce && <motion.div className={`cursor ${heroHover ? "cursor-hidden" : ""}`} style={{ x: cx, y: cy }} aria-hidden="true" />}
 
       <header className="nav shell">
         <a className="wordmark" href="#top" aria-label="Ink Media home"><img src="/ink-logo.png" alt="Ink Media" width="3375" height="3375" /></a>
@@ -67,13 +90,24 @@ export default function Home() {
         <a className="nav-contact" href="#contact">[ START A PROJECT ]</a>
       </header>
 
-      <section id="top" className="hero">
+      <section id="top" className={`hero ${heroHover ? "is-tracking" : ""}`} onPointerMove={moveHero} onPointerEnter={() => setHeroHover(true)} onPointerLeave={() => setHeroHover(false)}>
         <div className="hero-rail shell"><span>CREATIVE WEB STUDIO</span><span>INDIA / WORLDWIDE</span><span>IST — {clock}</span></div>
+        <span className="hero-role">WEB DESIGN &amp; DEVELOPMENT</span>
+        <motion.div className="hero-cross hero-cross-v" style={{ x: heroSmoothX }} aria-hidden="true" />
+        <motion.div className="hero-cross hero-cross-h" style={{ y: heroSmoothY }} aria-hidden="true" />
+        <motion.div className="hero-follow" style={{ x: heroSmoothX, y: heroSmoothY }} animate={{ opacity: heroHover || reduce ? 1 : .72 }} aria-hidden="true">
+          <div className="hero-follow-inner">
+            <div className="hero-follow-image"><img key={heroStates[heroActive].image} src={heroStates[heroActive].image} alt="" width="1920" height="1080" /></div>
+            <span>{heroStates[heroActive].label}</span>
+          </div>
+        </motion.div>
+        <p className="sr-only">Interactive project preview showing optimised, responsive, high-performance and pixel-precise web experiences.</p>
         <h1 aria-label="Websites built to make ambitious brands impossible to ignore">
-          {["WEBSITES BUILT", "TO MAKE AMBITIOUS", "BRANDS IMPOSSIBLE", "TO IGNORE"].map((line, i) => <span className={`hero-mask line-${i + 1}`} key={line}><motion.b initial={reduce ? undefined : { y: "110%" }} animate={{ y: 0 }} transition={{ duration: 1, delay: .08 * i, ease }}>{line}</motion.b></span>)}
+          <span className="hero-mask"><motion.b initial={reduce ? undefined : { y: "110%" }} animate={{ y: 0 }} transition={{ duration: 1, ease }}>WEBSITES BUILT TO MAKE</motion.b></span>
+          <span className="hero-mask hero-line-middle"><motion.b initial={reduce ? undefined : { y: "110%" }} animate={{ y: 0 }} transition={{ duration: 1, delay: .08, ease }}>AMBITIOUS BRANDS</motion.b></span>
+          <span className="hero-mask hero-line-last"><motion.b initial={reduce ? undefined : { y: "110%" }} animate={{ y: 0 }} transition={{ duration: 1, delay: .16, ease }}>IMPOSSIBLE TO IGNORE</motion.b></span>
         </h1>
-        <div className="hero-spec shell"><p>[ PIXEL-PRECISE DESIGN ]<br />[ HIGH-PERFORMANCE CODE ]<br />[ PURPOSEFUL INTERACTION ]</p><p>Strategy, UX/UI and high-performance web development for brands that care about how they are seen, experienced and remembered.</p><a href="#work">SCROLL TO EXPLORE <span>↓</span></a></div>
-        <motion.div className="hero-disc" animate={reduce ? undefined : { rotate: 360 }} transition={{ duration: 18, repeat: Infinity, ease: "linear" }}><span>INK</span><i /></motion.div>
+        <div className="hero-bottom shell"><span>INK MEDIA</span><span>CURRENT TIME: {clock} IST</span><a href="#work">SCROLL TO EXPLORE ↓</a></div>
       </section>
 
       <section className="statement">
