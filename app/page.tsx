@@ -1,7 +1,7 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
-import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
+import { FormEvent, useEffect, useRef, useState } from "react";
+import { motion, MotionValue, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 
 const projects = [
   { name: "TEJRAJ", type: "REAL ESTATE / WEB DESIGN & DEVELOPMENT", image: "/work/tejraj.webp", code: "P–01" },
@@ -39,6 +39,49 @@ function Arrow() { return <span aria-hidden="true">↗</span>; }
 function Reveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
   const reduce = useReducedMotion();
   return <motion.div className={className} initial={reduce ? undefined : { opacity: 0, y: 50 }} whileInView={reduce ? undefined : { opacity: 1, y: 0 }} viewport={{ once: true, margin: "-10%" }} transition={{ duration: .8, delay, ease }}>{children}</motion.div>;
+}
+
+function DepthCard({ project, index, progress }: { project: (typeof projects)[number]; index: number; progress: MotionValue<number> }) {
+  const total = projects.length;
+  const center = (index + .5) / total;
+  const range = [center - .24, center, center + .22];
+  const opacity = useTransform(progress, range, [0, 1, 0]);
+  const scale = useTransform(progress, range, [.48, 1, 1.42]);
+  const y = useTransform(progress, range, [260, 0, -210]);
+  const rotateX = useTransform(progress, range, [9, 0, -7]);
+  const filter = useTransform(progress, range, ["blur(12px)", "blur(0px)", "blur(9px)"]);
+  const pointerEvents = useTransform(progress, (value) => Math.abs(value - center) < .13 ? "auto" : "none");
+
+  return <motion.article className="depth-project" style={{ opacity, zIndex: index + 2, pointerEvents }} aria-label={`${project.name} project`}>
+    <div className="depth-backdrop"><img src={project.image} alt="" width="1920" height="1080" /></div>
+    <motion.a className="depth-card" href="#contact" style={{ scale, y, rotateX, filter }}>
+      <img src={project.image} alt={`${project.name} website project by Ink Media`} width="1920" height="1080" loading={index < 2 ? "eager" : "lazy"} decoding="async" />
+      <div className="depth-shade" />
+      <span className="depth-code">[ {project.code} ]</span>
+      <span className="depth-open">[ VIEW PROJECT ↗ ]</span>
+      <div className="depth-title"><h3>{project.name}</h3><p>{project.type}</p></div>
+    </motion.a>
+  </motion.article>;
+}
+
+function DepthWork() {
+  const ref = useRef<HTMLElement>(null);
+  const reduce = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
+  const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+
+  return <section id="work" className={`work depth-work ${reduce ? "is-reduced" : ""}`} ref={ref}>
+    <div className="depth-stage">
+      <div className="depth-ui shell"><span>[ SELECTED WORK ]</span><span>DEPTH / SCROLL</span><span>04 PROJECTS</span></div>
+      <div className="depth-progress"><motion.i style={{ width: progressWidth }} /></div>
+      {projects.map((project, index) => <DepthCard project={project} index={index} progress={scrollYProgress} key={project.name} />)}
+      <div className="depth-instruction">SCROLL TO MOVE THROUGH THE WORK <span>↓</span></div>
+    </div>
+    <div className="mobile-projects shell">
+      <div className="mobile-work-head"><span>[ SELECTED WORK / 04 ]</span><h2>BUILT TO BE<br />REMEMBERED.</h2></div>
+      {projects.map((project) => <a className="mobile-project" href="#contact" key={project.name}><img src={project.image} alt={`${project.name} website project by Ink Media`} width="1920" height="1080" loading="lazy" /><div><span>{project.code}</span><h3>{project.name}</h3><p>{project.type}</p></div></a>)}
+    </div>
+  </section>;
 }
 
 export default function Home() {
@@ -123,15 +166,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="work" className="work">
-        <div className="work-head shell"><div><span>[ SELECTED WORK / 2023—26 ]</span><h2>BUILT TO BE<br />REMEMBERED.</h2></div><p>Four digital homes shaped around clarity, character and commercial purpose.</p></div>
-        <div className="projects shell">
-          {projects.map((project, i) => <motion.a className="project" href="#contact" key={project.name} whileHover={reduce ? undefined : "hover"} initial="rest" animate="rest">
-            <div className="project-frame"><motion.img variants={{ rest: { scale: 1 }, hover: { scale: 1.06 } }} transition={{ duration: .8, ease }} src={project.image} alt={`${project.name} website project by Ink Media`} width="1920" height="1080" loading={i < 2 ? "eager" : "lazy"} decoding="async" /><div className="project-shade" /><span className="project-code">[ {project.code} ]</span><motion.span className="project-open" variants={{ rest: { opacity: 0, y: 10 }, hover: { opacity: 1, y: 0 } }}>[ OPEN PROJECT ↗ ]</motion.span><h3>{project.name}</h3></div>
-            <div className="project-meta"><span>{project.type}</span><span>ROLE: WEB DESIGN & DEVELOPMENT</span></div>
-          </motion.a>)}
-        </div>
-      </section>
+      <DepthWork />
 
       <section id="services" className="services">
         <div className="services-head shell"><span>[ CAPABILITIES / 05 ]</span><h2>DESIGN FIRST.<br />DEVELOPMENT<br />WITHOUT COMPROMISE.</h2></div>
