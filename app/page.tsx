@@ -86,7 +86,7 @@ export default function Home() {
       {!reduce && <motion.div className="cursor" style={{ x: cursorX, y: cursorY }} aria-hidden="true" />}
 
       <header className="nav shell">
-        <a className="wordmark" href="#top" aria-label="Ink Media home">INK<span>®</span>MEDIA</a>
+        <a className="wordmark" href="#top" aria-label="Ink Media home"><img src="/ink-logo.png" alt="Ink Media" width="3375" height="3375" /></a>
         <nav aria-label="Primary navigation">
           <a href="#work">Work</a><a href="#services">Services</a><a href="#about">Studio</a>
         </nav>
@@ -185,7 +185,7 @@ export default function Home() {
             <button className="button button-dark" type="submit">{sent ? "Thank you — we’ll be in touch" : "Send project enquiry"} <Arrow /></button>
           </form>
         </div>
-        <footer className="shell footer"><a className="wordmark" href="#top">INK<span>®</span>MEDIA</a><div><a href="https://www.linkedin.com/company/ink-media-digital/">LinkedIn</a><a href="https://www.instagram.com/inkdigitalmedia/">Instagram</a></div><p>© 2026 Ink Media. All rights reserved.</p></footer>
+        <footer className="shell footer"><a className="wordmark" href="#top" aria-label="Back to top"><img src="/ink-logo.png" alt="Ink Media" width="3375" height="3375" /></a><div><a href="https://www.linkedin.com/company/ink-media-digital/">LinkedIn</a><a href="https://www.instagram.com/inkdigitalmedia/">Instagram</a></div><p>© 2026 Ink Media. All rights reserved.</p></footer>
       </section>
     </main>
   );
