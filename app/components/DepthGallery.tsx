@@ -140,7 +140,7 @@ function DepthScene({ projects, progress, onIndexChange }: { projects: DepthProj
         key={project.name}
         url={project.image}
         position={[mobile ? (index % 2 === 0 ? -.5 : .5) : (index % 2 === 0 ? -1.5 : 1.5), 0, -5 * (index + 1)]}
-        scale={mobile ? [2, 3] : [3.5, 5]}
+        scale={mobile ? [3, 1.8] : [5.2, 2.9]}
         transparent
       />)}
     </group>

@@ -11,9 +11,12 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
   openGraph: { title: "Ink Media — Websites built to be impossible to ignore", description: "Web design & development for ambitious brands.", type: "website", url: "/", siteName: "Ink Media" },
   twitter: { card: "summary_large_image", title: "Ink Media — Web Design & Development Studio", description: "Websites built to make ambitious brands impossible to ignore." },
-  icons: { icon: "/favicon.ico", shortcut: "/favicon.ico" },
+  icons: {
+    icon: [{ url: "/favicon.ico?v=2", type: "image/x-icon" }],
+    shortcut: [{ url: "/favicon.ico?v=2", type: "image/x-icon" }],
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en"><body><SmoothScroll />{children}</body></html>;
+  return <html lang="en"><head><link rel="icon" href="/favicon.ico?v=2" type="image/x-icon" /><link rel="shortcut icon" href="/favicon.ico?v=2" type="image/x-icon" /></head><body><SmoothScroll />{children}</body></html>;
 }
