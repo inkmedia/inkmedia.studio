@@ -161,8 +161,8 @@ export default function DepthGallery({ projects, activeIndex, progress, onIndexC
     </Canvas>
     <div className={`depth-info-wrap ${activeIndex % 2 === 1 ? "is-image-right" : "is-image-left"}`}>
       <div className="depth-info-spacer" />
-      <div className="depth-info" style={{ color: "#18394d", fontSize: "20px", lineHeight: 1.35 }}>
-        <div className="depth-info-inner" key={active.name} style={{ background: "rgba(244, 249, 252, .82)", border: "1px solid rgba(24, 57, 77, .14)", boxShadow: "0 18px 50px rgba(19, 52, 82, .12)", backdropFilter: "blur(14px)", padding: "28px", gap: "32px" }}>
+      <div className="depth-info" style={{ color: "#102f45", fontSize: "18px", lineHeight: 1.4 }}>
+        <div className="depth-info-inner" key={active.name} style={{ gap: "32px" }}>
           <span>Client: {active.name}<br />Project: {active.type.toLowerCase()}<br />Code: {active.code}</span>
           <span>Category:<br />strategy, interface, and development</span>
           <span>Studio: Ink Media, Pune / Worldwide</span>
