@@ -44,30 +44,41 @@ function Reveal({ children, className = "", delay = 0 }: { children: React.React
 function DepthCard({ project, index, progress }: { project: (typeof projects)[number]; index: number; progress: MotionValue<number> }) {
   const total = projects.length;
   const center = index / (total - 1);
-  const phase = (value: number) => (value - center) / .24;
+  const step = 1 / (total - 1);
+  const phase = (value: number) => (value - center) / step;
   const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
-  const visibility = useTransform(progress, (value) => clamp(1 - Math.abs(phase(value)) * .82, 0, 1));
-  const backgroundOpacity = useTransform(progress, (value) => clamp(1 - Math.abs(phase(value)) * .82, 0, 1) * .9);
-  const planeOpacity = useTransform(progress, (value) => clamp(1 - Math.abs(phase(value)) * .72, 0, 1));
-  const scale = useTransform(progress, (value) => clamp(.42 + (phase(value) + 1) * .58, .34, 2.15));
-  const z = useTransform(progress, (value) => clamp(-900 + (phase(value) + 1) * 900, -1100, 760));
-  const y = useTransform(progress, (value) => clamp(phase(value) * -24, -70, 70));
-  const blur = useTransform(progress, (value) => `blur(${clamp(Math.abs(phase(value)) * 7, 0, 12)}px)`);
-  const infoOpacity = useTransform(progress, (value) => clamp(1 - Math.abs(phase(value)) * 3.2, 0, 1));
-  const pointerEvents = useTransform(progress, (value) => Math.abs(value - center) < .1 ? "auto" : "none");
+  const local = (value: number) => phase(value);
+  const planeOpacity = useTransform(progress, (value) => {
+    const p = local(value);
+    if (p < -1.04 || p > .96) return 0;
+    if (p < -.82) return clamp((p + 1.04) / .22, 0, 1);
+    return p > .7 ? clamp((.96 - p) / .26, 0, 1) : 1;
+  });
+  const scale = useTransform(progress, (value) => {
+    const p = local(value);
+    return p <= 0 ? clamp(.42 + (p + 1) * .58, .42, 1) : 1 + p * 2.15;
+  });
+  const x = useTransform(progress, (value) => {
+    const p = local(value);
+    if (p <= 0) return `${clamp(-p * 11, 0, 11)}vw`;
+    return `${p * (index % 2 === 0 ? -27 : 31)}vw`;
+  });
+  const y = useTransform(progress, (value) => `${Math.max(0, local(value)) * (index % 2 === 0 ? -6 : 5)}vh`);
+  const zIndex = useTransform(progress, (value) => local(value) >= 0 ? 20 : 10);
+  const infoOpacity = useTransform(progress, (value) => clamp(1 - Math.abs(local(value)) * 4.6, 0, 1));
+  const pointerEvents = useTransform(progress, (value) => Math.abs(value - center) < step * .2 ? "auto" : "none");
 
-  return <motion.article className="depth-project" style={{ opacity: visibility, zIndex: index + 2, pointerEvents }} aria-label={`${project.name} project`}>
-    <motion.div className="depth-backdrop" style={{ opacity: backgroundOpacity }}><img src={project.image} alt="" width="1920" height="1080" /><i /></motion.div>
-    <motion.a className="depth-card" href="#contact" style={{ opacity: planeOpacity, scale, y, z, filter: blur }}>
-      <img src={project.image} alt={`${project.name} website project by Ink Media`} width="1920" height="1080" loading={index < 2 ? "eager" : "lazy"} decoding="async" />
-      <motion.div className="depth-info" style={{ opacity: infoOpacity }}>
-        <p><b>CLIENT:</b> {project.name}</p>
-        <p><b>PROJECT:</b> {project.type.replaceAll(" / ", " · ")}</p>
-        <p><b>ROLE:</b> WEB DESIGN &amp; DEVELOPMENT</p>
-        <p><b>STATUS:</b> LIVE DIGITAL EXPERIENCE</p>
-        <span>[ OPEN PROJECT ↗ ]</span>
-      </motion.div>
+  return <motion.article className="depth-project" style={{ opacity: planeOpacity, zIndex, pointerEvents }} aria-label={`${project.name} project`}>
+    <motion.a className="depth-card" href="#contact" style={{ scale, x, y }}>
+      <img src={project.image} alt={`${project.name} website project by Ink Media`} width="1920" height="1080" loading="eager" decoding="async" />
     </motion.a>
+    <motion.div className="depth-info" style={{ opacity: infoOpacity }}>
+      <p><b>Client:</b> {project.name}</p>
+      <p><b>Project:</b> {project.type.replaceAll(" / ", ", ").toLowerCase()}</p>
+      <p><b>Category:</b><br />strategy, design, and development</p>
+      <p><b>Studio:</b> Ink Media, Pune / Worldwide</p>
+      <a href="#contact">View project ↗</a>
+    </motion.div>
   </motion.article>;
 }
 
@@ -75,16 +86,18 @@ function DepthWork() {
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
-  const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+  const orbitOpacity = useTransform(scrollYProgress, (value) => {
+    const step = 1 / (projects.length - 1);
+    const nearest = Math.min(...projects.map((_, index) => Math.abs(value - index * step)));
+    return Math.min(nearest / (step * .34), 1) * .65;
+  });
 
   return <section id="work" className={`work depth-work ${reduce ? "is-reduced" : ""}`} ref={ref}>
     <div className="depth-stage">
-      <div className="depth-ui shell"><span>INK MEDIA</span><span>DEPTH SCROLL</span><a href="#contact">CONTACT</a></div>
-      <div className="depth-orbit" aria-hidden="true"><i /><i /></div>
-      <div className="depth-progress"><motion.i style={{ width: progressWidth }} /></div>
+      <div className="depth-ui shell"><span>Playground</span><span>Depth Scroll</span><a href="#contact">Contact</a></div>
+      <motion.div className="depth-orbit" style={{ opacity: orbitOpacity }} aria-hidden="true"><i /><i /></motion.div>
       {projects.map((project, index) => <DepthCard project={project} index={index} progress={scrollYProgress} key={project.name} />)}
-      <div className="depth-instruction">SELECTED WORK / SCROLL TO MOVE THROUGH DEPTH <span>↓</span></div>
-      <div className="depth-counter">01 — 04</div>
+      <div className="depth-instruction">Ink Media — selected work</div>
     </div>
     <div className="mobile-projects shell">
       <div className="mobile-work-head"><span>[ SELECTED WORK / 04 ]</span><h2>BUILT TO BE<br />REMEMBERED.</h2></div>
