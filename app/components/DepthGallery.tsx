@@ -161,7 +161,7 @@ export default function DepthGallery({ projects, activeIndex, progress, onIndexC
     </Canvas>
     <div className={`depth-info-wrap ${activeIndex % 2 === 1 ? "is-image-right" : "is-image-left"}`}>
       <div className="depth-info-spacer" />
-      <div className="depth-info" style={{ color: "#102f45", fontSize: "18px", lineHeight: 1.4 }}>
+      <div className="depth-info" style={{ color: "#ffffff", fontSize: "18px", lineHeight: 1.4 }}>
         <div className="depth-info-inner" key={active.name} style={{ gap: "32px" }}>
           <span>Client: {active.name}<br />Project: {active.type.toLowerCase()}<br />Code: {active.code}</span>
           <span>Category:<br />strategy, interface, and development</span>
@@ -170,6 +170,6 @@ export default function DepthGallery({ projects, activeIndex, progress, onIndexC
         </div>
       </div>
     </div>
-    <div className="depth-instruction" style={{ color: "#18394d" }}>Ink Media — selected work</div>
+    <div className="depth-instruction" style={{ color: "#ffffff" }}>Ink Media — selected work</div>
   </div>;
 }
