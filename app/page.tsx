@@ -47,11 +47,16 @@ function Reveal({ children, className = "", delay = 0 }: { children: React.React
 function DepthWork() {
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
+  const [mounted, setMounted] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return <section id="work" className={`work depth-work ${reduce ? "is-reduced" : ""}`} ref={ref}>
-    {!reduce && <Suspense fallback={<div className="depth-stage depth-stage-loading" />}><DepthGallery projects={projects} activeIndex={activeIndex} progress={scrollYProgress} onIndexChange={setActiveIndex} /></Suspense>}
+    {mounted && !reduce && <Suspense fallback={<div className="depth-stage depth-stage-loading" />}><DepthGallery projects={projects} activeIndex={activeIndex} progress={scrollYProgress} onIndexChange={setActiveIndex} /></Suspense>}
     <div className="mobile-projects shell">
       <div className="mobile-work-head"><span>[ SELECTED WORK / 04 ]</span><h2>BUILT TO BE<br />REMEMBERED.</h2></div>
       {projects.map((project) => <a className="mobile-project" href="#contact" key={project.name}><img src={project.image} alt={`${project.name} website project by Ink Media`} width="1920" height="1080" loading="lazy" /><div><span>{project.code}</span><h3>{project.name}</h3><p>{project.type}</p></div></a>)}
@@ -69,8 +74,10 @@ export default function Home() {
   const [sent, setSent] = useState(false);
   const [heroActive, setHeroActive] = useState(2);
   const [heroHover, setHeroHover] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const updateClock = () => setClock(new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }).format(new Date()));
     updateClock();
     const timer = window.setInterval(updateClock, 1000);
@@ -108,7 +115,7 @@ export default function Home() {
       <section id="top" className={`hero ${heroHover ? "is-tracking" : ""}`} onPointerMove={moveHero} onPointerLeave={() => setHeroHover(false)}>
         <div className="hero-rail shell"><span>CREATIVE WEB STUDIO</span><span>INDIA / WORLDWIDE</span><span>IST — {clock}</span></div>
         <span className="hero-role">WEB DESIGN &amp; DEVELOPMENT</span>
-        <Suspense fallback={null}><HeroIcon3D reducedMotion={Boolean(reduce)} /></Suspense>
+        {mounted && <Suspense fallback={null}><HeroIcon3D reducedMotion={Boolean(reduce)} /></Suspense>}
         <motion.div className="hero-cross hero-cross-v" style={{ x: heroSmoothX }} aria-hidden="true" />
         <motion.div className="hero-cross hero-cross-h" style={{ y: heroSmoothY }} aria-hidden="true" />
         <motion.div className="hero-follow" style={{ x: heroSmoothX, y: heroSmoothY }} initial={{ opacity: 0 }} animate={{ opacity: heroHover ? 1 : 0 }} transition={{ duration: .14 }} aria-hidden="true">
