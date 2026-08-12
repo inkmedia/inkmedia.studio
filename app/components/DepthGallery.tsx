@@ -14,10 +14,10 @@ export type DepthProject = {
 };
 
 const palette = [
-  ["#315d87", "#eef3f6"],
-  ["#1f4c78", "#d9ecf8"],
-  ["#3c6f99", "#f2f4f5"],
-  ["#173f6d", "#d5eafa"],
+  ["#84909a", "#285b88"],
+  ["#737f89", "#174e80"],
+  ["#909aa2", "#326b99"],
+  ["#697681", "#123f70"],
 ] as const;
 
 function DepthTrail({ offset }: { offset: { offset: number } }) {
