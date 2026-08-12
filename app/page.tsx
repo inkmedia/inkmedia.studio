@@ -7,10 +7,10 @@ const DepthGallery = lazy(() => import("./components/DepthGallery"));
 const HeroIcon3D = lazy(() => import("./components/HeroIcon3D"));
 
 const projects = [
-  { name: "TEJRAJ", type: "REAL ESTATE / WEB DESIGN & DEVELOPMENT", image: "/work/tejraj.webp", code: "P–01" },
-  { name: "GOEL GANGA", type: "PROPERTY / DIGITAL EXPERIENCE", image: "/work/goel-ganga.jpg", code: "P–02" },
-  { name: "HOUSE OF MEMORIES", type: "HOSPITALITY / BRAND WEBSITE", image: "/work/house-of-memories.jpg", code: "P–03" },
-  { name: "KIARA LIFESPACES", type: "REAL ESTATE / WEBSITE DEVELOPMENT", image: "/work/kiara.webp", code: "P–04" },
+  { name: "TEJRAJ", type: "REAL ESTATE / WEB DESIGN & DEVELOPMENT", image: "/work/tejraj.webp", code: "P–01", website: "https://tejraj.in/" },
+  { name: "GOEL GANGA", type: "PROPERTY / DIGITAL EXPERIENCE", image: "/work/goel-ganga.jpg", code: "P–02", website: "https://goelganga.com/" },
+  { name: "HOUSE OF MEMORIES", type: "HOSPITALITY / BRAND WEBSITE", image: "/work/house-of-memories.jpg", code: "P–03", website: "https://houseofmemories.in/" },
+  { name: "KIARA LIFESPACES", type: "REAL ESTATE / WEBSITE DEVELOPMENT", image: "/work/kiara.webp", code: "P–04", website: "https://kiaralifespaces.com/" },
 ];
 
 const capabilities = [
