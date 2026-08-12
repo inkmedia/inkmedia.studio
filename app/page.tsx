@@ -4,6 +4,7 @@ import { FormEvent, lazy, Suspense, useEffect, useRef, useState } from "react";
 import { motion, useMotionValue, useReducedMotion, useScroll, useSpring } from "framer-motion";
 
 const DepthGallery = lazy(() => import("./components/DepthGallery"));
+const HeroIcon3D = lazy(() => import("./components/HeroIcon3D"));
 
 const projects = [
   { name: "TEJRAJ", type: "REAL ESTATE / WEB DESIGN & DEVELOPMENT", image: "/work/tejraj.webp", code: "P–01" },
@@ -107,6 +108,7 @@ export default function Home() {
       <section id="top" className={`hero ${heroHover ? "is-tracking" : ""}`} onPointerMove={moveHero} onPointerLeave={() => setHeroHover(false)}>
         <div className="hero-rail shell"><span>CREATIVE WEB STUDIO</span><span>INDIA / WORLDWIDE</span><span>IST — {clock}</span></div>
         <span className="hero-role">WEB DESIGN &amp; DEVELOPMENT</span>
+        <Suspense fallback={null}><HeroIcon3D reducedMotion={Boolean(reduce)} /></Suspense>
         <motion.div className="hero-cross hero-cross-v" style={{ x: heroSmoothX }} aria-hidden="true" />
         <motion.div className="hero-cross hero-cross-h" style={{ y: heroSmoothY }} aria-hidden="true" />
         <motion.div className="hero-follow" style={{ x: heroSmoothX, y: heroSmoothY }} initial={{ opacity: 0 }} animate={{ opacity: heroHover ? 1 : 0 }} transition={{ duration: .14 }} aria-hidden="true">
