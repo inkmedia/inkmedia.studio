@@ -69,11 +69,11 @@ function DepthTrail({ offset }: { offset: { offset: number } }) {
   });
 
   return <>
-    <Line ref={line} points={initialPoints} color="#fff" lineWidth={8} transparent opacity={.2} renderOrder={100} />
+    <Line ref={line} points={initialPoints} color="#315f7b" lineWidth={8} transparent opacity={.58} renderOrder={100} />
     <group ref={particles}>
       {Array.from({ length: 7 }, (_, index) => <mesh key={index} renderOrder={101}>
         <sphereGeometry args={[1, 6, 6]} />
-        <meshBasicMaterial color="#fff" transparent opacity={.8} depthTest={false} depthWrite={false} />
+        <meshBasicMaterial color="#234f6a" transparent opacity={.9} depthTest={false} depthWrite={false} />
       </mesh>)}
     </group>
   </>;
@@ -160,7 +160,7 @@ export default function DepthGallery({ projects, activeIndex, progress, onIndexC
     </Canvas>
     <div className={`depth-info-wrap ${activeIndex % 2 === 1 ? "is-image-right" : "is-image-left"}`}>
       <div className="depth-info-spacer" />
-      <div className="depth-info">
+      <div className="depth-info" style={{ color: "#18394d", fontSize: "20px", lineHeight: 1.35 }}>
         <div className="depth-info-inner" key={active.name}>
           <span>Client: {active.name}<br />Project: {active.type.toLowerCase()}<br />Code: {active.code}</span>
           <span>Category:<br />strategy, interface, and development</span>
@@ -168,6 +168,6 @@ export default function DepthGallery({ projects, activeIndex, progress, onIndexC
         </div>
       </div>
     </div>
-    <div className="depth-instruction">Ink Media — selected work</div>
+    <div className="depth-instruction" style={{ color: "#18394d" }}>Ink Media — selected work</div>
   </div>;
 }
