@@ -2,7 +2,7 @@
 
 import { Suspense, useMemo, useRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Image, Line, ScrollControls, useScroll } from "@react-three/drei";
+import { Image, Line } from "@react-three/drei";
 import * as THREE from "three";
 
 export type DepthProject = {
@@ -79,8 +79,10 @@ function DepthTrail({ offset }: { offset: { offset: number } }) {
   </>;
 }
 
-function DepthScene({ projects, onIndexChange }: { projects: DepthProject[]; onIndexChange: (index: number) => void }) {
-  const scroll = useScroll();
+type ScrollProgress = { get: () => number };
+
+function DepthScene({ projects, progress, onIndexChange }: { projects: DepthProject[]; progress: ScrollProgress; onIndexChange: (index: number) => void }) {
+  const scroll = useRef({ offset: 0, delta: 0 });
   const mobile = useThree((state) => state.size.width < 768);
   const group = useRef<THREE.Group>(null);
   const lastIndex = useRef(-1);
@@ -89,17 +91,21 @@ function DepthScene({ projects, onIndexChange }: { projects: DepthProject[]; onI
   const mixedForeground = useMemo(() => new THREE.Color(), []);
   const mixedBackground = useMemo(() => new THREE.Color(), []);
 
-  useFrame((state) => {
-    state.camera.position.z = .5 - (5 * (projects.length - 1) + .5) * scroll.offset;
+  useFrame((state, frameDelta) => {
+    const previous = scroll.current.offset;
+    const delta = Math.min(frameDelta, .1);
+    scroll.current.offset = THREE.MathUtils.damp(previous, progress.get(), 5, delta);
+    scroll.current.delta = THREE.MathUtils.damp(scroll.current.delta, scroll.current.offset - previous, 12, delta);
+    state.camera.position.z = .5 - (5 * (projects.length - 1) + .5) * scroll.current.offset;
     if (state.camera instanceof THREE.PerspectiveCamera) {
-      const fov = 75 + 80 * Math.abs(scroll.delta);
+      const fov = 75 + 80 * Math.abs(scroll.current.delta);
       if (Math.abs(state.camera.fov - fov) > .01) {
         state.camera.fov = fov;
         state.camera.updateProjectionMatrix();
       }
     }
     if (group.current) {
-      group.current.rotation.x = THREE.MathUtils.lerp(group.current.rotation.x, 1.5 * scroll.delta, .1);
+      group.current.rotation.x = THREE.MathUtils.lerp(group.current.rotation.x, 1.5 * scroll.current.delta, .1);
       group.current.children.forEach((child, index) => {
         const distance = state.camera.position.z - -5 * (index + 1);
         let opacity = 0;
@@ -114,12 +120,12 @@ function DepthScene({ projects, onIndexChange }: { projects: DepthProject[]; onI
         mesh.position.y = THREE.MathUtils.lerp(mesh.position.y, .5 * state.pointer.y, .05);
       });
     }
-    const index = Math.min(Math.floor(scroll.offset * projects.length), projects.length - 1);
+    const index = Math.min(Math.floor(scroll.current.offset * projects.length), projects.length - 1);
     if (index !== lastIndex.current) {
       lastIndex.current = index;
       onIndexChange(index);
     }
-    const scaled = scroll.offset * (projects.length - 1);
+    const scaled = scroll.current.offset * (projects.length - 1);
     const from = Math.min(Math.floor(scaled), projects.length - 2);
     const mix = scaled - from;
     mixedForeground.copy(foreground[from]).lerp(foreground[from + 1], mix);
@@ -128,7 +134,7 @@ function DepthScene({ projects, onIndexChange }: { projects: DepthProject[]; onI
   });
 
   return <>
-    <DepthTrail offset={scroll} />
+    <DepthTrail offset={scroll.current} />
     <group ref={group}>
       {projects.map((project, index) => <Image
         key={project.name}
@@ -141,17 +147,16 @@ function DepthScene({ projects, onIndexChange }: { projects: DepthProject[]; onI
   </>;
 }
 
-export default function DepthGallery({ projects, activeIndex, onIndexChange }: {
+export default function DepthGallery({ projects, activeIndex, progress, onIndexChange }: {
   projects: DepthProject[];
   activeIndex: number;
+  progress: ScrollProgress;
   onIndexChange: (index: number) => void;
 }) {
   const active = projects[activeIndex] ?? projects[0];
   return <div className="depth-stage">
     <Canvas dpr={[1, 1.5]} camera={{ fov: 75, position: [0, 0, .5] }} gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}>
-      <ScrollControls pages={Math.max(1, projects.length - 1)} damping={.2}>
-        <Suspense fallback={null}><DepthScene projects={projects} onIndexChange={onIndexChange} /></Suspense>
-      </ScrollControls>
+      <Suspense fallback={null}><DepthScene projects={projects} progress={progress} onIndexChange={onIndexChange} /></Suspense>
     </Canvas>
     <div className="depth-ui"><span>Playground</span><span>Depth Scroll</span><a href="#contact">Contact</a></div>
     <div className="depth-info-wrap">

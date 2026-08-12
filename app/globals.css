@@ -22,3 +22,4 @@
 @media(min-width:901px){.depth-info{flex-direction:row;justify-content:center;align-items:stretch;gap:0;animation:none}.depth-info-inner{display:flex;flex-direction:column;gap:60px;width:400px;animation:depthInfoIn .08s linear}.depth-info span{display:block;max-width:none;margin-top:0;padding-bottom:0;border-bottom:0}}
 .depth-stage *{scrollbar-width:none}.depth-stage *::-webkit-scrollbar{display:none}
 .depth-stage-loading{background:radial-gradient(circle,#8a1f8e 0%,#044aa3 100%)}
+@media(min-width:901px){.depth-work:not(.is-reduced){height:300vh}.depth-work:not(.is-reduced) .depth-stage{position:sticky;top:0}}

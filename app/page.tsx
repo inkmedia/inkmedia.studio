@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, lazy, Suspense, useEffect, useRef, useState } from "react";
-import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
+import { motion, useMotionValue, useReducedMotion, useScroll, useSpring } from "framer-motion";
 
 const DepthGallery = lazy(() => import("./components/DepthGallery"));
 
@@ -44,11 +44,13 @@ function Reveal({ children, className = "", delay = 0 }: { children: React.React
 }
 
 function DepthWork() {
+  const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
   const [activeIndex, setActiveIndex] = useState(0);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
 
-  return <section id="work" className={`work depth-work ${reduce ? "is-reduced" : ""}`}>
-    {!reduce && <Suspense fallback={<div className="depth-stage depth-stage-loading" />}><DepthGallery projects={projects} activeIndex={activeIndex} onIndexChange={setActiveIndex} /></Suspense>}
+  return <section id="work" className={`work depth-work ${reduce ? "is-reduced" : ""}`} ref={ref}>
+    {!reduce && <Suspense fallback={<div className="depth-stage depth-stage-loading" />}><DepthGallery projects={projects} activeIndex={activeIndex} progress={scrollYProgress} onIndexChange={setActiveIndex} /></Suspense>}
     <div className="mobile-projects shell">
       <div className="mobile-work-head"><span>[ SELECTED WORK / 04 ]</span><h2>BUILT TO BE<br />REMEMBERED.</h2></div>
       {projects.map((project) => <a className="mobile-project" href="#contact" key={project.name}><img src={project.image} alt={`${project.name} website project by Ink Media`} width="1920" height="1080" loading="lazy" /><div><span>{project.code}</span><h3>{project.name}</h3><p>{project.type}</p></div></a>)}
