@@ -1,7 +1,9 @@
 "use client";
 
-import { FormEvent, useEffect, useRef, useState } from "react";
-import { motion, MotionValue, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
+import { FormEvent, lazy, Suspense, useEffect, useRef, useState } from "react";
+import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
+
+const DepthGallery = lazy(() => import("./components/DepthGallery"));
 
 const projects = [
   { name: "TEJRAJ", type: "REAL ESTATE / WEB DESIGN & DEVELOPMENT", image: "/work/tejraj.webp", code: "P–01" },
@@ -41,64 +43,12 @@ function Reveal({ children, className = "", delay = 0 }: { children: React.React
   return <motion.div className={className} initial={reduce ? undefined : { opacity: 0, y: 50 }} whileInView={reduce ? undefined : { opacity: 1, y: 0 }} viewport={{ once: true, margin: "-10%" }} transition={{ duration: .8, delay, ease }}>{children}</motion.div>;
 }
 
-function DepthCard({ project, index, progress }: { project: (typeof projects)[number]; index: number; progress: MotionValue<number> }) {
-  const total = projects.length;
-  const center = index / (total - 1);
-  const step = 1 / (total - 1);
-  const phase = (value: number) => (value - center) / step;
-  const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
-  const local = (value: number) => phase(value);
-  const planeOpacity = useTransform(progress, (value) => {
-    const p = local(value);
-    if (p < -1.04 || p > .96) return 0;
-    if (p < -.82) return clamp((p + 1.04) / .22, 0, 1);
-    return p > .7 ? clamp((.96 - p) / .26, 0, 1) : 1;
-  });
-  const scale = useTransform(progress, (value) => {
-    const p = local(value);
-    return p <= 0 ? clamp(.42 + (p + 1) * .58, .42, 1) : 1 + p * 2.15;
-  });
-  const x = useTransform(progress, (value) => {
-    const p = local(value);
-    if (p <= 0) return `${clamp(-p * 11, 0, 11)}vw`;
-    return `${p * (index % 2 === 0 ? -27 : 31)}vw`;
-  });
-  const y = useTransform(progress, (value) => `${Math.max(0, local(value)) * (index % 2 === 0 ? -6 : 5)}vh`);
-  const zIndex = useTransform(progress, (value) => local(value) >= 0 ? 20 : 10);
-  const infoOpacity = useTransform(progress, (value) => clamp(1 - Math.abs(local(value)) * 4.6, 0, 1));
-  const pointerEvents = useTransform(progress, (value) => Math.abs(value - center) < step * .2 ? "auto" : "none");
-
-  return <motion.article className="depth-project" style={{ opacity: planeOpacity, zIndex, pointerEvents }} aria-label={`${project.name} project`}>
-    <motion.a className="depth-card" href="#contact" style={{ scale, x, y }}>
-      <img src={project.image} alt={`${project.name} website project by Ink Media`} width="1920" height="1080" loading="eager" decoding="async" />
-    </motion.a>
-    <motion.div className="depth-info" style={{ opacity: infoOpacity }}>
-      <p><b>Client:</b> {project.name}</p>
-      <p><b>Project:</b> {project.type.replaceAll(" / ", ", ").toLowerCase()}</p>
-      <p><b>Category:</b><br />strategy, design, and development</p>
-      <p><b>Studio:</b> Ink Media, Pune / Worldwide</p>
-      <a href="#contact">View project ↗</a>
-    </motion.div>
-  </motion.article>;
-}
-
 function DepthWork() {
-  const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
-  const orbitOpacity = useTransform(scrollYProgress, (value) => {
-    const step = 1 / (projects.length - 1);
-    const nearest = Math.min(...projects.map((_, index) => Math.abs(value - index * step)));
-    return Math.min(nearest / (step * .34), 1) * .65;
-  });
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  return <section id="work" className={`work depth-work ${reduce ? "is-reduced" : ""}`} ref={ref}>
-    <div className="depth-stage">
-      <div className="depth-ui shell"><span>Playground</span><span>Depth Scroll</span><a href="#contact">Contact</a></div>
-      <motion.div className="depth-orbit" style={{ opacity: orbitOpacity }} aria-hidden="true"><i /><i /></motion.div>
-      {projects.map((project, index) => <DepthCard project={project} index={index} progress={scrollYProgress} key={project.name} />)}
-      <div className="depth-instruction">Ink Media — selected work</div>
-    </div>
+  return <section id="work" className={`work depth-work ${reduce ? "is-reduced" : ""}`}>
+    {!reduce && <Suspense fallback={<div className="depth-stage depth-stage-loading" />}><DepthGallery projects={projects} activeIndex={activeIndex} onIndexChange={setActiveIndex} /></Suspense>}
     <div className="mobile-projects shell">
       <div className="mobile-work-head"><span>[ SELECTED WORK / 04 ]</span><h2>BUILT TO BE<br />REMEMBERED.</h2></div>
       {projects.map((project) => <a className="mobile-project" href="#contact" key={project.name}><img src={project.image} alt={`${project.name} website project by Ink Media`} width="1920" height="1080" loading="lazy" /><div><span>{project.code}</span><h3>{project.name}</h3><p>{project.type}</p></div></a>)}
