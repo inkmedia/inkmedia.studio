@@ -13,10 +13,10 @@ export type DepthProject = {
 };
 
 const palette = [
-  ["#d9efff", "#f3f5f7"],
-  ["#bfe2fb", "#e8edf2"],
-  ["#d5edfb", "#f5f6f7"],
-  ["#a9d8f5", "#e5ebef"],
+  ["#315d87", "#eef3f6"],
+  ["#1f4c78", "#d9ecf8"],
+  ["#3c6f99", "#f2f4f5"],
+  ["#173f6d", "#d5eafa"],
 ] as const;
 
 function DepthTrail({ offset }: { offset: { offset: number } }) {
@@ -69,11 +69,11 @@ function DepthTrail({ offset }: { offset: { offset: number } }) {
   });
 
   return <>
-    <Line ref={line} points={initialPoints} color="#315f7b" lineWidth={8} transparent opacity={.58} renderOrder={100} />
+    <Line ref={line} points={initialPoints} color="#e8f7ff" lineWidth={8} transparent opacity={.72} renderOrder={100} />
     <group ref={particles}>
       {Array.from({ length: 7 }, (_, index) => <mesh key={index} renderOrder={101}>
         <sphereGeometry args={[1, 6, 6]} />
-        <meshBasicMaterial color="#234f6a" transparent opacity={.9} depthTest={false} depthWrite={false} />
+        <meshBasicMaterial color="#f3fbff" transparent opacity={.95} depthTest={false} depthWrite={false} />
       </mesh>)}
     </group>
   </>;
