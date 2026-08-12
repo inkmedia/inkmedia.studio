@@ -159,7 +159,7 @@ export default function DepthGallery({ projects, activeIndex, progress, onIndexC
       <Suspense fallback={null}><DepthScene projects={projects} progress={progress} onIndexChange={onIndexChange} /></Suspense>
     </Canvas>
     <div className="depth-ui"><span>Playground</span><span>Depth Scroll</span><a href="#contact">Contact</a></div>
-    <div className="depth-info-wrap">
+    <div className={`depth-info-wrap ${activeIndex % 2 === 1 ? "is-image-right" : "is-image-left"}`}>
       <div className="depth-info-spacer" />
       <div className="depth-info">
         <div className="depth-info-inner" key={active.name}>
