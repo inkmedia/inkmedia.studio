@@ -60,10 +60,6 @@ function DepthWork() {
 
 export default function Home() {
   const reduce = useReducedMotion();
-  const x = useMotionValue(-100);
-  const y = useMotionValue(-100);
-  const cx = useSpring(x, { stiffness: 500, damping: 38 });
-  const cy = useSpring(y, { stiffness: 500, damping: 38 });
   const heroX = useMotionValue(0);
   const heroY = useMotionValue(0);
   const heroSmoothX = useSpring(heroX, { stiffness: 260, damping: 30 });
@@ -77,10 +73,8 @@ export default function Home() {
     const updateClock = () => setClock(new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }).format(new Date()));
     updateClock();
     const timer = window.setInterval(updateClock, 1000);
-    const move = (event: MouseEvent) => { x.set(event.clientX - 8); y.set(event.clientY - 8); };
-    if (!reduce) window.addEventListener("mousemove", move, { passive: true });
-    return () => { window.clearInterval(timer); window.removeEventListener("mousemove", move); };
-  }, [reduce, x, y]);
+    return () => window.clearInterval(timer);
+  }, []);
 
   const schema = { "@context": "https://schema.org", "@type": "Organization", name: "Ink Media", url: "https://inkmedia.in/", email: "contact@inkmedia.in", telephone: "+91 91583 10192", sameAs: ["https://www.linkedin.com/company/ink-media-digital/", "https://www.instagram.com/inkdigitalmedia/"] };
 
@@ -90,6 +84,11 @@ export default function Home() {
     const bounds = event.currentTarget.getBoundingClientRect();
     const localX = event.clientX - bounds.left;
     const localY = event.clientY - bounds.top;
+    if (localY <= 88) {
+      setHeroHover(false);
+      return;
+    }
+    setHeroHover(true);
     heroX.set(localX);
     heroY.set(localY);
     const position = (localX / bounds.width) * .72 + (localY / bounds.height) * .28;
@@ -99,20 +98,18 @@ export default function Home() {
   return (
     <main>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
-      {!reduce && <motion.div className={`cursor ${heroHover ? "cursor-hidden" : ""}`} style={{ x: cx, y: cy }} aria-hidden="true" />}
-
-      <header className="nav shell">
+      <header className="nav shell" onPointerEnter={() => setHeroHover(false)}>
         <a className="wordmark" href="#top" aria-label="Ink Media home"><img src="/ink-logo.png" alt="Ink Media" width="3375" height="3375" /></a>
         <nav aria-label="Primary navigation"><a href="#work">WORK</a><a href="#services">SERVICES</a><a href="#studio">ABOUT</a></nav>
         <a className="nav-contact" href="#contact">[ START A PROJECT ]</a>
       </header>
 
-      <section id="top" className={`hero ${heroHover ? "is-tracking" : ""}`} onPointerMove={moveHero} onPointerEnter={() => setHeroHover(true)} onPointerLeave={() => setHeroHover(false)}>
+      <section id="top" className={`hero ${heroHover ? "is-tracking" : ""}`} onPointerMove={moveHero} onPointerLeave={() => setHeroHover(false)}>
         <div className="hero-rail shell"><span>CREATIVE WEB STUDIO</span><span>INDIA / WORLDWIDE</span><span>IST — {clock}</span></div>
         <span className="hero-role">WEB DESIGN &amp; DEVELOPMENT</span>
         <motion.div className="hero-cross hero-cross-v" style={{ x: heroSmoothX }} aria-hidden="true" />
         <motion.div className="hero-cross hero-cross-h" style={{ y: heroSmoothY }} aria-hidden="true" />
-        <motion.div className="hero-follow" style={{ x: heroSmoothX, y: heroSmoothY }} animate={{ opacity: heroHover || reduce ? 1 : .72 }} aria-hidden="true">
+        <motion.div className="hero-follow" style={{ x: heroSmoothX, y: heroSmoothY }} initial={{ opacity: 0 }} animate={{ opacity: heroHover ? 1 : 0 }} transition={{ duration: .14 }} aria-hidden="true">
           <div className="hero-follow-inner">
             <div className="hero-follow-image"><img key={heroStates[heroActive].image} src={heroStates[heroActive].image} alt="" width="1920" height="1080" /></div>
             <span>{heroStates[heroActive].label}</span>
