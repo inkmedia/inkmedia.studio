@@ -159,7 +159,7 @@ export default function DepthGallery({ projects, activeIndex, progress, onIndexC
     <Canvas dpr={[1, 1.5]} camera={{ fov: 75, position: [0, 0, .5] }} gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}>
       <Suspense fallback={null}><DepthScene projects={projects} progress={progress} onIndexChange={onIndexChange} /></Suspense>
     </Canvas>
-    <div className="depth-ui" style={{ color: "#102f45" }}><span>[ DESIGNED ]</span><span>[ BUILT ]</span><span style={{ textAlign: "right" }}>[ DELIVERED ]</span></div>
+    <div className="depth-ui" style={{ color: "#ffffff" }}><span>[ DESIGNED ]</span><span>[ BUILT ]</span><span style={{ textAlign: "right" }}>[ DELIVERED ]</span></div>
     <div className={`depth-info-wrap ${activeIndex % 2 === 1 ? "is-image-right" : "is-image-left"}`}>
       <div className="depth-info-spacer" />
       <div className="depth-info" style={{ color: "#ffffff", fontSize: "18px", lineHeight: 1.4 }}>
@@ -171,6 +171,6 @@ export default function DepthGallery({ projects, activeIndex, progress, onIndexC
         </div>
       </div>
     </div>
-    <div className="depth-instruction" style={{ color: "#102f45" }}>Ink Media — selected work</div>
+    <div className="depth-instruction" style={{ color: "#ffffff" }}>Ink Media — selected work</div>
   </div>;
 }
