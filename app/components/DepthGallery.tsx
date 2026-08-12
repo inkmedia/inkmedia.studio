@@ -13,10 +13,10 @@ export type DepthProject = {
 };
 
 const palette = [
-  ["#8a1f8e", "#044aa3"],
-  ["#173ab2", "#535555"],
-  ["#556ff0", "#d2b146"],
-  ["#ed4dd2", "#7c9dff"],
+  ["#d9efff", "#f3f5f7"],
+  ["#bfe2fb", "#e8edf2"],
+  ["#d5edfb", "#f5f6f7"],
+  ["#a9d8f5", "#e5ebef"],
 ] as const;
 
 function DepthTrail({ offset }: { offset: { offset: number } }) {
@@ -158,7 +158,6 @@ export default function DepthGallery({ projects, activeIndex, progress, onIndexC
     <Canvas dpr={[1, 1.5]} camera={{ fov: 75, position: [0, 0, .5] }} gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}>
       <Suspense fallback={null}><DepthScene projects={projects} progress={progress} onIndexChange={onIndexChange} /></Suspense>
     </Canvas>
-    <div className="depth-ui"><span>Playground</span><span>Depth Scroll</span><a href="#contact">Contact</a></div>
     <div className={`depth-info-wrap ${activeIndex % 2 === 1 ? "is-image-right" : "is-image-left"}`}>
       <div className="depth-info-spacer" />
       <div className="depth-info">
