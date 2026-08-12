@@ -27,8 +27,19 @@ function IconModel({ reducedMotion }: { reducedMotion: boolean }) {
 
   useFrame((state, delta) => {
     if (!group.current || reducedMotion) return;
-    group.current.rotation.y += delta * .16;
-    group.current.rotation.x = -.08 + Math.sin(state.clock.elapsedTime * .32) * .035;
+    const elapsed = state.clock.elapsedTime;
+    const targetScale = 1 + Math.sin(elapsed * .52) * .055;
+
+    group.current.rotation.y = -.3 + elapsed * .16;
+    group.current.rotation.x = THREE.MathUtils.damp(
+      group.current.rotation.x,
+      -.08 + Math.sin(elapsed * .32) * .035,
+      3,
+      delta,
+    );
+    group.current.scale.setScalar(
+      THREE.MathUtils.damp(group.current.scale.x, targetScale, 3.5, delta),
+    );
   });
 
   return <group ref={group} rotation={[-.08, -.3, 0]}>
@@ -42,7 +53,7 @@ export default function HeroIcon3D({ reducedMotion = false }: { reducedMotion?: 
       <ambientLight intensity={1.1} />
       <directionalLight position={[4, 5, 6]} intensity={2.2} color="#fff5ee" />
       <directionalLight position={[-4, -2, 2]} intensity={.7} color="#d71920" />
-      <Bounds fit clip observe margin={1.28}>
+      <Bounds fit clip margin={1.28}>
         <Center><IconModel reducedMotion={reducedMotion} /></Center>
       </Bounds>
     </Canvas>
