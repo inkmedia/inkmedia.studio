@@ -43,24 +43,30 @@ function Reveal({ children, className = "", delay = 0 }: { children: React.React
 
 function DepthCard({ project, index, progress }: { project: (typeof projects)[number]; index: number; progress: MotionValue<number> }) {
   const total = projects.length;
-  const center = .08 + index * (.84 / (total - 1));
-  const phase = (value: number) => (value - center) / .21;
+  const center = index / (total - 1);
+  const phase = (value: number) => (value - center) / .24;
   const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
-  const opacity = useTransform(progress, (value) => clamp(1 - Math.abs(phase(value)), 0, 1));
-  const scale = useTransform(progress, (value) => clamp(1 + phase(value) * .42, .48, 1.42));
-  const y = useTransform(progress, (value) => clamp(-phase(value) * 210, -210, 260));
-  const rotateX = useTransform(progress, (value) => clamp(-phase(value) * 7, -7, 9));
-  const filter = useTransform(progress, (value) => `blur(${clamp(Math.abs(phase(value)) * 9, 0, 12)}px)`);
-  const pointerEvents = useTransform(progress, (value) => Math.abs(value - center) < .13 ? "auto" : "none");
+  const visibility = useTransform(progress, (value) => clamp(1 - Math.abs(phase(value)) * .82, 0, 1));
+  const backgroundOpacity = useTransform(progress, (value) => clamp(1 - Math.abs(phase(value)) * .82, 0, 1) * .9);
+  const planeOpacity = useTransform(progress, (value) => clamp(1 - Math.abs(phase(value)) * .72, 0, 1));
+  const scale = useTransform(progress, (value) => clamp(.42 + (phase(value) + 1) * .58, .34, 2.15));
+  const z = useTransform(progress, (value) => clamp(-900 + (phase(value) + 1) * 900, -1100, 760));
+  const y = useTransform(progress, (value) => clamp(phase(value) * -24, -70, 70));
+  const blur = useTransform(progress, (value) => `blur(${clamp(Math.abs(phase(value)) * 7, 0, 12)}px)`);
+  const infoOpacity = useTransform(progress, (value) => clamp(1 - Math.abs(phase(value)) * 3.2, 0, 1));
+  const pointerEvents = useTransform(progress, (value) => Math.abs(value - center) < .1 ? "auto" : "none");
 
-  return <motion.article className="depth-project" style={{ opacity, zIndex: index + 2, pointerEvents }} aria-label={`${project.name} project`}>
-    <div className="depth-backdrop"><img src={project.image} alt="" width="1920" height="1080" /></div>
-    <motion.a className="depth-card" href="#contact" style={{ scale, y, rotateX, filter }}>
+  return <motion.article className="depth-project" style={{ opacity: visibility, zIndex: index + 2, pointerEvents }} aria-label={`${project.name} project`}>
+    <motion.div className="depth-backdrop" style={{ opacity: backgroundOpacity }}><img src={project.image} alt="" width="1920" height="1080" /><i /></motion.div>
+    <motion.a className="depth-card" href="#contact" style={{ opacity: planeOpacity, scale, y, z, filter: blur }}>
       <img src={project.image} alt={`${project.name} website project by Ink Media`} width="1920" height="1080" loading={index < 2 ? "eager" : "lazy"} decoding="async" />
-      <div className="depth-shade" />
-      <span className="depth-code">[ {project.code} ]</span>
-      <span className="depth-open">[ VIEW PROJECT ↗ ]</span>
-      <div className="depth-title"><h3>{project.name}</h3><p>{project.type}</p></div>
+      <motion.div className="depth-info" style={{ opacity: infoOpacity }}>
+        <p><b>CLIENT:</b> {project.name}</p>
+        <p><b>PROJECT:</b> {project.type.replaceAll(" / ", " · ")}</p>
+        <p><b>ROLE:</b> WEB DESIGN &amp; DEVELOPMENT</p>
+        <p><b>STATUS:</b> LIVE DIGITAL EXPERIENCE</p>
+        <span>[ OPEN PROJECT ↗ ]</span>
+      </motion.div>
     </motion.a>
   </motion.article>;
 }
@@ -73,10 +79,12 @@ function DepthWork() {
 
   return <section id="work" className={`work depth-work ${reduce ? "is-reduced" : ""}`} ref={ref}>
     <div className="depth-stage">
-      <div className="depth-ui shell"><span>[ SELECTED WORK ]</span><span>DEPTH / SCROLL</span><span>04 PROJECTS</span></div>
+      <div className="depth-ui shell"><span>INK MEDIA</span><span>DEPTH SCROLL</span><a href="#contact">CONTACT</a></div>
+      <div className="depth-orbit" aria-hidden="true"><i /><i /></div>
       <div className="depth-progress"><motion.i style={{ width: progressWidth }} /></div>
       {projects.map((project, index) => <DepthCard project={project} index={index} progress={scrollYProgress} key={project.name} />)}
-      <div className="depth-instruction">SCROLL TO MOVE THROUGH THE WORK <span>↓</span></div>
+      <div className="depth-instruction">SELECTED WORK / SCROLL TO MOVE THROUGH DEPTH <span>↓</span></div>
+      <div className="depth-counter">01 — 04</div>
     </div>
     <div className="mobile-projects shell">
       <div className="mobile-work-head"><span>[ SELECTED WORK / 04 ]</span><h2>BUILT TO BE<br />REMEMBERED.</h2></div>
