@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
   openGraph: { title: "Ink Media — Websites built to be impossible to ignore", description: "Web design & development for ambitious brands.", type: "website", url: "/", siteName: "Ink Media" },
   twitter: { card: "summary_large_image", title: "Ink Media — Web Design & Development Studio", description: "Websites built to make ambitious brands impossible to ignore." },
-  icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
+  icons: { icon: "/favicon.ico", shortcut: "/favicon.ico" },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
