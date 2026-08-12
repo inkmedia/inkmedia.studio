@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, lazy, Suspense, useEffect, useRef, useState } from "react";
-import { motion, useMotionValue, useReducedMotion, useScroll, useSpring } from "framer-motion";
+import { AnimatePresence, motion, useMotionValue, useReducedMotion, useScroll, useSpring } from "framer-motion";
 
 const DepthGallery = lazy(() => import("./components/DepthGallery"));
 const HeroIcon3D = lazy(() => import("./components/HeroIcon3D"));
@@ -35,6 +35,9 @@ const heroStates = [
   { label: "[ RESPONSIVE ]", image: "/work/goel-ganga.jpg" },
   { label: "[ HIGH PERFORMANCE ]", image: "/work/house-of-memories.jpg" },
   { label: "[ PIXEL PRECISE ]", image: "/work/kiara.webp" },
+  { label: "[ CONTENT ]", image: "/work/tejraj.webp" },
+  { label: "[ SEO ]", image: "/work/goel-ganga.jpg" },
+  { label: "[ ACCESSIBLE ]", image: "/work/house-of-memories.jpg" },
 ];
 
 function Arrow() { return <span aria-hidden="true">↗</span>; }
@@ -75,6 +78,7 @@ export default function Home() {
   const [heroActive, setHeroActive] = useState(2);
   const [heroHover, setHeroHover] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const heroTravel = useRef({ x: 0, y: 0, distance: 0, lastChange: 0, ready: false });
 
   useEffect(() => {
     setMounted(true);
@@ -99,20 +103,44 @@ export default function Home() {
     setHeroHover(true);
     heroX.set(localX);
     heroY.set(localY);
-    const position = (localX / bounds.width) * .72 + (localY / bounds.height) * .28;
-    setHeroActive(Math.min(heroStates.length - 1, Math.floor(position * heroStates.length)));
+
+    const travel = heroTravel.current;
+    if (!travel.ready) {
+      travel.x = localX;
+      travel.y = localY;
+      travel.ready = true;
+      return;
+    }
+
+    travel.distance += Math.hypot(localX - travel.x, localY - travel.y);
+    travel.x = localX;
+    travel.y = localY;
+
+    const now = performance.now();
+    if (travel.distance >= 180 && now - travel.lastChange >= 650) {
+      travel.distance = 0;
+      travel.lastChange = now;
+      setHeroActive((active) => (active + 1) % heroStates.length);
+    }
+  }
+
+  function leaveHero() {
+    setHeroHover(false);
+    heroTravel.current.ready = false;
+    heroTravel.current.distance = 0;
+    heroTravel.current.lastChange = 0;
   }
 
   return (
     <main>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
-      <header className="nav shell" onPointerEnter={() => setHeroHover(false)}>
+      <header className="nav shell" onPointerEnter={leaveHero}>
         <a className="wordmark" href="#top" aria-label="Ink Media home"><img src="/ink-logo.png" alt="Ink Media" width="3375" height="3375" /></a>
         <nav aria-label="Primary navigation"><a href="#work">WORK</a><a href="#services">SERVICES</a><a href="#studio">ABOUT</a></nav>
         <a className="nav-contact" href="#contact">[ START A PROJECT ]</a>
       </header>
 
-      <section id="top" className={`hero ${heroHover ? "is-tracking" : ""}`} onPointerMove={moveHero} onPointerLeave={() => setHeroHover(false)}>
+      <section id="top" className={`hero ${heroHover ? "is-tracking" : ""}`} onPointerMove={moveHero} onPointerLeave={leaveHero}>
         <div className="hero-rail shell"><span>CREATIVE WEB STUDIO</span><span>INDIA / WORLDWIDE</span><span>IST — {clock}</span></div>
         <span className="hero-role">WEB DESIGN &amp; DEVELOPMENT</span>
         {mounted && <Suspense fallback={null}><HeroIcon3D reducedMotion={Boolean(reduce)} /></Suspense>}
@@ -120,11 +148,28 @@ export default function Home() {
         <motion.div className="hero-cross hero-cross-h" style={{ y: heroSmoothY }} aria-hidden="true" />
         <motion.div className="hero-follow" style={{ x: heroSmoothX, y: heroSmoothY }} initial={{ opacity: 0 }} animate={{ opacity: heroHover ? 1 : 0 }} transition={{ duration: .14 }} aria-hidden="true">
           <div className="hero-follow-inner">
-            <div className="hero-follow-image"><img key={heroStates[heroActive].image} src={heroStates[heroActive].image} alt="" width="1920" height="1080" /></div>
-            <span>{heroStates[heroActive].label}</span>
+            <div className="hero-follow-image" style={{ position: "relative" }}>
+              <AnimatePresence initial={false}>
+                <motion.img
+                  key={heroActive}
+                  src={heroStates[heroActive].image}
+                  alt=""
+                  width="1920"
+                  height="1080"
+                  initial={{ opacity: 0, scale: 1.04 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: .98 }}
+                  transition={{ duration: .24, ease }}
+                  style={{ position: "absolute", inset: 0, animation: "none" }}
+                />
+              </AnimatePresence>
+            </div>
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span key={heroActive} initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }} transition={{ duration: .16 }}>{heroStates[heroActive].label}</motion.span>
+            </AnimatePresence>
           </div>
         </motion.div>
-        <p className="sr-only">Interactive project preview showing optimised, responsive, high-performance and pixel-precise web experiences.</p>
+        <p className="sr-only">Interactive project preview showing optimised, responsive, high-performance, pixel-precise, content, SEO and accessible web experiences.</p>
         <h1 aria-label="Websites built to make ambitious brands impossible to ignore">
           <span className="hero-mask"><motion.b initial={reduce ? undefined : { y: "110%" }} animate={{ y: 0 }} transition={{ duration: 1, ease }}>WEBSITES BUILT TO MAKE</motion.b></span>
           <span className="hero-mask hero-line-middle"><motion.b initial={reduce ? undefined : { y: "110%" }} animate={{ y: 0 }} transition={{ duration: 1, delay: .08, ease }}>AMBITIOUS BRANDS</motion.b></span>
