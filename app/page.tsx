@@ -142,7 +142,6 @@ export default function Home() {
 
       <section id="top" className={`hero ${heroHover ? "is-tracking" : ""}`} onPointerMove={moveHero} onPointerLeave={leaveHero}>
         <div className="hero-rail shell"><span>CREATIVE WEB STUDIO</span><span>INDIA / WORLDWIDE</span><span>IST — {clock}</span></div>
-        <span className="hero-role">WEB DESIGN &amp; DEVELOPMENT</span>
         {mounted && <Suspense fallback={null}><HeroIcon3D reducedMotion={Boolean(reduce)} /></Suspense>}
         <motion.div className="hero-cross hero-cross-v" style={{ x: heroSmoothX }} aria-hidden="true" />
         <motion.div className="hero-cross hero-cross-h" style={{ y: heroSmoothY }} aria-hidden="true" />
