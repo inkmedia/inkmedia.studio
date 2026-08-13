@@ -200,11 +200,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="sectors">
-        <div className="sector-line"><span>REAL ESTATE</span><i>/</i><span>PROPERTY</span><i>/</i><span>HOSPITALITY</span><i>/</i><span>CORPORATE & B2B</span></div>
-        <div className="sector-copy shell"><span>[ INDUSTRY FOCUS ]</span><p>A DIGITAL FOUNDATION FOR<br />BUSINESSES THAT <b>MEAN BUSINESS.</b></p></div>
-      </section>
-
       <section id="studio" className="studio shell">
         <div className="studio-mark"><img src="/ink-logo.png" alt="" width="3375" height="3375" /><span>BUILDING DIGITAL<br />THINKING BEYOND</span></div>
         <Reveal className="studio-copy"><span>[ ABOUT INK MEDIA ]</span><h2>WE CREATE DIGITAL HOMES FOR BRANDS WITH SOMEWHERE IMPORTANT TO GO.</h2><p>With over 20 years of combined experience, Ink Media has partnered with incredible clients to deliver impactful results and create compelling websites that resonate.</p><a href="#contact">[ MEET YOUR DIGITAL TEAM ↗ ]</a></Reveal>
@@ -225,10 +220,19 @@ export default function Home() {
         <div className="contact-grid shell">
           <div className="contact-direct"><span>[ DIRECT CONTACT ]</span><a href="mailto:contact@inkmedia.in">CONTACT@INKMEDIA.IN ↗</a><a href="tel:+919158310192">+91 91583 10192</a><p><i /> TAKING ON SELECT PROJECTS</p></div>
           <form onSubmit={submit} aria-label="Start a project enquiry">
-            <div className="form-row"><label>01 / YOUR NAME<input required name="name" autoComplete="name" placeholder="Jane Smith" /></label><label>02 / COMPANY<input required name="company" autoComplete="organization" placeholder="Your company" /></label></div>
-            <div className="form-row"><label>03 / EMAIL<input required type="email" name="email" autoComplete="email" placeholder="jane@company.com" /></label><label>04 / COUNTRY<input name="country" autoComplete="country-name" placeholder="Where are you based?" /></label></div>
-            <div className="form-row"><label>05 / PROJECT TYPE<select name="projectType" defaultValue=""><option value="" disabled>Select one</option><option>New website</option><option>Website redesign</option><option>UX/UI design</option><option>Development partner</option><option>SEO & optimisation</option></select></label><label>06 / ESTIMATED BUDGET<select name="budget" defaultValue=""><option value="" disabled>Select a range</option><option>₹2L – ₹5L</option><option>₹5L – ₹10L</option><option>₹10L+</option><option>Let’s discuss</option></select></label></div>
-            <label>07 / THE BRIEF<textarea required name="summary" rows={3} placeholder="What are you building, and what should it achieve?" /></label>
+            <div className="form-row">
+              <input required name="name" autoComplete="name" placeholder="Your name" aria-label="Your name" />
+              <input required name="company" autoComplete="organization" placeholder="Company" aria-label="Company" />
+            </div>
+            <div className="form-row">
+              <input required type="email" name="email" autoComplete="email" placeholder="Email address" aria-label="Email address" />
+              <input name="country" autoComplete="country-name" placeholder="Country" aria-label="Country" />
+            </div>
+            <div className="form-row">
+              <select name="projectType" defaultValue="" aria-label="Project type"><option value="" disabled>Select project type</option><option>New website</option><option>Website redesign</option><option>UX/UI design</option><option>Development partner</option><option>SEO & optimisation</option></select>
+              <select name="budget" defaultValue="" aria-label="Estimated budget"><option value="" disabled>Select budget</option><option>₹2L – ₹5L</option><option>₹5L – ₹10L</option><option>₹10L+</option><option>Let’s discuss</option></select>
+            </div>
+            <textarea required name="summary" rows={3} placeholder="Tell us about your project" aria-label="Tell us about your project" />
             <button type="submit">{sent ? "[ THANK YOU — WE’LL BE IN TOUCH ]" : "[ SEND PROJECT ENQUIRY ↗ ]"}</button>
           </form>
         </div>
