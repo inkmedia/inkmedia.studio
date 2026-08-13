@@ -17,9 +17,9 @@ function IconModel({ reducedMotion }: { reducedMotion: boolean }) {
         color: "#a40008",
         metalness: .18,
         roughness: .42,
-        transparent: true,
-        opacity: .34,
-        depthWrite: false,
+        transparent: false,
+        opacity: 1,
+        depthWrite: true,
       });
     });
     return clone;
@@ -48,7 +48,7 @@ function IconModel({ reducedMotion }: { reducedMotion: boolean }) {
 }
 
 export default function HeroIcon3D({ reducedMotion = false }: { reducedMotion?: boolean }) {
-  return <div className="hero-model" aria-hidden="true">
+  return <div className="hero-model" style={{ opacity: 1 }} aria-hidden="true">
     <Canvas dpr={[1, 1.35]} camera={{ fov: 32, position: [0, 0, 6] }} gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}>
       <ambientLight intensity={1.1} />
       <directionalLight position={[4, 5, 6]} intensity={2.2} color="#fff5ee" />
