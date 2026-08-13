@@ -48,7 +48,7 @@ function IconModel({ reducedMotion }: { reducedMotion: boolean }) {
 }
 
 export default function HeroIcon3D({ reducedMotion = false }: { reducedMotion?: boolean }) {
-  return <div className="hero-model" style={{ opacity: 1 }} aria-hidden="true">
+  return <div className="hero-model" style={{ opacity: 0.3 }} aria-hidden="true">
     <Canvas dpr={[1, 1.35]} camera={{ fov: 32, position: [0, 0, 6] }} gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}>
       <ambientLight intensity={1.1} />
       <directionalLight position={[4, 5, 6]} intensity={2.2} color="#fff5ee" />
