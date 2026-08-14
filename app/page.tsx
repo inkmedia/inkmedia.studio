@@ -297,7 +297,7 @@ export default function Home() {
       >
         <div className="hero-rail shell">
           <span>CREATIVE WEB STUDIO</span>
-          <span>INDIA / WORLDWIDE</span>
+          <span>PUNE / WORLDWIDE</span>
           <span>IST — {clock}</span>
         </div>
         {mounted && (
