@@ -48,7 +48,7 @@ function DepthTrail({ offset }: { offset: { offset: number } }) {
     if (value < .15) length = value / .15 * .25;
     if (value > .85) length = (1 - value) / .15 * .25;
     let start = value + .03;
-    let end = Math.min(1, start + length);
+    const end = Math.min(1, start + length);
     if (end >= 1) start = Math.max(0, 1 - length);
     const points = Array.from({ length: 61 }, (_, index) => curve.getPointAt(start + (index / 60) * (end - start)));
     if (line.current?.geometry) {
