@@ -1,0 +1,232 @@
+"use client";
+
+import { motion, useReducedMotion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+
+export default function Preloader({ onComplete }: { onComplete: () => void }) {
+  const reducedMotion = Boolean(useReducedMotion());
+  const [progress, setProgress] = useState(0);
+  const [leaving, setLeaving] = useState(false);
+  const exitTimer = useRef<number | null>(null);
+
+  useEffect(() => {
+    document.body.classList.add("is-loading");
+    let frame = 0;
+    let cancelled = false;
+    let finished = false;
+    let displayedProgress = 0;
+    let targetProgress = 0;
+    let previousTime = performance.now();
+
+    const waitForWindow = new Promise<void>((resolve) => {
+      if (document.readyState === "complete") resolve();
+      else window.addEventListener("load", () => resolve(), { once: true });
+    });
+
+    const loadImage = (source: string) => new Promise<void>((resolve) => {
+      const image = new Image();
+      image.onload = () => {
+        const decoded = image.decode ? image.decode() : Promise.resolve();
+        decoded.catch(() => undefined).finally(() => resolve());
+      };
+      image.onerror = () => resolve();
+      image.src = source;
+    });
+
+    const loadFile = async (source: string) => {
+      const response = await fetch(source, { cache: "force-cache" });
+      if (!response.ok) throw new Error(`Unable to preload ${source}`);
+      await response.arrayBuffer();
+    };
+
+    const tasks: Promise<unknown>[] = [
+      waitForWindow,
+      document.fonts?.ready ?? Promise.resolve(),
+      loadFile("/ink_media_icon_3d.glb"),
+      loadImage("/work/tejraj.webp"),
+      loadImage("/work/goel-ganga.jpg"),
+      loadImage("/work/house-of-memories.jpg"),
+      loadImage("/work/kiara.webp"),
+      import("./HeroIcon3D"),
+      import("./DepthGallery"),
+      new Promise((resolve) => window.setTimeout(resolve, reducedMotion ? 450 : 1800)),
+    ];
+
+    let settled = 0;
+    tasks.forEach((task) => {
+      task.catch(() => undefined).finally(() => {
+        settled += 1;
+        targetProgress = settled === tasks.length
+          ? 1
+          : Math.min(0.58, (settled / tasks.length) * 0.58);
+      });
+    });
+
+    const tick = (now: number) => {
+      const delta = Math.min((now - previousTime) / 1000, 0.1);
+      previousTime = now;
+      const smoothing = 1 - Math.exp(-delta * (targetProgress === 1 ? 3.6 : 1.35));
+      displayedProgress += (targetProgress - displayedProgress) * smoothing;
+
+      if (targetProgress === 1 && displayedProgress > 0.998 && !finished) {
+        finished = true;
+        displayedProgress = 1;
+        setProgress(1);
+        exitTimer.current = window.setTimeout(
+          () => setLeaving(true),
+          reducedMotion ? 100 : 700,
+        );
+      } else {
+        setProgress(displayedProgress);
+      }
+
+      if (!cancelled && !finished) frame = requestAnimationFrame(tick);
+    };
+
+    frame = requestAnimationFrame(tick);
+
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(frame);
+      if (exitTimer.current !== null) window.clearTimeout(exitTimer.current);
+      document.body.classList.remove("is-loading");
+    };
+  }, [reducedMotion]);
+
+  const fillY = 810 - progress * 620;
+
+  const overlay = (
+    <motion.div
+      className="preloader"
+      style={{
+        position: "fixed",
+        zIndex: 2147483647,
+        inset: 0,
+        width: "100vw",
+        height: "100dvh",
+        display: "grid",
+        placeItems: "center",
+        overflow: "hidden",
+        background: "#ffffff",
+        color: "#111111",
+        isolation: "isolate",
+      }}
+      initial={{ opacity: 1 }}
+      animate={leaving ? { opacity: 0, scale: 1.02 } : { opacity: 1, scale: 1 }}
+      transition={{ duration: reducedMotion ? 0.15 : 0.7, ease: [0.76, 0, 0.24, 1] }}
+      onAnimationComplete={() => {
+        if (!leaving) return;
+        document.body.classList.remove("is-loading");
+        onComplete();
+      }}
+      aria-label={`Loading Ink Media — ${Math.round(progress * 100)} percent`}
+      role="status"
+    >
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+        <div
+          className="preloader-icon"
+          style={{ position: "relative", width: "min(50.4vmin, 455px)", height: "min(50.4vmin, 455px)" }}
+          aria-hidden="true"
+        >
+        <svg viewBox="0 0 1000 1000" width="100%" height="100%" style={{ display: "block" }}>
+          <defs>
+            <path id="preloader-logo-shape" d="M499 231 L810 769 L629 768 L501 556 L370 768 L192 768 Z" />
+            <clipPath id="preloader-logo-clip">
+              <use href="#preloader-logo-shape" />
+            </clipPath>
+          </defs>
+
+          <use href="#preloader-logo-shape" fill="#980009" opacity="0.14" />
+
+          <g clipPath="url(#preloader-logo-clip)">
+            <rect x="0" y={fillY} width="1000" height={1000 - fillY} fill="#980009" />
+
+            <g transform={`translate(0 ${fillY - 42})`}>
+              <path fill="#650006" opacity="0.78">
+                <animate
+                  attributeName="d"
+                  dur="2.9s"
+                  repeatCount="indefinite"
+                  values="M-120 58 C20 2 145 86 285 44 C425 2 545 82 685 42 C825 4 940 82 1080 36 C1140 16 1190 22 1240 40 L1240 100 L-120 100 Z;M-120 38 C20 86 150 0 295 54 C435 102 555 2 700 50 C845 92 955 4 1090 58 C1150 82 1200 68 1240 48 L1240 100 L-120 100 Z;M-120 58 C20 2 145 86 285 44 C425 2 545 82 685 42 C825 4 940 82 1080 36 C1140 16 1190 22 1240 40 L1240 100 L-120 100 Z"
+                />
+              </path>
+              <path fill="#7d0008" opacity="0.9">
+                <animate
+                  attributeName="d"
+                  dur="2.3s"
+                  repeatCount="indefinite"
+                  values="M-120 52 Q-40 2 40 52 T200 52 T360 52 T520 52 T680 52 T840 52 T1000 52 T1160 52 T1320 52 L1320 110 L-120 110 Z;M-120 42 Q-40 92 40 42 T200 42 T360 42 T520 42 T680 42 T840 42 T1000 42 T1160 42 T1320 42 L1320 110 L-120 110 Z;M-120 52 Q-40 2 40 52 T200 52 T360 52 T520 52 T680 52 T840 52 T1000 52 T1160 52 T1320 52 L1320 110 L-120 110 Z"
+                />
+              </path>
+              <path fill="#ad0711" opacity="0.56">
+                <animate
+                  attributeName="d"
+                  dur="1.95s"
+                  repeatCount="indefinite"
+                  values="M-120 48 Q-70 14 -20 48 T80 48 T180 48 T280 48 T380 48 T480 48 T580 48 T680 48 T780 48 T880 48 T980 48 T1080 48 T1180 48 T1280 48 L1280 110 L-120 110 Z;M-120 40 Q-70 76 -20 40 T80 40 T180 40 T280 40 T380 40 T480 40 T580 40 T680 40 T780 40 T880 40 T980 40 T1080 40 T1180 40 T1280 40 L1280 110 L-120 110 Z;M-120 48 Q-70 14 -20 48 T80 48 T180 48 T280 48 T380 48 T480 48 T580 48 T680 48 T780 48 T880 48 T980 48 T1080 48 T1180 48 T1280 48 L1280 110 L-120 110 Z"
+                />
+              </path>
+              <path fill="#980009">
+                <animate
+                  attributeName="d"
+                  dur="1.55s"
+                  repeatCount="indefinite"
+                  values="M-120 52 Q-65 6 -10 52 T100 52 T210 52 T320 52 T430 52 T540 52 T650 52 T760 52 T870 52 T980 52 T1090 52 T1200 52 T1310 52 L1310 110 L-120 110 Z;M-120 38 Q-65 86 -10 38 T100 38 T210 38 T320 38 T430 38 T540 38 T650 38 T760 38 T870 38 T980 38 T1090 38 T1200 38 T1310 38 L1310 110 L-120 110 Z;M-120 52 Q-65 6 -10 52 T100 52 T210 52 T320 52 T430 52 T540 52 T650 52 T760 52 T870 52 T980 52 T1090 52 T1200 52 T1310 52 L1310 110 L-120 110 Z"
+                />
+              </path>
+            </g>
+          </g>
+
+          <use href="#preloader-logo-shape" fill="none" stroke="#980009" strokeOpacity="0.34" strokeWidth="2" />
+          </svg>
+        </div>
+        <p
+          aria-label="Inking..."
+          style={{
+            margin: 0,
+            fontFamily: "var(--font-display)",
+            fontSize: 13,
+            fontWeight: 300,
+            letterSpacing: "0.08em",
+            color: "rgba(0, 0, 0, 0.68)",
+            display: "flex",
+            minHeight: 20,
+          }}
+        >
+          {Array.from("Inking...").map((character, index) => (
+            <motion.span
+              key={`${character}-${index}`}
+              aria-hidden="true"
+              style={{ display: "inline-block", minWidth: character === " " ? "0.35em" : undefined }}
+              animate={reducedMotion ? undefined : {
+                y: [0, -7, 0],
+                opacity: [0.38, 1, 0.6],
+                filter: ["blur(1.5px)", "blur(0px)", "blur(0px)"],
+              }}
+              transition={{
+                duration: 0.85,
+                delay: index * 0.085,
+                repeat: Infinity,
+                repeatDelay: 1.15,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+            >
+              {character}
+            </motion.span>
+          ))}
+        </p>
+      </div>
+
+      <div className="preloader-meta">
+        <span>INK MEDIA</span>
+        <span>{String(Math.round(progress * 100)).padStart(3, "0")}%</span>
+      </div>
+      <div className="preloader-progress">
+        <i style={{ transform: `scaleX(${progress})` }} />
+      </div>
+    </motion.div>
+  );
+
+  return createPortal(overlay, document.body);
+}

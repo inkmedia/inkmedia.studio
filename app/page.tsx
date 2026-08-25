@@ -9,6 +9,7 @@ import {
   useScroll,
   useSpring,
 } from "framer-motion";
+import Preloader from "./components/Preloader";
 
 const DepthGallery = lazy(() => import("./components/DepthGallery"));
 const HeroIcon3D = lazy(() => import("./components/HeroIcon3D"));
@@ -187,6 +188,7 @@ export default function Home() {
   const [heroActive, setHeroActive] = useState(2);
   const [heroHover, setHeroHover] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [loading, setLoading] = useState(true);
   const heroTravel = useRef({
     x: 0,
     y: 0,
@@ -271,6 +273,9 @@ export default function Home() {
 
   return (
     <main>
+      {loading && mounted && (
+        <Preloader onComplete={() => setLoading(false)} />
+      )}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
@@ -300,7 +305,7 @@ export default function Home() {
           <span>PUNE / WORLDWIDE</span>
           <span>IST — {clock}</span>
         </div>
-        {mounted && (
+        {mounted && !loading && (
           <Suspense fallback={null}>
             <HeroIcon3D reducedMotion={Boolean(reduce)} />
           </Suspense>
@@ -362,7 +367,7 @@ export default function Home() {
           <span className="hero-mask">
             <motion.b
               initial={reduce ? undefined : { y: "110%" }}
-              animate={{ y: 0 }}
+              animate={reduce ? undefined : { y: loading ? "110%" : 0 }}
               transition={{ duration: 1, ease }}
             >
               WEBSITES BUILT TO MAKE
@@ -371,7 +376,7 @@ export default function Home() {
           <span className="hero-mask hero-line-middle">
             <motion.b
               initial={reduce ? undefined : { y: "110%" }}
-              animate={{ y: 0 }}
+              animate={reduce ? undefined : { y: loading ? "110%" : 0 }}
               transition={{ duration: 1, delay: 0.08, ease }}
             >
               AMBITIOUS BRANDS
@@ -380,7 +385,7 @@ export default function Home() {
           <span className="hero-mask hero-line-last">
             <motion.b
               initial={reduce ? undefined : { y: "110%" }}
-              animate={{ y: 0 }}
+              animate={reduce ? undefined : { y: loading ? "110%" : 0 }}
               transition={{ duration: 1, delay: 0.16, ease }}
             >
               IMPOSSIBLE TO IGNORE

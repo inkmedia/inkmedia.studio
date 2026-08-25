@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Ink Media logo — liquid-fill ready</title>
+  <desc id="desc">Vector logo with a reusable clip path and liquid fill layer for JavaScript animation.</desc>
+
+  <defs>
+    <!-- Single source of truth for the logo geometry -->
+    <path id="logo-shape" d="M499 231 L810 769 L629 768 L501 556 L370 768 L192 768 Z"/>
+
+    <!-- Anything placed in #liquid and clipped by this stays inside the logo -->
+    <clipPath id="logo-clip" clipPathUnits="userSpaceOnUse">
+      <use href="#logo-shape"/>
+    </clipPath>
+  </defs>
+
+  <!-- Optional subtle base; remove if you want the empty area fully transparent -->
+  <use id="logo-base" href="#logo-shape" fill="#B00000" opacity="0.12"/>
+
+  <!-- Animate this group/rect from JS -->
+  <g id="liquid" clip-path="url(#logo-clip)">
+    <!-- y=1000 = empty, y=0 = full -->
+    <rect id="liquid-fill" x="0" y="0" width="1000" height="1000" fill="#B00000"/>
+  </g>
+
+  <!-- Optional crisp outline. Set stroke="none" if not needed. -->
+  <use id="logo-outline" href="#logo-shape" fill="none" stroke="#B00000" stroke-width="2" vector-effect="non-scaling-stroke"/>
+</svg>

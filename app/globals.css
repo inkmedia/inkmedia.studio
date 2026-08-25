@@ -69,6 +69,88 @@ img {
   background: var(--blue);
   color: #fff;
 }
+body.is-loading {
+  overflow: hidden;
+}
+body.is-loading > main {
+  visibility: hidden;
+}
+body.is-loading > .preloader {
+  visibility: visible;
+}
+.preloader {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #fff;
+  color: #111;
+  transform-origin: center;
+}
+.preloader::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 47%, rgba(152, 0, 9, 0.08), transparent 36%);
+  pointer-events: none;
+}
+.preloader-icon {
+  position: relative;
+  width: min(58vw, 650px);
+  aspect-ratio: 1;
+}
+.preloader-icon-ghost,
+.preloader-icon-mask {
+  position: absolute;
+  inset: 0;
+}
+.preloader-icon-ghost {
+  background: rgba(152, 0, 9, 0.16);
+}
+.preloader-icon-mask {
+  overflow: hidden;
+}
+.preloader-liquid {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: #980009;
+  will-change: height;
+}
+.preloader-ink-wave {
+  filter: drop-shadow(0 -5px 12px rgba(152, 0, 9, 0.28));
+}
+.preloader-meta {
+  position: absolute;
+  left: 28px;
+  right: 28px;
+  bottom: 30px;
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+.preloader-progress {
+  position: absolute;
+  left: 28px;
+  right: 28px;
+  bottom: 18px;
+  height: 1px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.16);
+}
+.preloader-progress i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #980009;
+  transform-origin: left;
+  will-change: transform;
+}
 .shell {
   width: min(100% - 56px, 1536px);
   margin-inline: auto;
@@ -1124,6 +1206,14 @@ form button:hover {
   }
 }
 @media (max-width: 560px) {
+  .preloader-icon {
+    width: min(88vw, 480px);
+  }
+  .preloader-meta,
+  .preloader-progress {
+    left: 16px;
+    right: 16px;
+  }
   .nav-contact {
     font-size: 0;
   }
