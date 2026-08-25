@@ -12,6 +12,28 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
 
   useEffect(() => {
     document.body.classList.add("is-loading");
+    const previousHtmlOverflow = document.documentElement.style.overflow;
+    const previousBodyOverflow = document.body.style.overflow;
+    const blockedKeys = new Set([
+      "ArrowDown",
+      "ArrowUp",
+      "PageDown",
+      "PageUp",
+      "Home",
+      "End",
+      " ",
+    ]);
+    const stopScroll = (event: Event) => event.preventDefault();
+    const stopScrollKeys = (event: KeyboardEvent) => {
+      if (blockedKeys.has(event.key)) event.preventDefault();
+    };
+
+    window.scrollTo(0, 0);
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+    window.addEventListener("wheel", stopScroll, { passive: false, capture: true });
+    window.addEventListener("touchmove", stopScroll, { passive: false, capture: true });
+    window.addEventListener("keydown", stopScrollKeys, { capture: true });
     let frame = 0;
     let cancelled = false;
     let finished = false;
@@ -90,6 +112,12 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
       cancelled = true;
       cancelAnimationFrame(frame);
       if (exitTimer.current !== null) window.clearTimeout(exitTimer.current);
+      window.removeEventListener("wheel", stopScroll, { capture: true });
+      window.removeEventListener("touchmove", stopScroll, { capture: true });
+      window.removeEventListener("keydown", stopScrollKeys, { capture: true });
+      document.documentElement.style.overflow = previousHtmlOverflow;
+      document.body.style.overflow = previousBodyOverflow;
+      window.scrollTo(0, 0);
       document.body.classList.remove("is-loading");
     };
   }, [reducedMotion]);
