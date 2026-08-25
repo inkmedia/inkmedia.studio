@@ -171,7 +171,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
             <rect x="0" y={fillY} width="1000" height={1000 - fillY} fill="#980009" />
 
             <g transform={`translate(0 ${fillY - 42})`}>
-              <path fill="#650006" opacity="0.78">
+              <path fill="#5d080d" opacity="0.58">
                 <animate
                   attributeName="d"
                   dur="2.9s"
@@ -179,7 +179,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
                   values="M-120 58 C20 2 145 86 285 44 C425 2 545 82 685 42 C825 4 940 82 1080 36 C1140 16 1190 22 1240 40 L1240 100 L-120 100 Z;M-120 38 C20 86 150 0 295 54 C435 102 555 2 700 50 C845 92 955 4 1090 58 C1150 82 1200 68 1240 48 L1240 100 L-120 100 Z;M-120 58 C20 2 145 86 285 44 C425 2 545 82 685 42 C825 4 940 82 1080 36 C1140 16 1190 22 1240 40 L1240 100 L-120 100 Z"
                 />
               </path>
-              <path fill="#7d0008" opacity="0.9">
+              <path fill="#79060d" opacity="0.72">
                 <animate
                   attributeName="d"
                   dur="2.3s"
@@ -187,7 +187,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
                   values="M-120 52 Q-40 2 40 52 T200 52 T360 52 T520 52 T680 52 T840 52 T1000 52 T1160 52 T1320 52 L1320 110 L-120 110 Z;M-120 42 Q-40 92 40 42 T200 42 T360 42 T520 42 T680 42 T840 42 T1000 42 T1160 42 T1320 42 L1320 110 L-120 110 Z;M-120 52 Q-40 2 40 52 T200 52 T360 52 T520 52 T680 52 T840 52 T1000 52 T1160 52 T1320 52 L1320 110 L-120 110 Z"
                 />
               </path>
-              <path fill="#ad0711" opacity="0.56">
+              <path fill="#b3262e" opacity="0.32">
                 <animate
                   attributeName="d"
                   dur="1.95s"
