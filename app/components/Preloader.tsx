@@ -4,9 +4,29 @@ import { motion, useReducedMotion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
+function createWavePath(
+  phase: number,
+  baseline: number,
+  amplitude: number,
+  wavelength: number,
+  secondary: number,
+) {
+  const start = -200;
+  const end = 1400;
+  const segments = 56;
+  const points = Array.from({ length: segments + 1 }, (_, index) => {
+    const x = start + ((end - start) * index) / segments;
+    const primaryWave = Math.sin((x / wavelength) * Math.PI * 2 + phase) * amplitude;
+    const secondaryWave = Math.sin((x / (wavelength * 0.48)) * Math.PI * 2 - phase * 0.62) * secondary;
+    return `${x.toFixed(1)} ${(baseline + primaryWave + secondaryWave).toFixed(1)}`;
+  });
+  return `M${points.join(" L")} L${end} 160 L${start} 160 Z`;
+}
+
 export default function Preloader({ onComplete }: { onComplete: () => void }) {
   const reducedMotion = Boolean(useReducedMotion());
   const [progress, setProgress] = useState(0);
+  const [wavePhase, setWavePhase] = useState(0);
   const [leaving, setLeaving] = useState(false);
   const exitTimer = useRef<number | null>(null);
 
@@ -102,6 +122,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
       } else {
         setProgress(displayedProgress);
       }
+      if (!reducedMotion) setWavePhase(now * 0.001);
 
       if (!cancelled && !finished) frame = requestAnimationFrame(tick);
     };
@@ -123,6 +144,12 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
   }, [reducedMotion]);
 
   const fillY = 810 - progress * 620;
+  const rearWave = createWavePath(wavePhase * 1.05 + 1.4, 48, 34, 720, 6);
+  const highlightWave = createWavePath(-wavePhase * 0.88 + 0.5, 46, 20, 610, 4.5);
+  const frontWave = createWavePath(wavePhase * 1.32, 50, 29, 680, 5.5);
+  const surfaceBob = reducedMotion
+    ? 0
+    : Math.sin(wavePhase * 0.72) * 7 + Math.sin(wavePhase * 1.18) * 2.5;
 
   const overlay = (
     <motion.div
@@ -168,41 +195,12 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
           <use href="#preloader-logo-shape" fill="#980009" opacity="0.14" />
 
           <g clipPath="url(#preloader-logo-clip)">
-            <rect x="0" y={fillY} width="1000" height={1000 - fillY} fill="#980009" />
+            <rect x="0" y={fillY + 72} width="1000" height={1000 - fillY} fill="#980009" />
 
-            <g transform={`translate(0 ${fillY - 42})`}>
-              <path fill="#5d080d" opacity="0.58">
-                <animate
-                  attributeName="d"
-                  dur="2.9s"
-                  repeatCount="indefinite"
-                  values="M-120 58 C20 2 145 86 285 44 C425 2 545 82 685 42 C825 4 940 82 1080 36 C1140 16 1190 22 1240 40 L1240 100 L-120 100 Z;M-120 38 C20 86 150 0 295 54 C435 102 555 2 700 50 C845 92 955 4 1090 58 C1150 82 1200 68 1240 48 L1240 100 L-120 100 Z;M-120 58 C20 2 145 86 285 44 C425 2 545 82 685 42 C825 4 940 82 1080 36 C1140 16 1190 22 1240 40 L1240 100 L-120 100 Z"
-                />
-              </path>
-              <path fill="#79060d" opacity="0.72">
-                <animate
-                  attributeName="d"
-                  dur="2.3s"
-                  repeatCount="indefinite"
-                  values="M-120 52 Q-40 2 40 52 T200 52 T360 52 T520 52 T680 52 T840 52 T1000 52 T1160 52 T1320 52 L1320 110 L-120 110 Z;M-120 42 Q-40 92 40 42 T200 42 T360 42 T520 42 T680 42 T840 42 T1000 42 T1160 42 T1320 42 L1320 110 L-120 110 Z;M-120 52 Q-40 2 40 52 T200 52 T360 52 T520 52 T680 52 T840 52 T1000 52 T1160 52 T1320 52 L1320 110 L-120 110 Z"
-                />
-              </path>
-              <path fill="#b3262e" opacity="0.32">
-                <animate
-                  attributeName="d"
-                  dur="1.95s"
-                  repeatCount="indefinite"
-                  values="M-120 48 Q-70 14 -20 48 T80 48 T180 48 T280 48 T380 48 T480 48 T580 48 T680 48 T780 48 T880 48 T980 48 T1080 48 T1180 48 T1280 48 L1280 110 L-120 110 Z;M-120 40 Q-70 76 -20 40 T80 40 T180 40 T280 40 T380 40 T480 40 T580 40 T680 40 T780 40 T880 40 T980 40 T1080 40 T1180 40 T1280 40 L1280 110 L-120 110 Z;M-120 48 Q-70 14 -20 48 T80 48 T180 48 T280 48 T380 48 T480 48 T580 48 T680 48 T780 48 T880 48 T980 48 T1080 48 T1180 48 T1280 48 L1280 110 L-120 110 Z"
-                />
-              </path>
-              <path fill="#980009">
-                <animate
-                  attributeName="d"
-                  dur="1.55s"
-                  repeatCount="indefinite"
-                  values="M-120 52 Q-65 6 -10 52 T100 52 T210 52 T320 52 T430 52 T540 52 T650 52 T760 52 T870 52 T980 52 T1090 52 T1200 52 T1310 52 L1310 110 L-120 110 Z;M-120 38 Q-65 86 -10 38 T100 38 T210 38 T320 38 T430 38 T540 38 T650 38 T760 38 T870 38 T980 38 T1090 38 T1200 38 T1310 38 L1310 110 L-120 110 Z;M-120 52 Q-65 6 -10 52 T100 52 T210 52 T320 52 T430 52 T540 52 T650 52 T760 52 T870 52 T980 52 T1090 52 T1200 52 T1310 52 L1310 110 L-120 110 Z"
-                />
-              </path>
+            <g transform={`translate(0 ${fillY - 42 + surfaceBob})`}>
+              <path d={rearWave} fill="#580006" opacity="0.88" />
+              <path d={highlightWave} fill="#bf3941" opacity="0.3" />
+              <path d={frontWave} fill="#980009" />
             </g>
           </g>
 
