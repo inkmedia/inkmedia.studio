@@ -108,7 +108,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
     const tick = (now: number) => {
       const delta = Math.min((now - previousTime) / 1000, 0.1);
       previousTime = now;
-      const smoothing = 1 - Math.exp(-delta * (targetProgress === 1 ? 3.6 : 1.35));
+      const smoothing = 1 - Math.exp(-delta * (targetProgress === 1 ? 3.2 : 1.35));
       displayedProgress += (targetProgress - displayedProgress) * smoothing;
 
       if (targetProgress === 1 && displayedProgress > 0.998 && !finished) {
@@ -178,10 +178,26 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
       aria-label={`Loading Ink Media — ${Math.round(progress * 100)} percent`}
       role="status"
     >
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+      <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            zIndex: 0,
+            top: "50%",
+            left: "50%",
+            width: "min(55vmin, 500px)",
+            height: "min(55vmin, 500px)",
+            transform: "translate(-50%, -54%)",
+            borderRadius: "50%",
+            background: "radial-gradient(circle, rgba(152, 0, 9, 0.098) 0%, rgba(152, 0, 9, 0.0385) 38%, transparent 72%)",
+            filter: "blur(24px)",
+            pointerEvents: "none",
+          }}
+        />
         <div
           className="preloader-icon"
-          style={{ position: "relative", width: "min(50.4vmin, 455px)", height: "min(50.4vmin, 455px)" }}
+          style={{ position: "relative", zIndex: 1, width: "min(40.32vmin, 364px)", height: "min(40.32vmin, 364px)" }}
           aria-hidden="true"
         >
         <svg viewBox="0 0 1000 1000" width="100%" height="100%" style={{ display: "block" }}>
@@ -210,6 +226,8 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
         <p
           aria-label="Inking..."
           style={{
+            position: "relative",
+            zIndex: 1,
             margin: 0,
             fontFamily: "var(--font-display)",
             fontSize: 13,
