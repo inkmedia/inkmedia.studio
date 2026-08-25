@@ -220,7 +220,6 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
             </g>
           </g>
 
-          <use href="#preloader-logo-shape" fill="none" stroke="#980009" strokeOpacity="0.34" strokeWidth="2" />
           </svg>
         </div>
         <p
