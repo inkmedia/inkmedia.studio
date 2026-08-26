@@ -271,6 +271,15 @@ export default function Home() {
     heroTravel.current.lastChange = 0;
   }
 
+  function heroStagger(delay: number, y = -12) {
+    if (reduce) return {};
+    return {
+      initial: { opacity: 0, y },
+      animate: loading ? { opacity: 0, y } : { opacity: 1, y: 0 },
+      transition: { duration: 0.65, delay, ease },
+    };
+  }
+
   return (
     <main>
       {loading && mounted && (
@@ -281,17 +290,17 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
       <header className="nav shell" onPointerEnter={leaveHero}>
-        <a className="wordmark" href="#top" aria-label="Ink Media home">
+        <motion.a className="wordmark" href="#top" aria-label="Ink Media home" {...heroStagger(0.05)}>
           <img src="/ink-logo.png" alt="Ink Media" width="3375" height="3375" />
-        </a>
+        </motion.a>
         <nav aria-label="Primary navigation">
-          <a href="#work">WORK</a>
-          <a href="#services">SERVICES</a>
-          <a href="#studio">ABOUT</a>
+          <motion.a href="#work" {...heroStagger(0.12)}>WORK</motion.a>
+          <motion.a href="#services" {...heroStagger(0.19)}>SERVICES</motion.a>
+          <motion.a href="#studio" {...heroStagger(0.26)}>ABOUT</motion.a>
         </nav>
-        <a className="nav-contact" href="#contact">
+        <motion.a className="nav-contact" href="#contact" {...heroStagger(0.33)}>
           [ START A PROJECT ]
-        </a>
+        </motion.a>
       </header>
 
       <section
@@ -301,9 +310,9 @@ export default function Home() {
         onPointerLeave={leaveHero}
       >
         <div className="hero-rail shell">
-          <span>CREATIVE WEB STUDIO</span>
-          <span>PUNE / WORLDWIDE</span>
-          <span>IST — {clock}</span>
+          <motion.span {...heroStagger(0.4)}>CREATIVE WEB STUDIO</motion.span>
+          <motion.span {...heroStagger(0.47)}>PUNE / WORLDWIDE</motion.span>
+          <motion.span {...heroStagger(0.54)}>IST — {clock}</motion.span>
         </div>
         {mounted && !loading && (
           <Suspense fallback={null}>
@@ -393,9 +402,9 @@ export default function Home() {
           </span>
         </h1>
         <div className="hero-bottom shell">
-          <span>INK MEDIA</span>
-          <span>CURRENT TIME: {clock} IST</span>
-          <a href="#work">SCROLL TO EXPLORE ↓</a>
+          <motion.span {...heroStagger(0.65, 12)}>INK MEDIA</motion.span>
+          <motion.span {...heroStagger(0.72, 12)}>CURRENT TIME: {clock} IST</motion.span>
+          <motion.a href="#work" {...heroStagger(0.79, 12)}>SCROLL TO EXPLORE ↓</motion.a>
         </div>
       </section>
 

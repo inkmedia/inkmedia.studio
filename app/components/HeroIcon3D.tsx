@@ -28,7 +28,9 @@ function IconModel({ reducedMotion }: { reducedMotion: boolean }) {
   useFrame((state, delta) => {
     if (!group.current || reducedMotion) return;
     const elapsed = state.clock.elapsedTime;
-    const targetScale = 1 + Math.sin(elapsed * .52) * .055;
+    const entranceProgress = Math.min(elapsed / 1.05, 1);
+    const entranceScale = 1 - Math.pow(1 - entranceProgress, 4);
+    const targetScale = entranceScale * (1 + Math.sin(elapsed * .52) * .055);
 
     group.current.rotation.y = -.3 + elapsed * .16;
     group.current.rotation.x = THREE.MathUtils.damp(
@@ -37,9 +39,7 @@ function IconModel({ reducedMotion }: { reducedMotion: boolean }) {
       3,
       delta,
     );
-    group.current.scale.setScalar(
-      THREE.MathUtils.damp(group.current.scale.x, targetScale, 3.5, delta),
-    );
+    group.current.scale.setScalar(targetScale);
   });
 
   return <group ref={group} rotation={[-.08, -.3, 0]}>
@@ -49,7 +49,7 @@ function IconModel({ reducedMotion }: { reducedMotion: boolean }) {
 
 export default function HeroIcon3D({ reducedMotion = false }: { reducedMotion?: boolean }) {
   return <div className="hero-model" style={{ opacity: 0.3 }} aria-hidden="true">
-    <Canvas dpr={[1, 1.35]} camera={{ fov: 32, position: [0, 0, 6] }} gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}>
+    <Canvas dpr={[1, 1.5]} camera={{ fov: 32, position: [0, 0, 6] }} gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}>
       <ambientLight intensity={1.1} />
       <directionalLight position={[4, 5, 6]} intensity={2.2} color="#fff5ee" />
       <directionalLight position={[-4, -2, 2]} intensity={.7} color="#d71920" />

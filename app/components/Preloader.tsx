@@ -167,18 +167,20 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
         color: "#111111",
         isolation: "isolate",
       }}
-      initial={{ opacity: 1 }}
-      animate={leaving ? { opacity: 0, scale: 1.02 } : { opacity: 1, scale: 1 }}
-      transition={{ duration: reducedMotion ? 0.15 : 0.7, ease: [0.76, 0, 0.24, 1] }}
-      onAnimationComplete={() => {
-        if (!leaving) return;
-        document.body.classList.remove("is-loading");
-        onComplete();
-      }}
       aria-label={`Loading Ink Media — ${Math.round(progress * 100)} percent`}
       role="status"
     >
-      <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+      <motion.div
+        style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}
+        initial={{ scale: 1 }}
+        animate={leaving ? { scale: 0.06 } : { scale: 1 }}
+        transition={{ duration: reducedMotion ? 0.15 : 0.72, ease: [0.76, 0, 0.24, 1] }}
+        onAnimationComplete={() => {
+          if (!leaving) return;
+          document.body.classList.remove("is-loading");
+          onComplete();
+        }}
+      >
         <div
           aria-hidden="true"
           style={{
@@ -259,7 +261,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
             </motion.span>
           ))}
         </p>
-      </div>
+      </motion.div>
 
       <div className="preloader-meta">
         <span>INK MEDIA</span>
