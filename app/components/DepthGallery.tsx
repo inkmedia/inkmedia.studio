@@ -3,6 +3,7 @@
 import { Suspense, useMemo, useRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Image, Line } from "@react-three/drei";
+import { AnimatePresence, motion } from "framer-motion";
 import * as THREE from "three";
 
 export type DepthProject = {
@@ -21,7 +22,7 @@ const palette = [
 ] as const;
 
 function DepthTrail({ offset }: { offset: { offset: number } }) {
-  const mobile = useThree((state) => state.size.width < 768);
+  const mobile = useThree((state) => state.size.width < 901);
   const line = useRef<any>(null);
   const particles = useRef<THREE.Group>(null);
   const curve = useMemo(() => {
@@ -84,7 +85,7 @@ type ScrollProgress = { get: () => number };
 
 function DepthScene({ projects, progress, onIndexChange }: { projects: DepthProject[]; progress: ScrollProgress; onIndexChange: (index: number) => void }) {
   const scroll = useRef({ offset: 0, delta: 0 });
-  const mobile = useThree((state) => state.size.width < 768);
+  const mobile = useThree((state) => state.size.width < 901);
   const group = useRef<THREE.Group>(null);
   const lastIndex = useRef(-1);
   const foreground = useMemo(() => palette.map(([color]) => new THREE.Color(color)), []);
@@ -116,9 +117,10 @@ function DepthScene({ projects, progress, onIndexChange }: { projects: DepthProj
         material.transparent = true;
         material.opacity = opacity;
         material.depthWrite = false;
-        const baseX = mobile ? (index % 2 === 0 ? -.5 : .5) : (index % 2 === 0 ? -1.5 : 1.5);
+        const baseX = mobile ? 0 : (index % 2 === 0 ? -1.5 : 1.5);
         mesh.position.x = THREE.MathUtils.lerp(mesh.position.x, baseX + .5 * state.pointer.x, .05);
-        mesh.position.y = THREE.MathUtils.lerp(mesh.position.y, .5 * state.pointer.y, .05);
+        const baseY = mobile ? 1.65 : 0;
+        mesh.position.y = THREE.MathUtils.lerp(mesh.position.y, baseY + .5 * state.pointer.y, .05);
       });
     }
     const index = Math.min(Math.floor(scroll.current.offset * projects.length), projects.length - 1);
@@ -140,8 +142,8 @@ function DepthScene({ projects, progress, onIndexChange }: { projects: DepthProj
       {projects.map((project, index) => <Image
         key={project.name}
         url={project.image}
-        position={[mobile ? (index % 2 === 0 ? -.5 : .5) : (index % 2 === 0 ? -1.5 : 1.5), 0, -5 * (index + 1)]}
-        scale={mobile ? [3, 1.8] : [5.2, 2.9]}
+        position={[mobile ? 0 : (index % 2 === 0 ? -1.5 : 1.5), mobile ? 1.65 : 0, -5 * (index + 1)]}
+        scale={mobile ? [2.75, 1.55] : [5.2, 2.9]}
         transparent
       />)}
     </group>
@@ -160,17 +162,33 @@ export default function DepthGallery({ projects, activeIndex, progress, onIndexC
       <Suspense fallback={null}><DepthScene projects={projects} progress={progress} onIndexChange={onIndexChange} /></Suspense>
     </Canvas>
     <div className="depth-ui" style={{ color: "#ffffff" }}><span>[ DESIGNED ]</span><span>[ BUILT ]</span><span style={{ textAlign: "right" }}>[ DELIVERED ]</span></div>
-    <div className={`depth-info-wrap ${activeIndex % 2 === 1 ? "is-image-right" : "is-image-left"}`}>
-      <div className="depth-info-spacer" />
-      <div className="depth-info" style={{ color: "#ffffff", fontSize: "18px", lineHeight: 1.4 }}>
-        <div className="depth-info-inner" key={active.name} style={{ gap: "32px" }}>
-          <span>Client: {active.name}<br />Project: {active.type.toLowerCase()}<br />Code: {active.code}</span>
-          <span>Category:<br />strategy, interface, and development</span>
-          <span>Studio: Ink Media, Pune / Worldwide</span>
-          <a href={active.website} target="_blank" rel="noopener noreferrer" style={{ alignSelf: "flex-start", pointerEvents: "auto", color: "#f7fbfd", background: "#173f6d", border: "1px solid #173f6d", padding: "12px 18px", fontSize: "14px", letterSpacing: ".04em" }}>[ VISIT WEBSITE ↗ ]</a>
+    <AnimatePresence initial={false} mode="wait">
+      <motion.div
+        className={`depth-info-wrap ${activeIndex % 2 === 1 ? "is-image-right" : "is-image-left"}`}
+        key={active.name}
+        initial={{ opacity: 0, filter: "blur(6px)" }}
+        animate={{
+          opacity: 1,
+          filter: "blur(0px)",
+          transition: { duration: .55, ease: [0.16, 1, 0.3, 1] },
+        }}
+        exit={{
+          opacity: 0,
+          filter: "blur(5px)",
+          transition: { duration: .35, ease: [0.4, 0, 1, 1] },
+        }}
+      >
+        <div className="depth-info-spacer" />
+        <div className="depth-info" style={{ color: "#ffffff", fontSize: "18px", lineHeight: 1.4 }}>
+          <div className="depth-info-inner" style={{ gap: "32px" }}>
+            <span>Client: {active.name}<br />Project: {active.type.toLowerCase()}<br />Code: {active.code}</span>
+            <span>Category:<br />strategy, interface, and development</span>
+            <span>Studio: Ink Media, Pune / Worldwide</span>
+            <a href={active.website} target="_blank" rel="noopener noreferrer" style={{ alignSelf: "flex-start", pointerEvents: "auto", color: "#f7fbfd", background: "#173f6d", border: "1px solid #173f6d", padding: "12px 18px", fontSize: "14px", letterSpacing: ".04em" }}>[ VISIT WEBSITE ↗ ]</a>
+          </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </AnimatePresence>
     <div className="depth-instruction" style={{ color: "#ffffff" }}>Ink Media — selected work</div>
   </div>;
 }
