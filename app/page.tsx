@@ -189,6 +189,7 @@ export default function Home() {
   const [heroHover, setHeroHover] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [mobileHero, setMobileHero] = useState(false);
   const heroTravel = useRef({
     x: 0,
     y: 0,
@@ -199,6 +200,10 @@ export default function Home() {
 
   useEffect(() => {
     setMounted(true);
+    const mobileQuery = window.matchMedia("(max-width: 900px), (pointer: coarse)");
+    const updateMobileHero = () => setMobileHero(mobileQuery.matches);
+    updateMobileHero();
+    mobileQuery.addEventListener("change", updateMobileHero);
     const updateClock = () =>
       setClock(
         new Intl.DateTimeFormat("en-GB", {
@@ -211,8 +216,20 @@ export default function Home() {
       );
     updateClock();
     const timer = window.setInterval(updateClock, 1000);
-    return () => window.clearInterval(timer);
+    return () => {
+      window.clearInterval(timer);
+      mobileQuery.removeEventListener("change", updateMobileHero);
+    };
   }, []);
+
+  useEffect(() => {
+    if (!mobileHero || loading) return;
+    const rotation = window.setInterval(
+      () => setHeroActive((active) => (active + 1) % heroStates.length),
+      1900,
+    );
+    return () => window.clearInterval(rotation);
+  }, [loading, mobileHero]);
 
   const schema = {
     "@context": "https://schema.org",
@@ -329,7 +346,7 @@ export default function Home() {
           style={{ y: heroSmoothY }}
           aria-hidden="true"
         />
-        <motion.div
+        {!mobileHero && <motion.div
           className="hero-follow"
           style={{ x: heroSmoothX, y: heroSmoothY }}
           initial={{ opacity: 0 }}
@@ -366,7 +383,49 @@ export default function Home() {
               </motion.span>
             </AnimatePresence>
           </div>
-        </motion.div>
+        </motion.div>}
+        {mobileHero && (
+          <motion.button
+            type="button"
+            className="hero-mobile-capability"
+            onClick={() => setHeroActive((active) => (active + 1) % heroStates.length)}
+            initial={reduce ? undefined : { opacity: 0, scale: 0.94, y: 12 }}
+            animate={loading ? { opacity: 0, scale: 0.94, y: 12 } : { opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.45, ease }}
+            aria-label={`Current capability: ${heroStates[heroActive].label.replaceAll("[", "").replaceAll("]", "")}. Tap for next.`}
+          >
+            <div
+              className="hero-mobile-image"
+              style={{ position: "relative", width: "100%", aspectRatio: "3.1", overflow: "hidden" }}
+            >
+              <AnimatePresence initial={false}>
+                <motion.img
+                  key={heroActive}
+                  src={heroStates[heroActive].image}
+                  alt=""
+                  width="390"
+                  height="252"
+                  initial={{ opacity: 0, scale: 1.04 }}
+                  animate={{ opacity: 0.78, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.97 }}
+                  transition={{ duration: 0.32, ease }}
+                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              </AnimatePresence>
+            </div>
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span
+                key={heroActive}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.25 }}
+              >
+                {heroStates[heroActive].label}
+              </motion.span>
+            </AnimatePresence>
+          </motion.button>
+        )}
         <p className="sr-only">
           Interactive project preview showing optimised, responsive,
           high-performance, pixel-precise, content, SEO and accessible web

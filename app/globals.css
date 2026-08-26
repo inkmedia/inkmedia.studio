@@ -312,6 +312,9 @@ body.is-loading > .preloader {
   background: var(--paper);
   padding: 2px 5px;
 }
+.hero-mobile-capability {
+  display: none;
+}
 @keyframes heroImageIn {
   from {
     opacity: 0;
@@ -1088,18 +1091,48 @@ form button:hover {
     display: none;
   }
   .hero-follow {
-    left: 50% !important;
-    top: 35% !important;
-    transform: none !important;
-    opacity: 1 !important;
+    display: none;
   }
-  .hero-follow-image {
-    width: 220px;
+  .hero-mobile-capability {
+    position: absolute;
+    z-index: 9;
+    top: 18%;
+    right: 16px;
+    left: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #000;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .hero-mobile-capability > span {
+    margin-top: 7px;
+    padding: 3px 0;
+    background: var(--paper);
+    font-family: var(--font-subheading);
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.04em;
   }
   .hero h1 {
+    top: 72%;
+    right: 16px;
+    bottom: auto;
+    left: 16px;
+    transform: none;
     width: calc(100% - 32px);
-    font-size: 11.5vw;
-    bottom: 84px;
+    font-size: 10.2vw;
+    line-height: 0.86;
+  }
+  .hero-line-middle,
+  .hero-line-last {
+    text-align: left;
   }
   .hero-bottom {
     bottom: 24px;
@@ -1222,7 +1255,12 @@ form button:hover {
     font-size: 12px;
   }
   .hero h1 {
-    font-size: 11.3vw;
+    top: 71%;
+    font-size: 9.8vw;
+  }
+  .hero-mobile-capability {
+    top: 18%;
+    width: auto;
   }
   .hero-spec p:nth-child(2) {
     font-size: 14px;
@@ -1278,6 +1316,27 @@ form button:hover {
   }
   .cursor {
     display: none;
+  }
+}
+@media (max-height: 620px) and (orientation: landscape) {
+  .hero-model {
+    top: 45%;
+    width: 44vw;
+    height: 54vh;
+  }
+  .hero-mobile-capability {
+    top: 63%;
+    right: auto;
+    left: 27%;
+    width: max-content;
+  }
+  .hero h1 {
+    top: auto;
+    bottom: 48px;
+    font-size: 7.1vw;
+  }
+  .hero-bottom {
+    bottom: 12px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1631,9 +1690,9 @@ h3,
 }
 @media (max-width: 900px) {
   .hero-model {
-    top: 43%;
-    width: min(76vw, 520px);
-    height: 46vh;
+    top: 50%;
+    width: min(68vw, 470px);
+    height: 34vh;
     opacity: 0.46;
   }
 }
