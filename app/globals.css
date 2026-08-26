@@ -813,48 +813,141 @@ body.is-loading > .preloader {
   color: #000;
 }
 .studio {
-  padding: 150px 0;
+  position: relative;
+  height: 340vh;
+  background: #e9eef5;
+}
+.studio-sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  padding-block: clamp(80px, 10vh, 120px);
   display: grid;
-  grid-template-columns: 0.45fr 1fr;
-  gap: 8vw;
-}
-.studio-mark {
-  width: 250px;
-  height: 250px;
-  border-radius: 50%;
-  background: #000;
-  display: flex;
-  flex-direction: column;
+  grid-template-columns: minmax(0, 0.82fr) minmax(520px, 1.18fr);
+  gap: clamp(50px, 8vw, 130px);
   align-items: center;
-  justify-content: center;
-  color: #fff;
-  transform: rotate(-7deg);
+  overflow: hidden;
 }
-.studio-mark img {
-  width: 90px;
-  height: 90px;
-  object-fit: contain;
+.studio-copy {
+  align-self: center;
 }
-.studio-mark span {
-  font-size: 9px;
+.studio-copy > span {
+  font-size: 10px;
   letter-spacing: 0.08em;
-  text-align: center;
 }
 .studio-copy h2 {
-  margin-top: 38px;
+  max-width: 620px;
+  margin: 32px 0 0;
+  font-size: clamp(44px, 4.5vw, 74px);
+  line-height: 0.91;
+  letter-spacing: -0.055em;
+  font-weight: 300;
 }
 .studio-copy p {
-  font-size: clamp(21px, 2vw, 32px);
-  max-width: 750px;
-  color: #555;
+  max-width: 510px;
+  margin: 34px 0 0;
+  font-family: var(--font-body);
+  font-size: clamp(16px, 1.25vw, 20px);
+  line-height: 1.45;
+  color: #46505c;
 }
 .studio-copy a {
   display: inline-block;
-  margin-top: 35px;
+  margin-top: 38px;
   font-size: 11px;
   border-bottom: 1px solid;
   padding-bottom: 5px;
   letter-spacing: 0.07em;
+}
+.studio-cards {
+  position: relative;
+  height: 450px;
+}
+.studio-card {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(28px, 3vw, 48px);
+  color: #fff;
+  overflow: hidden;
+  will-change: transform;
+  box-shadow: 0 25px 70px rgba(15, 51, 94, 0.18);
+}
+.studio-card-icon {
+  position: absolute;
+  z-index: 0;
+  top: 26%;
+  right: clamp(28px, 4vw, 64px);
+  width: clamp(96px, 11vw, 170px);
+  height: clamp(96px, 11vw, 170px);
+  color: rgba(255, 255, 255, 0.34);
+  transform-origin: center;
+}
+.studio-card-icon svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.studio-card-1 .studio-card-icon {
+  animation: studioThink 4.6s ease-in-out infinite;
+}
+.studio-card-2 .studio-card-icon {
+  animation: studioDesign 5s ease-in-out infinite;
+}
+.studio-card-3 .studio-card-icon {
+  animation: studioPerform 3.8s ease-in-out infinite;
+}
+@keyframes studioThink {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-9px) rotate(2deg); }
+}
+@keyframes studioDesign {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  35% { transform: translate3d(-7px, 5px, 0) rotate(-4deg); }
+  70% { transform: translate3d(5px, -6px, 0) rotate(3deg); }
+}
+@keyframes studioPerform {
+  0%, 100% { transform: scale(1); opacity: 0.72; }
+  50% { transform: scale(1.07); opacity: 1; }
+}
+.studio-card-1 {
+  z-index: 1;
+  background: #79aee0;
+}
+.studio-card-2 {
+  z-index: 2;
+  background: #337fbd;
+}
+.studio-card-3 {
+  z-index: 3;
+  background: #0b4f8a;
+}
+.studio-card-top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+.studio-card-copy {
+  position: relative;
+  z-index: 1;
+  max-width: 570px;
+}
+.studio-card h3 {
+  margin: 0 0 22px;
+  font-size: clamp(42px, 4.8vw, 78px);
+  line-height: 0.92;
+  letter-spacing: -0.055em;
+  font-weight: 300;
+}
+.studio-card p {
+  max-width: 520px;
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: clamp(16px, 1.35vw, 21px);
+  line-height: 1.45;
 }
 .quote {
   background: var(--blue);
@@ -1200,8 +1293,35 @@ form button:hover {
     margin-top: 100px;
   }
   .studio {
-    grid-template-columns: 1fr;
+    height: auto;
     padding: 100px 0;
+  }
+  .studio-sticky {
+    position: relative;
+    height: auto;
+    padding-block: 0;
+    grid-template-columns: 1fr;
+    gap: 70px;
+    overflow: visible;
+  }
+  .studio-copy h2 {
+    max-width: 720px;
+  }
+  .studio-cards {
+    height: auto;
+    display: grid;
+    gap: 14px;
+  }
+  .studio-card {
+    position: relative;
+    inset: auto;
+    min-height: 430px;
+    transform: none !important;
+  }
+  .studio-card-icon {
+    top: 22%;
+    width: 130px;
+    height: 130px;
   }
   .quote {
     padding-bottom: 100px;
@@ -1298,9 +1418,17 @@ form button:hover {
   .sector-copy p {
     font-size: 35px;
   }
-  .studio-mark {
-    width: 190px;
-    height: 190px;
+  .studio-card {
+    min-height: 360px;
+    padding: 25px;
+  }
+  .studio-card h3 {
+    font-size: 40px;
+  }
+  .studio-card-icon {
+    top: 24%;
+    width: 100px;
+    height: 100px;
   }
   .quote blockquote {
     font-size: 34px;
@@ -1348,6 +1476,28 @@ form button:hover {
   }
   .cursor {
     display: none;
+  }
+  .studio {
+    height: auto;
+    padding: 100px 0;
+  }
+  .studio-sticky {
+    position: relative;
+    height: auto;
+    padding-block: 0;
+  }
+  .studio-cards {
+    height: auto;
+    display: grid;
+    gap: 14px;
+  }
+  .studio-card {
+    position: relative;
+    min-height: 520px;
+    transform: none !important;
+  }
+  .studio-card-icon {
+    animation: none !important;
   }
 }
 @media (min-width: 901px) {
@@ -1697,111 +1847,163 @@ h3,
   }
 }
 
-/* Keep the selected-work depth journey active on touch and smaller screens. */
+.mobile-project-modal-backdrop {
+  position: fixed;
+  z-index: 500;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  overflow-y: auto;
+  background: rgba(8, 8, 8, 0.72);
+  backdrop-filter: blur(10px);
+}
+.mobile-project-modal {
+  position: relative;
+  width: min(100%, 680px);
+  max-height: calc(100svh - 36px);
+  overflow: hidden;
+  background: #f3f3f3;
+  color: #111;
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.35);
+}
+.mobile-project-modal > img {
+  width: 100%;
+  aspect-ratio: 1.55;
+  object-fit: cover;
+}
+.mobile-modal-close {
+  position: absolute;
+  z-index: 2;
+  top: 8px;
+  right: 12px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font-size: 42px;
+  line-height: 1;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.65);
+  cursor: pointer;
+}
+.mobile-modal-copy {
+  padding: 28px 24px 26px;
+}
+.mobile-modal-copy > span,
+.mobile-modal-copy > p,
+.mobile-modal-meta {
+  font-size: 10px;
+  letter-spacing: 0.05em;
+}
+.mobile-modal-copy h3 {
+  margin: 16px 0 20px;
+  font-size: clamp(38px, 10vw, 68px);
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+  font-weight: 300;
+}
+.mobile-modal-copy > p {
+  color: #555;
+}
+.mobile-modal-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  margin-top: 46px;
+  line-height: 1.4;
+}
+.mobile-modal-meta a {
+  white-space: nowrap;
+}
+.mobile-modal-nav {
+  display: flex;
+  justify-content: flex-end;
+  gap: 18px;
+  padding: 0 24px 22px;
+}
+.mobile-modal-nav button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: 36px;
+  font-weight: 300;
+  cursor: pointer;
+}
+
 @media (max-width: 900px) {
-  .depth-work:not(.is-reduced) {
-    height: 400vh;
+  .mobile-projects {
+    padding-block: 90px;
   }
-  .depth-work:not(.is-reduced) .depth-stage {
-    position: sticky;
-    top: 0;
-    display: block;
-    height: 100svh;
-    background: #044aa3;
-    isolation: isolate;
+  .mobile-work-head h2 {
+    margin-bottom: 58px;
   }
-  .depth-work:not(.is-reduced) .mobile-projects {
-    display: none;
-  }
-  .depth-stage > canvas {
-    position: absolute !important;
-    inset: 0;
-    z-index: 0;
-  }
-  .depth-ui {
-    left: 0;
-    top: 0;
-    transform: none;
-    width: 100%;
-    padding: 18px 16px;
+  .mobile-project-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    z-index: 10;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 54px 14px;
   }
-  .depth-ui span:nth-child(2) {
-    text-align: center;
-  }
-  .depth-info-wrap {
-    position: absolute;
-    z-index: 10;
-    top: 64%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: min(88%, 430px);
-    padding: 0;
-    display: block;
-    pointer-events: none;
-  }
-  .depth-info-wrap.is-image-right {
-    flex-direction: initial;
-  }
-  .depth-info-spacer {
-    display: none;
-  }
-  .depth-info,
-  .depth-info-wrap.is-image-right .depth-info {
-    position: static;
+  .mobile-project {
     width: 100%;
-    padding: 0;
-    color: #fff;
-    text-align: center;
-    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.55);
-  }
-  .depth-info-inner {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    gap: 14px !important;
-  }
-  .depth-info span {
-    display: block;
-    max-width: none;
     margin: 0;
     padding: 0;
     border: 0;
-    font-size: 11px;
-    line-height: 1.4;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
   }
-  .depth-info-inner a {
-    align-self: center !important;
-    padding: 9px 10px !important;
-    font-size: 10px !important;
+  .mobile-project > img {
+    aspect-ratio: 1.42;
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), filter 0.45s;
   }
-  .depth-instruction {
-    left: 16px;
-    bottom: 18px;
-    z-index: 10;
+  .mobile-project:active > img {
+    transform: scale(0.975);
+    filter: brightness(0.82);
+  }
+  .mobile-project > div {
+    margin-top: 10px;
+    padding-top: 0;
+    border: 0;
+  }
+  .mobile-project h3 {
+    margin: 0;
+    font-size: clamp(19px, 4.2vw, 30px);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .mobile-project span,
+  .mobile-project p {
+    display: none;
   }
 }
 
 @media (max-width: 560px) {
-  .depth-ui {
-    font-size: 8px;
+  .mobile-projects {
+    padding-block: 72px;
   }
-  .depth-info-wrap {
-    top: 62%;
-    width: min(90%, 360px);
+  .mobile-work-head h2 {
+    margin-top: 28px;
+    margin-bottom: 46px;
   }
-  .depth-info-inner {
-    gap: 12px !important;
+  .mobile-project-grid {
+    gap: 38px 10px;
   }
-  .depth-info span {
-    font-size: 9px;
-    line-height: 1.3;
+  .mobile-project h3 {
+    font-size: 17px;
   }
-  .depth-info-inner a {
-    padding: 7px 9px !important;
-    font-size: 9px !important;
+  .mobile-project-modal-backdrop {
+    padding: 10px;
+  }
+  .mobile-project-modal {
+    max-height: calc(100svh - 20px);
+  }
+  .mobile-modal-copy {
+    padding: 22px 18px 20px;
+  }
+  .mobile-modal-meta {
+    margin-top: 34px;
+  }
+  .mobile-modal-nav {
+    padding: 0 18px 16px;
   }
 }

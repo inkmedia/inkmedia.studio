@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useMemo, useRef } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Image, Line } from "@react-three/drei";
 import { AnimatePresence, motion } from "framer-motion";
@@ -22,7 +22,7 @@ const palette = [
 ] as const;
 
 function DepthTrail({ offset }: { offset: { offset: number } }) {
-  const mobile = useThree((state) => state.size.width < 901);
+  const mobile = useThree((state) => state.size.width < 768);
   const line = useRef<any>(null);
   const particles = useRef<THREE.Group>(null);
   const curve = useMemo(() => {
@@ -37,6 +37,8 @@ function DepthTrail({ offset }: { offset: { offset: number } }) {
     ], false, "centripetal");
   }, [mobile]);
   const initialPoints = useMemo(() => Array.from({ length: 61 }, () => new THREE.Vector3(0, -.8, .5)), []);
+  const trailPoints = useMemo(() => Array.from({ length: 61 }, () => new THREE.Vector3()), []);
+  const trailPositions = useMemo(() => new Float32Array(61 * 3), []);
   const offsets = useMemo(() => Array.from({ length: 7 }, (_, index) => new THREE.Vector3(
     Math.sin(index * 2.1) * .18,
     Math.cos(index * 1.7) * .18,
@@ -51,13 +53,19 @@ function DepthTrail({ offset }: { offset: { offset: number } }) {
     let start = value + .03;
     const end = Math.min(1, start + length);
     if (end >= 1) start = Math.max(0, 1 - length);
-    const points = Array.from({ length: 61 }, (_, index) => curve.getPointAt(start + (index / 60) * (end - start)));
+    for (let index = 0; index < 61; index += 1) {
+      const point = curve.getPointAt(start + (index / 60) * (end - start), trailPoints[index]);
+      const positionIndex = index * 3;
+      trailPositions[positionIndex] = point.x;
+      trailPositions[positionIndex + 1] = point.y;
+      trailPositions[positionIndex + 2] = point.z;
+    }
     if (line.current?.geometry) {
-      line.current.geometry.setPositions(points.flatMap((point) => [point.x, point.y, point.z]));
+      line.current.geometry.setPositions(trailPositions);
       line.current.computeLineDistances?.();
       line.current.material.linewidth = 8 - 7 * value;
     }
-    const tip = points[60];
+    const tip = trailPoints[60];
     particles.current?.children.forEach((particle, index) => {
       const phase = index * .91;
       const pulse = .5 + .5 * Math.sin(state.clock.elapsedTime * 12 + phase);
@@ -85,13 +93,15 @@ type ScrollProgress = { get: () => number };
 
 function DepthScene({ projects, progress, onIndexChange }: { projects: DepthProject[]; progress: ScrollProgress; onIndexChange: (index: number) => void }) {
   const scroll = useRef({ offset: 0, delta: 0 });
-  const mobile = useThree((state) => state.size.width < 901);
+  const mobile = useThree((state) => state.size.width < 768);
   const group = useRef<THREE.Group>(null);
   const lastIndex = useRef(-1);
   const foreground = useMemo(() => palette.map(([color]) => new THREE.Color(color)), []);
   const background = useMemo(() => palette.map(([, color]) => new THREE.Color(color)), []);
   const mixedForeground = useMemo(() => new THREE.Color(), []);
   const mixedBackground = useMemo(() => new THREE.Color(), []);
+  const backgroundFrame = useRef(0);
+  const lastBackground = useRef("");
 
   useFrame((state, frameDelta) => {
     const previous = scroll.current.offset;
@@ -133,7 +143,14 @@ function DepthScene({ projects, progress, onIndexChange }: { projects: DepthProj
     const mix = scaled - from;
     mixedForeground.copy(foreground[from]).lerp(foreground[from + 1], mix);
     mixedBackground.copy(background[from]).lerp(background[from + 1], mix);
-    state.gl.domElement.style.background = `radial-gradient(circle, #${mixedForeground.getHexString()} 0%, #${mixedBackground.getHexString()} 100%)`;
+    backgroundFrame.current += 1;
+    if (backgroundFrame.current % 6 === 0) {
+      const background = `radial-gradient(circle, #${mixedForeground.getHexString()} 0%, #${mixedBackground.getHexString()} 100%)`;
+      if (background !== lastBackground.current) {
+        state.gl.domElement.style.background = background;
+        lastBackground.current = background;
+      }
+    }
   });
 
   return <>
@@ -156,9 +173,23 @@ export default function DepthGallery({ projects, activeIndex, progress, onIndexC
   progress: ScrollProgress;
   onIndexChange: (index: number) => void;
 }) {
+  const stageRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
   const active = projects[activeIndex] ?? projects[0];
-  return <div className="depth-stage">
-    <Canvas dpr={[1, 1.5]} camera={{ fov: 75, position: [0, 0, .5] }} gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}>
+
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (!stage) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { rootMargin: "150px 0px" },
+    );
+    observer.observe(stage);
+    return () => observer.disconnect();
+  }, []);
+
+  return <div className="depth-stage" ref={stageRef}>
+    <Canvas frameloop={isVisible ? "always" : "never"} dpr={[1, 1.35]} camera={{ fov: 75, position: [0, 0, .5] }} gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}>
       <Suspense fallback={null}><DepthScene projects={projects} progress={progress} onIndexChange={onIndexChange} /></Suspense>
     </Canvas>
     <div className="depth-ui" style={{ color: "#ffffff" }}><span>[ DESIGNED ]</span><span>[ BUILT ]</span><span style={{ textAlign: "right" }}>[ DELIVERED ]</span></div>

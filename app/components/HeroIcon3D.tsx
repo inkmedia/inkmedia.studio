@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Bounds, Center, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
@@ -48,8 +48,22 @@ function IconModel({ reducedMotion }: { reducedMotion: boolean }) {
 }
 
 export default function HeroIcon3D({ reducedMotion = false }: { reducedMotion?: boolean }) {
-  return <div className="hero-model" style={{ opacity: 0.3 }} aria-hidden="true">
-    <Canvas dpr={[1, 1.5]} camera={{ fov: 32, position: [0, 0, 6] }} gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}>
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { rootMargin: "100px 0px" },
+    );
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
+
+  return <div ref={containerRef} className="hero-model" style={{ opacity: 0.3 }} aria-hidden="true">
+    <Canvas frameloop={isVisible && !reducedMotion ? "always" : "demand"} dpr={[1, 1.35]} camera={{ fov: 32, position: [0, 0, 6] }} gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}>
       <ambientLight intensity={1.1} />
       <directionalLight position={[4, 5, 6]} intensity={2.2} color="#fff5ee" />
       <directionalLight position={[-4, -2, 2]} intensity={.7} color="#d71920" />
