@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, lazy, Suspense, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import {
   AnimatePresence,
   motion,
@@ -12,6 +12,7 @@ import {
 } from "framer-motion";
 import { BrainCircuit, Gauge, PenTool } from "lucide-react";
 import Preloader from "./components/Preloader";
+import { SiteFooter, SiteHeader } from "./components/SiteChrome";
 
 const DepthGallery = lazy(() => import("./components/DepthGallery"));
 const HeroIcon3D = lazy(() => import("./components/HeroIcon3D"));
@@ -78,6 +79,16 @@ const chapters = [
   ],
 ];
 
+const testimonials = Array.from({ length: 3 }, (_, index) => ({
+  id: index + 1,
+  label: index === 0 ? "KIARA LIFESPACES" : `CLIENT ${index + 1}`,
+  quote:
+    "INK MEDIA IS ALWAYS RESPONSIVE, AVAILABLE AND VERY EASY TO WORK WITH. DISCUSSING IDEAS AND PLANNING WITH THEM IS ENJOYABLE.",
+  name: "ALPANA KIRLOSKAR",
+  company: "KIARA LIFESPACES",
+  image: "/alpana-kirloskar.jpg",
+}));
+
 const ease = [0.16, 1, 0.3, 1] as const;
 
 const heroStates = [
@@ -90,8 +101,58 @@ const heroStates = [
   { label: "[ ACCESSIBLE ]", image: "/work/house-of-memories.jpg" },
 ];
 
+const insights = [
+  {
+    number: "01",
+    date: "JAN 31, 2026",
+    readTime: "4 MIN READ",
+    title: "DOES YOUR COMPANY NEED DIGITAL MARKETING?",
+    excerpt:
+      "A practical look at when digital marketing becomes essential—and how it helps businesses stay visible, relevant and competitive.",
+    image: "/blogs/company-needs-digital-marketing.jpg",
+    href: "https://inkmedia.in/blogs/does-your-company-need-digital-marketing/",
+  },
+  {
+    number: "02",
+    date: "JAN 30, 2026",
+    readTime: "4 MIN READ",
+    title: "PERFORMANCE MARKETING FOR LEAD GENERATION",
+    excerpt:
+      "A clear framework for turning Google and Meta campaigns into a measurable, repeatable lead-generation system.",
+    image: "/blogs/performance-marketing-leads.jpg",
+    href: "https://inkmedia.in/blogs/performance-marketing-for-lead-generation/",
+  },
+  {
+    number: "03",
+    date: "JAN 30, 2026",
+    readTime: "5 MIN READ",
+    title: "LOCAL SEO FOR SMALL BUSINESSES",
+    excerpt:
+      "A practical guide to improving local visibility, reaching nearby customers and turning high-intent searches into business.",
+    image: "/blogs/local-seo-small-businesses.jpg",
+    href: "https://inkmedia.in/blogs/local-seo-for-small-businesses/",
+  },
+];
+
 function Arrow() {
   return <span aria-hidden="true">↗</span>;
+}
+
+function TextSwap({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <span className={`text-swap ${className}`}>
+      <span className="text-swap-line">{children}</span>
+      <span className="text-swap-line" aria-hidden="true">
+        {children}
+      </span>
+    </span>
+  );
 }
 
 function Reveal({
@@ -114,6 +175,111 @@ function Reveal({
     >
       {children}
     </motion.div>
+  );
+}
+
+function TestimonialSlider() {
+  const [active, setActive] = useState(0);
+  const reduce = useReducedMotion();
+
+  useEffect(() => {
+    if (reduce) return;
+    const timer = window.setInterval(
+      () => setActive((current) => (current + 1) % testimonials.length),
+      6000,
+    );
+    return () => window.clearInterval(timer);
+  }, [reduce]);
+
+  const testimonial = testimonials[active];
+
+  return (
+    <section
+      className="quote"
+      aria-roledescription="carousel"
+      aria-label="Client testimonials"
+    >
+      <div className="quote-label shell">
+        <span>[ CLIENT PERSPECTIVE ]</span>
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.span
+            key={testimonial.label}
+            initial={reduce ? false : { opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={reduce ? { opacity: 0 } : { opacity: 0, y: -8 }}
+            transition={{ duration: 0.35, ease }}
+          >
+            {testimonial.label}
+          </motion.span>
+        </AnimatePresence>
+      </div>
+      <div className="quote-inner shell" aria-live="polite">
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            className="quote-slide"
+            key={active}
+            initial={reduce ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={reduce ? { opacity: 0 } : { opacity: 0, y: -18 }}
+            transition={{ duration: reduce ? 0.2 : 0.55, ease }}
+          >
+            <blockquote>
+              <span className="sr-only">“{testimonial.quote}”</span>
+              <span className="quote-words" aria-hidden="true">
+                {testimonial.quote.split(" ").map((word, index) => (
+                  <motion.span
+                    className="quote-word"
+                    key={`${word}-${index}`}
+                    initial={reduce ? false : { opacity: 0, y: "0.65em" }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.65,
+                      delay: reduce ? 0 : Math.min(index * 0.025, 0.75),
+                      ease,
+                    }}
+                  >
+                    {word}
+                  </motion.span>
+                ))}
+              </span>
+            </blockquote>
+            <motion.div
+              className="quote-credit"
+              initial={reduce ? false : { opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: reduce ? 0 : 0.5, ease }}
+            >
+              <img
+                src={testimonial.image}
+                alt={testimonial.name}
+                width="285"
+                height="230"
+                loading="lazy"
+              />
+              <p>
+                {testimonial.name}
+                <br />
+                <span>{testimonial.company}</span>
+              </p>
+            </motion.div>
+          </motion.div>
+        </AnimatePresence>
+        <div className="quote-controls" aria-label="Choose testimonial">
+          {testimonials.map((item, index) => (
+            <button
+              type="button"
+              className={`swap-trigger ${index === active ? "is-active" : ""}`}
+              onClick={() => setActive(index)}
+              aria-label={`Show testimonial ${index + 1}`}
+              aria-current={index === active ? "true" : undefined}
+              key={item.id}
+            >
+              <TextSwap>{String(index + 1).padStart(2, "0")}</TextSwap>
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -159,10 +325,12 @@ function AboutStudio() {
             with incredible clients to deliver impactful results and create
             compelling websites that resonate.
           </p>
-          <a href="#contact">[ MEET YOUR DIGITAL TEAM ↗ ]</a>
+          <a className="section-cta swap-trigger" href="#contact">
+            <TextSwap>[ MEET YOUR DIGITAL TEAM ↗ ]</TextSwap>
+          </a>
         </div>
         <div className="studio-cards" aria-label="How Ink Media works">
-          {studioPoints.map((point, index) => (
+          {studioPoints.map((point, index) =>
             (() => {
               const StudioIcon = studioIcons[index];
               return (
@@ -184,8 +352,8 @@ function AboutStudio() {
                   </div>
                 </motion.article>
               );
-            })()
-          ))}
+            })(),
+          )}
         </div>
       </div>
     </section>
@@ -220,7 +388,8 @@ function DepthWork() {
     };
   }, [mobileProject]);
 
-  const selectedProject = mobileProject === null ? null : projects[mobileProject];
+  const selectedProject =
+    mobileProject === null ? null : projects[mobileProject];
 
   return (
     <section
@@ -250,28 +419,30 @@ function DepthWork() {
           </h2>
         </div>
         <div className="mobile-project-grid">
-        {projects.map((project, index) => (
-          <button
-            className="mobile-project"
-            type="button"
-            key={project.name}
-            onClick={() => setMobileProject(index)}
-            aria-label={`View ${project.name} project details`}
-          >
-            <img
-              src={project.image}
-              alt={`${project.name} website project by Ink Media`}
-              width="1920"
-              height="1080"
-              loading="lazy"
-            />
-            <div>
-              <span>{project.code}</span>
-              <h3>{project.name}</h3>
-              <p>{project.type}</p>
-            </div>
-          </button>
-        ))}
+          {projects.map((project, index) => (
+            <button
+              className="mobile-project swap-trigger"
+              type="button"
+              key={project.name}
+              onClick={() => setMobileProject(index)}
+              aria-label={`View ${project.name} project details`}
+            >
+              <img
+                src={project.image}
+                alt={`${project.name} website project by Ink Media`}
+                width="1920"
+                height="1080"
+                loading="lazy"
+              />
+              <div>
+                <span>{project.code}</span>
+                <h3>
+                  <TextSwap>{project.name}</TextSwap>
+                </h3>
+                <p>{project.type}</p>
+              </div>
+            </button>
+          ))}
         </div>
       </div>
       <AnimatePresence>
@@ -288,26 +459,67 @@ function DepthWork() {
               role="dialog"
               aria-modal="true"
               aria-label={`${selectedProject.name} project details`}
-              initial={{ opacity: 0, y: 32, scale: .98 }}
+              initial={{ opacity: 0, y: 32, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 20, scale: .98 }}
-              transition={{ duration: .42, ease }}
+              exit={{ opacity: 0, y: 20, scale: 0.98 }}
+              transition={{ duration: 0.42, ease }}
               onClick={(event) => event.stopPropagation()}
             >
-              <button className="mobile-modal-close" type="button" onClick={() => setMobileProject(null)} aria-label="Close project details">×</button>
-              <img src={selectedProject.image} alt={`${selectedProject.name} website project`} />
+              <button
+                className="mobile-modal-close"
+                type="button"
+                onClick={() => setMobileProject(null)}
+                aria-label="Close project details"
+              >
+                ×
+              </button>
+              <img
+                src={selectedProject.image}
+                alt={`${selectedProject.name} website project`}
+              />
               <div className="mobile-modal-copy">
                 <span>{selectedProject.code} / SELECTED WORK</span>
                 <h3>{selectedProject.name}</h3>
                 <p>{selectedProject.type}</p>
                 <div className="mobile-modal-meta">
-                  <span>STRATEGY, INTERFACE,<br />AND DEVELOPMENT</span>
-                  <a href={selectedProject.website} target="_blank" rel="noopener noreferrer">VISIT WEBSITE <Arrow /></a>
+                  <span>
+                    STRATEGY, INTERFACE,
+                    <br />
+                    AND DEVELOPMENT
+                  </span>
+                  <a
+                    className="swap-trigger"
+                    href={selectedProject.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <TextSwap>
+                      VISIT WEBSITE <Arrow />
+                    </TextSwap>
+                  </a>
                 </div>
               </div>
               <div className="mobile-modal-nav">
-                <button type="button" onClick={() => setMobileProject((mobileProject - 1 + projects.length) % projects.length)} aria-label="Previous project">←</button>
-                <button type="button" onClick={() => setMobileProject((mobileProject + 1) % projects.length)} aria-label="Next project">→</button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setMobileProject(
+                      (mobileProject - 1 + projects.length) % projects.length,
+                    )
+                  }
+                  aria-label="Previous project"
+                >
+                  ←
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setMobileProject((mobileProject + 1) % projects.length)
+                  }
+                  aria-label="Next project"
+                >
+                  →
+                </button>
               </div>
             </motion.article>
           </motion.div>
@@ -324,7 +536,6 @@ export default function Home() {
   const heroSmoothX = useSpring(heroX, { stiffness: 260, damping: 30 });
   const heroSmoothY = useSpring(heroY, { stiffness: 260, damping: 30 });
   const [clock, setClock] = useState("—");
-  const [sent, setSent] = useState(false);
   const [heroActive, setHeroActive] = useState(2);
   const [heroHover, setHeroHover] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -386,10 +597,6 @@ export default function Home() {
     ],
   };
 
-  function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setSent(true);
-  }
 
   function moveHero(event: React.PointerEvent<HTMLElement>) {
     const bounds = event.currentTarget.getBoundingClientRect();
@@ -446,34 +653,8 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
-      <header className="nav shell" onPointerEnter={leaveHero}>
-        <motion.a
-          className="wordmark"
-          href="#top"
-          aria-label="Ink Media home"
-          {...heroStagger(0.05)}
-        >
-          <img src="/ink-logo.png" alt="Ink Media" width="3375" height="3375" />
-        </motion.a>
-        <nav aria-label="Primary navigation">
-          <motion.a href="#work" {...heroStagger(0.12)}>
-            WORK
-          </motion.a>
-          <motion.a href="#services" {...heroStagger(0.19)}>
-            SERVICES
-          </motion.a>
-          <motion.a href="#studio" {...heroStagger(0.26)}>
-            ABOUT
-          </motion.a>
-        </nav>
-        <motion.a
-          className="nav-contact"
-          href="#contact"
-          {...heroStagger(0.33)}
-        >
-          [ START A PROJECT ]
-        </motion.a>
-      </header>
+      <div className="site-page">
+      <SiteHeader loading={loading} />
 
       <section
         id="top"
@@ -646,8 +827,12 @@ export default function Home() {
           <motion.span {...heroStagger(0.72, 12)}>
             CURRENT TIME: {clock} IST
           </motion.span>
-          <motion.a href="#work" {...heroStagger(0.79, 12)}>
-            SCROLL TO EXPLORE ↓
+          <motion.a
+            className="swap-trigger"
+            href="#work"
+            {...heroStagger(0.79, 12)}
+          >
+            <TextSwap>SCROLL TO EXPLORE ↓</TextSwap>
           </motion.a>
         </div>
       </section>
@@ -716,9 +901,11 @@ export default function Home() {
         </div>
         <div className="service-list shell">
           {capabilities.map(([no, title, detail]) => (
-            <a className="service" href="#contact" key={no}>
+            <a className="service swap-trigger" href="#contact" key={no}>
               <span>[ {no} ]</span>
-              <h3>{title}</h3>
+              <h3>
+                <TextSwap>{title}</TextSwap>
+              </h3>
               <p>{detail}</p>
               <i>↗</i>
             </a>
@@ -728,178 +915,74 @@ export default function Home() {
 
       <AboutStudio />
 
-      {/* <section className="quote">
-        <div className="quote-label shell">
-          <span>[ CLIENT PERSPECTIVE ]</span>
-          <span>KIARA LIFESPACES</span>
-        </div>
-        <Reveal className="quote-inner shell">
-          <blockquote>
-            “INK MEDIA IS ALWAYS RESPONSIVE, AVAILABLE AND VERY EASY TO WORK
-            WITH. DISCUSSING IDEAS AND PLANNING WITH THEM IS ENJOYABLE.”
-          </blockquote>
-          <div>
-            <img
-              src="/alpana-kirloskar.jpg"
-              alt="Alpana Kirloskar"
-              width="285"
-              height="230"
-              loading="lazy"
-            />
-            <p>
-              ALPANA KIRLOSKAR
-              <br />
-              <span>KIARA LIFESPACES</span>
-            </p>
-          </div>
-        </Reveal>
-      </section> */}
+      <TestimonialSlider />
 
-      {/* <section className="insights shell">
-        <div className="insights-head">
+      <section className="insights shell">
+        <motion.div
+          className="insights-head"
+          initial={reduce ? undefined : { opacity: 0, y: -12 }}
+          whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-10%" }}
+          transition={{ duration: 0.65, ease }}
+        >
           <span>[ IDEAS / OBSERVATIONS ]</span>
-          <h2>
-            BUILDING DIGITAL.
-            <br />
-            THINKING BEYOND.
-          </h2>
-        </div>
+          <div className="insights-title-row">
+            <h2>
+              BUILDING DIGITAL.
+              <br />
+              THINKING BEYOND.
+            </h2>
+            <motion.a
+              className="section-cta swap-trigger insights-cta"
+              href="https://inkmedia.in/blogs/"
+              target="_blank"
+              rel="noreferrer"
+              initial={reduce ? undefined : { opacity: 0, y: -12 }}
+              whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-8%" }}
+              transition={{ duration: 0.65, delay: 0.16, ease }}
+            >
+              <TextSwap>[ EXPLORE MORE BLOGS ↗ ]</TextSwap>
+            </motion.a>
+          </div>
+        </motion.div>
         <div className="article-list">
-          <a href="https://inkmedia.in/blogs/the-future-of-digital-marketing/">
-            <span>01 / PERSPECTIVE</span>
-            <h3>THE FUTURE OF DIGITAL MARKETING</h3>
-            <p>
-              Explore the latest trends shaping the digital marketing
-              landscape...
-            </p>
-            <i>↗</i>
-          </a>
-          <a href="https://inkmedia.in/blogs/ai-in-web-development/">
-            <span>02 / TECHNOLOGY</span>
-            <h3>AI IN WEB DEVELOPMENT</h3>
-            <p>
-              How AI is revolutionizing web development and user experience...
-            </p>
-            <i>↗</i>
-          </a>
+          {insights.map((article, index) => (
+            <motion.a
+              className="swap-trigger"
+              href={article.href}
+              key={article.href}
+              target="_blank"
+              rel="noreferrer"
+              initial={reduce ? undefined : { opacity: 0, y: -12 }}
+              whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-8%" }}
+              transition={{ duration: 0.65, delay: 0.12 + index * 0.09, ease }}
+            >
+              <div className="article-image">
+                <img src={article.image} alt="" width="1200" height="675" />
+                <span className="article-number">[ {article.number} ]</span>
+              </div>
+              <div className="article-copy">
+                <div className="article-meta">
+                  <span>{article.date}</span>
+                  <span>{article.readTime}</span>
+                </div>
+                <h3>
+                  <TextSwap>{article.title}</TextSwap>
+                </h3>
+                <p>{article.excerpt}</p>
+                <span className="article-link">
+                  <TextSwap>READ ARTICLE</TextSwap> <i>↗</i>
+                </span>
+              </div>
+            </motion.a>
+          ))}
         </div>
-      </section> */}
+      </section>
 
-      {/* <section id="contact" className="contact">
-        <div className="contact-title shell">
-          <span>[ START A PROJECT ]</span>
-          <h2>
-            YOU’VE BUILT A BRAND
-            <br />
-            WORTH REMEMBERING.
-            <br />
-            <b>LET’S BUILD ITS HOME.</b>
-          </h2>
-        </div>
-        <div className="contact-grid shell">
-          <div className="contact-direct">
-            <span>[ DIRECT CONTACT ]</span>
-            <a href="mailto:contact@inkmedia.in">CONTACT@INKMEDIA.IN ↗</a>
-            <a href="tel:+919158310192">+91 91583 10192</a>
-            <p>
-              <i /> TAKING ON SELECT PROJECTS
-            </p>
-          </div>
-          <form onSubmit={submit} aria-label="Start a project enquiry">
-            <div className="form-row">
-              <input
-                required
-                name="name"
-                autoComplete="name"
-                placeholder="Your name"
-                aria-label="Your name"
-              />
-              <input
-                required
-                name="company"
-                autoComplete="organization"
-                placeholder="Company"
-                aria-label="Company"
-              />
-            </div>
-            <div className="form-row">
-              <input
-                required
-                type="email"
-                name="email"
-                autoComplete="email"
-                placeholder="Email address"
-                aria-label="Email address"
-              />
-              <input
-                name="country"
-                autoComplete="country-name"
-                placeholder="Country"
-                aria-label="Country"
-              />
-            </div>
-            <div className="form-row">
-              <select
-                name="projectType"
-                defaultValue=""
-                aria-label="Project type"
-              >
-                <option value="" disabled>
-                  Select project type
-                </option>
-                <option>New website</option>
-                <option>Website redesign</option>
-                <option>UX/UI design</option>
-                <option>Development partner</option>
-                <option>SEO & optimisation</option>
-              </select>
-              <select
-                name="budget"
-                defaultValue=""
-                aria-label="Estimated budget"
-              >
-                <option value="" disabled>
-                  Select budget
-                </option>
-                <option>₹2L – ₹5L</option>
-                <option>₹5L – ₹10L</option>
-                <option>₹10L+</option>
-                <option>Let’s discuss</option>
-              </select>
-            </div>
-            <textarea
-              required
-              name="summary"
-              rows={3}
-              placeholder="Tell us about your project"
-              aria-label="Tell us about your project"
-            />
-            <button type="submit">
-              {sent
-                ? "[ THANK YOU — WE’LL BE IN TOUCH ]"
-                : "[ SEND PROJECT ENQUIRY ↗ ]"}
-            </button>
-          </form>
-        </div>
-        <footer className="footer shell">
-          <a className="wordmark" href="#top" aria-label="Back to top">
-            <img
-              src="/ink-logo.png"
-              alt="Ink Media"
-              width="3375"
-              height="3375"
-            />
-          </a>
-          <div>
-            <a href="https://www.linkedin.com/company/ink-media-digital/">
-              LINKEDIN
-            </a>
-            <a href="https://www.instagram.com/inkdigitalmedia/">INSTAGRAM</a>
-          </div>
-          <span>© 2026 INK MEDIA</span>
-          <a href="#top">BACK TO TOP ↑</a>
-        </footer>
-      </section> */}
+      </div>
+      <SiteFooter />
     </main>
   );
 }

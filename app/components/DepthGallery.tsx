@@ -215,7 +215,12 @@ export default function DepthGallery({ projects, activeIndex, progress, onIndexC
             <span>Client: {active.name}<br />Project: {active.type.toLowerCase()}<br />Code: {active.code}</span>
             <span>Category:<br />strategy, interface, and development</span>
             <span>Studio: Ink Media, Pune / Worldwide</span>
-            <a href={active.website} target="_blank" rel="noopener noreferrer" style={{ alignSelf: "flex-start", pointerEvents: "auto", color: "#f7fbfd", background: "#173f6d", border: "1px solid #173f6d", padding: "12px 18px", fontSize: "14px", letterSpacing: ".04em" }}>[ VISIT WEBSITE ↗ ]</a>
+            <a className="swap-trigger" href={active.website} target="_blank" rel="noopener noreferrer" style={{ alignSelf: "flex-start", pointerEvents: "auto", color: "#f7fbfd", background: "#173f6d", border: "1px solid #173f6d", padding: "12px 18px", fontSize: "14px", letterSpacing: ".04em" }}>
+              <span className="text-swap">
+                <span className="text-swap-line">[ VISIT WEBSITE ↗ ]</span>
+                <span className="text-swap-line" aria-hidden="true">[ VISIT WEBSITE ↗ ]</span>
+              </span>
+            </a>
           </div>
         </div>
       </motion.div>
