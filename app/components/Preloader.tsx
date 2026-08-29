@@ -60,6 +60,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
     let displayedProgress = 0;
     let targetProgress = 0;
     let previousTime = performance.now();
+    const animationStartTime = previousTime;
 
     const waitForWindow = new Promise<void>((resolve) => {
       if (document.readyState === "complete") resolve();
@@ -92,7 +93,6 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
       loadImage("/work/kiara.webp"),
       import("./HeroIcon3D"),
       import("./DepthGallery"),
-      new Promise((resolve) => window.setTimeout(resolve, reducedMotion ? 450 : 1800)),
     ];
 
     let settled = 0;
@@ -108,8 +108,14 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
     const tick = (now: number) => {
       const delta = Math.min((now - previousTime) / 1000, 0.1);
       previousTime = now;
-      const smoothing = 1 - Math.exp(-delta * (targetProgress === 1 ? 3.2 : 1.35));
+      const smoothing = 1 - Math.exp(-delta * (targetProgress === 1 ? 7 : 1.35));
       displayedProgress += (targetProgress - displayedProgress) * smoothing;
+
+      if (!reducedMotion) {
+        const fillTime = Math.min(1, (now - animationStartTime) / 2500);
+        const fillEnvelope = fillTime * fillTime * (3 - 2 * fillTime);
+        displayedProgress = Math.min(displayedProgress, fillEnvelope);
+      }
 
       if (targetProgress === 1 && displayedProgress > 0.998 && !finished) {
         finished = true;
@@ -117,7 +123,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
         setProgress(1);
         exitTimer.current = window.setTimeout(
           () => setLeaving(true),
-          reducedMotion ? 100 : 700,
+          100,
         );
       } else {
         setProgress(displayedProgress);
@@ -174,7 +180,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
         style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}
         initial={{ scale: 1 }}
         animate={leaving ? { scale: 0.06 } : { scale: 1 }}
-        transition={{ duration: reducedMotion ? 0.15 : 0.72, ease: [0.76, 0, 0.24, 1] }}
+        transition={{ duration: reducedMotion ? 0.15 : 0.3, ease: [0.76, 0, 0.24, 1] }}
         onAnimationComplete={() => {
           if (!leaving) return;
           document.body.classList.remove("is-loading");
