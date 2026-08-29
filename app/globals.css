@@ -105,26 +105,53 @@ a {
   text-decoration: none;
 }
 .text-swap {
-  display: inline-grid;
+  display: inline-flex;
   max-width: 100%;
-  overflow: hidden;
   vertical-align: bottom;
+}
+.text-swap-character {
+  display: inline-grid;
+  overflow: hidden;
 }
 .text-swap-line {
   grid-area: 1 / 1;
-  transition: transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 520ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: calc(var(--roll-index) * 16ms);
   will-change: transform;
 }
-.text-swap-line:nth-child(2) {
+.text-swap-character .text-swap-line:nth-child(2) {
   transform: translateY(110%);
 }
-.swap-trigger:hover .text-swap-line:first-child,
-.swap-trigger:focus-visible .text-swap-line:first-child {
+.swap-trigger {
+  transition: color 260ms ease;
+}
+.swap-trigger:hover,
+.swap-trigger:focus-visible {
+  color: #980009;
+}
+.work .swap-trigger:hover,
+.work .swap-trigger:focus-visible,
+.quote .swap-trigger:hover,
+.quote .swap-trigger:focus-visible,
+.site-footer .swap-trigger:hover,
+.site-footer .swap-trigger:focus-visible,
+.service:hover,
+.service:focus-visible {
+  color: #fff;
+}
+.swap-trigger:hover .text-swap-character .text-swap-line:first-child,
+.swap-trigger:focus-visible .text-swap-character .text-swap-line:first-child {
   transform: translateY(-110%);
 }
-.swap-trigger:hover .text-swap-line:nth-child(2),
-.swap-trigger:focus-visible .text-swap-line:nth-child(2) {
+.swap-trigger:hover .text-swap-character .text-swap-line:nth-child(2),
+.swap-trigger:focus-visible .text-swap-character .text-swap-line:nth-child(2) {
   transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .text-swap-line {
+    transition-duration: 0.01ms;
+    transition-delay: 0ms;
+  }
 }
 button,
 input,
@@ -270,12 +297,6 @@ body.is-loading > .preloader {
   gap: 32px;
   font-size: 11px;
   letter-spacing: 0.07em;
-}
-.nav a {
-  transition: opacity 0.2s;
-}
-.nav a:hover {
-  opacity: 0.55;
 }
 .nav-contact {
   justify-self: end;
@@ -755,7 +776,7 @@ body.is-loading > .preloader {
 .depth-info b {
   font-weight: 500;
 }
-.depth-info span {
+.depth-info-inner > span {
   display: inline-block;
   margin-top: 16px;
   border-bottom: 1px solid;
@@ -2266,7 +2287,7 @@ body.drawer-open {
     letter-spacing: 0;
     animation: none;
   }
-  .depth-info span {
+  .depth-info-inner > span {
     display: block;
     max-width: 400px;
   }
@@ -2306,13 +2327,48 @@ body.drawer-open {
     width: 400px;
     animation: none;
   }
-  .depth-info span {
+  .depth-info-inner > span {
     display: block;
     max-width: none;
     margin-top: 0;
     padding-bottom: 0;
     border-bottom: 0;
   }
+  .depth-visit-site {
+    align-self: flex-start;
+    width: max-content;
+    padding: 0 0 5px;
+    border: 0;
+    border-bottom: 1px solid currentColor;
+    background: transparent;
+    color: #f7fbfd;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    pointer-events: auto;
+  }
+  .depth-instruction {
+    font-size: 12px;
+  }
+  .depth-work-all {
+    position: absolute;
+    z-index: 20;
+    right: 40px;
+    bottom: 20px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid currentColor;
+    color: #e9e9e9;
+    font-family: var(--font-body);
+    font-size: 12px;
+    line-height: 1.5;
+    letter-spacing: 0.04em;
+    pointer-events: auto;
+  }
+}
+.depth-stage .depth-visit-site:hover,
+.depth-stage .depth-visit-site:focus-visible,
+.depth-stage .depth-work-all:hover,
+.depth-stage .depth-work-all:focus-visible {
+  color: #fff;
 }
 @media (min-width: 901px) {
   .depth-info-wrap.is-image-right {

@@ -13,6 +13,7 @@ import {
 import { BrainCircuit, Gauge, PenTool } from "lucide-react";
 import Preloader from "./components/Preloader";
 import { SiteFooter, SiteHeader } from "./components/SiteChrome";
+import { RollingText as TextSwap } from "./components/RollingText";
 
 const DepthGallery = lazy(() => import("./components/DepthGallery"));
 const HeroIcon3D = lazy(() => import("./components/HeroIcon3D"));
@@ -133,27 +134,6 @@ const insights = [
     href: "https://inkmedia.in/blogs/local-seo-for-small-businesses/",
   },
 ];
-
-function Arrow() {
-  return <span aria-hidden="true">↗</span>;
-}
-
-function TextSwap({
-  children,
-  className = "",
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <span className={`text-swap ${className}`}>
-      <span className="text-swap-line">{children}</span>
-      <span className="text-swap-line" aria-hidden="true">
-        {children}
-      </span>
-    </span>
-  );
-}
 
 function Reveal({
   children,
@@ -500,9 +480,7 @@ function DepthWork() {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <TextSwap>
-                      VISIT WEBSITE <Arrow />
-                    </TextSwap>
+                    <TextSwap>VISIT WEBSITE ↗</TextSwap>
                   </a>
                 </div>
               </div>

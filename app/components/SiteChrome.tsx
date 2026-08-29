@@ -5,19 +5,9 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { RollingText as SwapText } from "./RollingText";
 
 const ease = [0.16, 1, 0.3, 1] as const;
-
-function SwapText({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="text-swap">
-      <span className="text-swap-line">{children}</span>
-      <span className="text-swap-line" aria-hidden="true">
-        {children}
-      </span>
-    </span>
-  );
-}
 
 export function SiteHeader({ loading = false }: { loading?: boolean }) {
   const enter = (delay: number) => ({
