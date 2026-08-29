@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -29,31 +30,30 @@ export function SiteHeader({ loading = false }: { loading?: boolean }) {
     <header className="nav shell">
       <motion.a
         className="wordmark"
-        href="#top"
+        href="/"
         aria-label="Ink Media home"
         {...enter(0.05)}
       >
         <img src="/ink-logo.png" alt="Ink Media" width="3375" height="3375" />
       </motion.a>
       <nav aria-label="Primary navigation">
-        <motion.a className="swap-trigger" href="#work" {...enter(0.12)}>
-          <SwapText>WORK</SwapText>
+        <motion.a className="swap-trigger" href="#" {...enter(0.12)}>
+          <SwapText>CASE STUDIES</SwapText>
         </motion.a>
-        <motion.a className="swap-trigger" href="#services" {...enter(0.19)}>
+        <motion.a className="swap-trigger" href="#" {...enter(0.19)}>
           <SwapText>SERVICES</SwapText>
         </motion.a>
-        <motion.a className="swap-trigger" href="#studio" {...enter(0.26)}>
+        <motion.a className="swap-trigger" href="#" {...enter(0.26)}>
           <SwapText>ABOUT</SwapText>
         </motion.a>
       </nav>
-      <motion.button
+      <motion.a
         className="nav-contact swap-trigger"
-        type="button"
-        onClick={() => window.dispatchEvent(new Event("open-project-drawer"))}
+        href="/contact"
         {...enter(0.33)}
       >
         <SwapText>[ START A PROJECT ]</SwapText>
-      </motion.button>
+      </motion.a>
     </header>
   );
 }
@@ -278,9 +278,9 @@ export function SiteFooter() {
           </button>
           <div className="footer-columns">
             <div className="footer-brand">
-              <a
+              <Link
                 className="wordmark footer-logo"
-                href="#top"
+                href="/"
                 aria-label="Back to top"
               >
                 <img
@@ -289,30 +289,26 @@ export function SiteFooter() {
                   width="3375"
                   height="3375"
                 />
-              </a>
+              </Link>
               <p>CREATIVE WEB STUDIO.</p>
             </div>
             <div>
               <span>IMP LINKS</span>
-              <a className="swap-trigger" href="#top">
+              <Link className="swap-trigger" href="/">
                 <SwapText>Home</SwapText>
+              </Link>
+              <a className="swap-trigger" href="/case-studies">
+                <SwapText>Case Studies</SwapText>
               </a>
-              <a className="swap-trigger" href="#work">
-                <SwapText>Work</SwapText>
-              </a>
-              <a className="swap-trigger" href="#services">
+              <a className="swap-trigger" href="/services">
                 <SwapText>Services</SwapText>
               </a>
-              <a className="swap-trigger" href="#studio">
+              <a className="swap-trigger" href="/about">
                 <SwapText>About</SwapText>
               </a>
-              <button
-                className="swap-trigger"
-                type="button"
-                onClick={() => setDrawerOpen(true)}
-              >
+              <a className="swap-trigger" href="/contact">
                 <SwapText>Contact</SwapText>
-              </button>
+              </a>
             </div>
             <div>
               <span>GET IN TOUCH</span>
@@ -347,15 +343,23 @@ export function SiteFooter() {
                 target="_blank"
                 rel="noreferrer"
               >
+                <SwapText>Facebook ↗</SwapText>
+              </a>
+              <a
+                className="swap-trigger"
+                href="https://twitter.com/"
+                target="_blank"
+                rel="noreferrer"
+              >
                 <SwapText>Twitter ↗</SwapText>
               </a>
             </div>
           </div>
           <div className="footer-bottom">
             <span>© {new Date().getFullYear()} INK MEDIA</span>
-            <a className="swap-trigger" href="#top">
+            <Link className="swap-trigger" href="/">
               <SwapText>BACK TO TOP ↑</SwapText>
-            </a>
+            </Link>
           </div>
         </div>
       </footer>

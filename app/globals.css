@@ -51,6 +51,55 @@ body {
   font-weight: 400;
   overflow-x: hidden;
 }
+.page-transition-stage {
+  position: fixed;
+  z-index: 2000;
+  inset: 0;
+  display: none;
+  overflow: hidden;
+  pointer-events: none;
+  perspective: 1500px;
+  transform-style: preserve-3d;
+}
+.page-transition-frozen {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  min-height: 100svh;
+  overflow: hidden;
+}
+body.page-is-transitioning {
+  overflow: hidden;
+}
+.title-page {
+  min-height: 100svh;
+  background: var(--paper);
+}
+.title-page-hero {
+  min-height: 100svh;
+  display: flex;
+  align-items: flex-end;
+  padding: 112px 28px 24px;
+  overflow: hidden;
+}
+.title-page--pastel-green,
+.title-page--pastel-green .title-page-hero {
+  background: #cfe3c6;
+}
+.title-page-hero h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(4.5rem, 14.5vw, 14rem);
+  font-weight: 300;
+  line-height: 0.78;
+  letter-spacing: -0.07em;
+  white-space: nowrap;
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-transition-stage {
+    display: none;
+  }
+}
 a {
   color: inherit;
   text-decoration: none;
@@ -1488,14 +1537,19 @@ form button:hover {
   }
   .studio-cards {
     height: auto;
-    display: grid;
-    gap: 14px;
+    display: block;
   }
   .studio-card {
-    position: relative;
+    position: sticky;
+    top: 84px;
     inset: auto;
-    min-height: 430px;
+    height: min(520px, calc(100svh - 116px));
+    min-height: 410px;
+    margin-bottom: 28vh;
     transform: none !important;
+  }
+  .studio-card:last-child {
+    margin-bottom: 0;
   }
   .studio-card-icon {
     top: 22%;
@@ -1603,7 +1657,10 @@ form button:hover {
     font-size: 35px;
   }
   .studio-card {
-    min-height: 360px;
+    top: 72px;
+    height: min(450px, calc(100svh - 96px));
+    min-height: 340px;
+    margin-bottom: 24vh;
     padding: 25px;
   }
   .studio-card h3 {
@@ -1649,11 +1706,11 @@ form button:hover {
   overflow: hidden;
   background: linear-gradient(
     90deg,
-    #071828 0%,
-    #0a4165 26%,
-    #168fc0 50%,
-    #0a4165 74%,
-    #071828 100%
+    #020b13 0%,
+    #06263c 26%,
+    #086889 50%,
+    #06263c 74%,
+    #020b13 100%
   );
   color: #f4f8fa;
 }
@@ -1741,7 +1798,7 @@ form button:hover {
 }
 .footer-columns a:hover,
 .footer-columns button:hover {
-  color: var(--red-bright);
+  color: #bcecff;
 }
 .footer-brand {
   gap: 18px !important;
@@ -1898,10 +1955,31 @@ body.drawer-open {
   }
   .footer-columns {
     grid-template-columns: 1fr 1fr;
+    gap: 42px 18px;
     padding-bottom: 34px;
+    text-align: center;
+  }
+  .footer-columns > div {
+    align-items: center;
+  }
+  .footer-brand {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+  .footer-columns > div:nth-child(2) {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .footer-columns > div:nth-child(4) {
+    grid-column: 2;
+    grid-row: 2;
   }
   .footer-columns > div:nth-child(3) {
     grid-column: 1 / -1;
+    grid-row: 3;
+  }
+  .footer-logo {
+    margin-inline: auto;
   }
   .footer-bottom {
     align-items: flex-end;
@@ -1981,6 +2059,9 @@ body.drawer-open {
   }
   .studio-card {
     position: relative;
+    top: auto;
+    height: auto;
+    margin-bottom: 0;
     min-height: 520px;
     transform: none !important;
   }
@@ -2461,9 +2542,20 @@ h3,
     line-height: 1;
     letter-spacing: -0.03em;
   }
-  .mobile-project span,
+  .mobile-project > div > span,
   .mobile-project p {
     display: none;
+  }
+  .mobile-work-cta {
+    display: block;
+    margin: 72px auto 0;
+    padding: 0 0 5px;
+    border: 0;
+    border-bottom: 1px solid currentColor;
+    background: transparent;
+    color: inherit;
+    font-family: var(--font-body);
+    cursor: pointer;
   }
 }
 
@@ -2480,6 +2572,9 @@ h3,
   }
   .mobile-project h3 {
     font-size: 17px;
+  }
+  .mobile-work-cta {
+    margin-top: 56px;
   }
   .mobile-project-modal-backdrop {
     padding: 10px;

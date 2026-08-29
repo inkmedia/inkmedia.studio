@@ -444,6 +444,13 @@ function DepthWork() {
             </button>
           ))}
         </div>
+        <button
+          className="section-cta swap-trigger mobile-work-cta"
+          type="button"
+          onClick={() => setMobileProject(0)}
+        >
+          <TextSwap>[ VIEW ALL WORK ↗ ]</TextSwap>
+        </button>
       </div>
       <AnimatePresence>
         {selectedProject && mobileProject !== null && (
@@ -597,7 +604,6 @@ export default function Home() {
     ],
   };
 
-
   function moveHero(event: React.PointerEvent<HTMLElement>) {
     const bounds = event.currentTarget.getBoundingClientRect();
     const localX = event.clientX - bounds.left;
@@ -654,63 +660,123 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
       <div className="site-page">
-      <SiteHeader loading={loading} />
+        <SiteHeader loading={loading} />
 
-      <section
-        id="top"
-        className={`hero ${heroHover ? "is-tracking" : ""}`}
-        onPointerMove={moveHero}
-        onPointerLeave={leaveHero}
-      >
-        <div className="hero-rail shell">
-          <motion.span {...heroStagger(0.4)}>CREATIVE WEB STUDIO</motion.span>
-          <motion.span {...heroStagger(0.47)}>PUNE / WORLDWIDE</motion.span>
-          <motion.span {...heroStagger(0.54)}>IST — {clock}</motion.span>
-        </div>
-        {mounted && !loading && (
-          <Suspense fallback={null}>
-            <HeroIcon3D reducedMotion={Boolean(reduce)} />
-          </Suspense>
-        )}
-        <motion.div
-          className="hero-cross hero-cross-v"
-          style={{ x: heroSmoothX }}
-          aria-hidden="true"
-        />
-        <motion.div
-          className="hero-cross hero-cross-h"
-          style={{ y: heroSmoothY }}
-          aria-hidden="true"
-        />
-        {!mobileHero && (
+        <section
+          id="top"
+          className={`hero ${heroHover ? "is-tracking" : ""}`}
+          onPointerMove={moveHero}
+          onPointerLeave={leaveHero}
+        >
+          <div className="hero-rail shell">
+            <motion.span {...heroStagger(0.4)}>CREATIVE WEB STUDIO</motion.span>
+            <motion.span {...heroStagger(0.47)}>PUNE / WORLDWIDE</motion.span>
+            <motion.span {...heroStagger(0.54)}>IST — {clock}</motion.span>
+          </div>
+          {mounted && !loading && (
+            <Suspense fallback={null}>
+              <HeroIcon3D reducedMotion={Boolean(reduce)} />
+            </Suspense>
+          )}
           <motion.div
-            className="hero-follow"
-            style={{ x: heroSmoothX, y: heroSmoothY }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: heroHover ? 1 : 0 }}
-            transition={{ duration: 0.14 }}
+            className="hero-cross hero-cross-v"
+            style={{ x: heroSmoothX }}
             aria-hidden="true"
-          >
-            <div className="hero-follow-inner">
+          />
+          <motion.div
+            className="hero-cross hero-cross-h"
+            style={{ y: heroSmoothY }}
+            aria-hidden="true"
+          />
+          {!mobileHero && (
+            <motion.div
+              className="hero-follow"
+              style={{ x: heroSmoothX, y: heroSmoothY }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: heroHover ? 1 : 0 }}
+              transition={{ duration: 0.14 }}
+              aria-hidden="true"
+            >
+              <div className="hero-follow-inner">
+                <div
+                  className="hero-follow-image"
+                  style={{ position: "relative" }}
+                >
+                  <AnimatePresence initial={false}>
+                    <motion.img
+                      key={heroActive}
+                      src={heroStates[heroActive].image}
+                      alt=""
+                      width="1920"
+                      height="1080"
+                      initial={{ opacity: 0, scale: 1.04 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.98 }}
+                      transition={{ duration: 0.24, ease }}
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        animation: "none",
+                      }}
+                    />
+                  </AnimatePresence>
+                </div>
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.span
+                    key={heroActive}
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -5 }}
+                    transition={{ duration: 0.16 }}
+                  >
+                    {heroStates[heroActive].label}
+                  </motion.span>
+                </AnimatePresence>
+              </div>
+            </motion.div>
+          )}
+          {mobileHero && (
+            <motion.button
+              type="button"
+              className="hero-mobile-capability"
+              onClick={() =>
+                setHeroActive((active) => (active + 1) % heroStates.length)
+              }
+              initial={reduce ? undefined : { opacity: 0, scale: 0.94, y: 12 }}
+              animate={
+                loading
+                  ? { opacity: 0, scale: 0.94, y: 12 }
+                  : { opacity: 1, scale: 1, y: 0 }
+              }
+              transition={{ duration: 0.7, delay: 0.45, ease }}
+              aria-label={`Current capability: ${heroStates[heroActive].label.replaceAll("[", "").replaceAll("]", "")}. Tap for next.`}
+            >
               <div
-                className="hero-follow-image"
-                style={{ position: "relative" }}
+                className="hero-mobile-image"
+                style={{
+                  position: "relative",
+                  width: "100%",
+                  aspectRatio: "3.1",
+                  overflow: "hidden",
+                }}
               >
                 <AnimatePresence initial={false}>
                   <motion.img
                     key={heroActive}
                     src={heroStates[heroActive].image}
                     alt=""
-                    width="1920"
-                    height="1080"
+                    width="390"
+                    height="252"
                     initial={{ opacity: 0, scale: 1.04 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.98 }}
-                    transition={{ duration: 0.24, ease }}
+                    animate={{ opacity: 0.78, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.97 }}
+                    transition={{ duration: 0.32, ease }}
                     style={{
                       position: "absolute",
                       inset: 0,
-                      animation: "none",
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
                     }}
                   />
                 </AnimatePresence>
@@ -718,269 +784,212 @@ export default function Home() {
               <AnimatePresence mode="wait" initial={false}>
                 <motion.span
                   key={heroActive}
-                  initial={{ opacity: 0, y: 5 }}
+                  initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -5 }}
-                  transition={{ duration: 0.16 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.25 }}
                 >
                   {heroStates[heroActive].label}
                 </motion.span>
               </AnimatePresence>
-            </div>
-          </motion.div>
-        )}
-        {mobileHero && (
-          <motion.button
-            type="button"
-            className="hero-mobile-capability"
-            onClick={() =>
-              setHeroActive((active) => (active + 1) % heroStates.length)
-            }
-            initial={reduce ? undefined : { opacity: 0, scale: 0.94, y: 12 }}
-            animate={
-              loading
-                ? { opacity: 0, scale: 0.94, y: 12 }
-                : { opacity: 1, scale: 1, y: 0 }
-            }
-            transition={{ duration: 0.7, delay: 0.45, ease }}
-            aria-label={`Current capability: ${heroStates[heroActive].label.replaceAll("[", "").replaceAll("]", "")}. Tap for next.`}
-          >
-            <div
-              className="hero-mobile-image"
-              style={{
-                position: "relative",
-                width: "100%",
-                aspectRatio: "3.1",
-                overflow: "hidden",
-              }}
-            >
-              <AnimatePresence initial={false}>
-                <motion.img
-                  key={heroActive}
-                  src={heroStates[heroActive].image}
-                  alt=""
-                  width="390"
-                  height="252"
-                  initial={{ opacity: 0, scale: 1.04 }}
-                  animate={{ opacity: 0.78, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.97 }}
-                  transition={{ duration: 0.32, ease }}
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                  }}
-                />
-              </AnimatePresence>
-            </div>
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.span
-                key={heroActive}
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -6 }}
-                transition={{ duration: 0.25 }}
-              >
-                {heroStates[heroActive].label}
-              </motion.span>
-            </AnimatePresence>
-          </motion.button>
-        )}
-        <p className="sr-only">
-          Interactive project preview showing optimised, responsive,
-          high-performance, pixel-precise, content, SEO and accessible web
-          experiences.
-        </p>
-        <h1 aria-label="Websites built to make ambitious brands impossible to ignore">
-          <span className="hero-mask">
-            <motion.b
-              initial={reduce ? undefined : { y: "110%" }}
-              animate={reduce ? undefined : { y: loading ? "110%" : 0 }}
-              transition={{ duration: 1, ease }}
-            >
-              WEBSITES BUILT TO MAKE
-            </motion.b>
-          </span>
-          <span className="hero-mask hero-line-middle">
-            <motion.b
-              initial={reduce ? undefined : { y: "110%" }}
-              animate={reduce ? undefined : { y: loading ? "110%" : 0 }}
-              transition={{ duration: 1, delay: 0.08, ease }}
-            >
-              AMBITIOUS BRANDS
-            </motion.b>
-          </span>
-          <span className="hero-mask hero-line-last">
-            <motion.b
-              initial={reduce ? undefined : { y: "110%" }}
-              animate={reduce ? undefined : { y: loading ? "110%" : 0 }}
-              transition={{ duration: 1, delay: 0.16, ease }}
-            >
-              IMPOSSIBLE TO IGNORE
-            </motion.b>
-          </span>
-        </h1>
-        <div className="hero-bottom shell">
-          <motion.span {...heroStagger(0.65, 12)}>INK MEDIA</motion.span>
-          <motion.span {...heroStagger(0.72, 12)}>
-            CURRENT TIME: {clock} IST
-          </motion.span>
-          <motion.a
-            className="swap-trigger"
-            href="#work"
-            {...heroStagger(0.79, 12)}
-          >
-            <TextSwap>SCROLL TO EXPLORE ↓</TextSwap>
-          </motion.a>
-        </div>
-      </section>
-
-      <section className="statement">
-        <div className="statement-meta shell">
-          <span>[ STORY / 01 ]</span>
-          <span>WHAT WE BELIEVE</span>
-        </div>
-        <div className="statement-marquee" aria-hidden="true">
-          <span>
-            ENGINEERING IMMERSIVE WEB EXPERIENCES — ENGINEERING IMMERSIVE WEB
-            EXPERIENCES —{" "}
-          </span>
-        </div>
-        <Reveal className="statement-copy shell">
-          <p>THE RIGHT WEBSITE IS MORE THAN A WEBSITE.</p>
-          <h2>
-            IT’S YOUR BRAND’S
-            <br />
-            <span>BEST INTRODUCTION.</span>
-          </h2>
-        </Reveal>
-      </section>
-
-      <section className="journey">
-        <div className="journey-sticky">
-          <span>[ FROM IDEA TO IMPACT ]</span>
-          <h2>
-            ONE CONTINUOUS
-            <br />
-            DIGITAL STORY.
-          </h2>
-          <p>
-            A website isn’t just a platform—it’s where your brand takes shape
-            online. It sets the tone, builds trust and creates the right first
-            impression.
+            </motion.button>
+          )}
+          <p className="sr-only">
+            Interactive project preview showing optimised, responsive,
+            high-performance, pixel-precise, content, SEO and accessible web
+            experiences.
           </p>
-        </div>
-        <div className="chapters">
-          {chapters.map(([no, title, text], i) => (
-            <Reveal className="chapter" delay={i * 0.03} key={no}>
-              <span>{no}</span>
-              <div>
-                <h3>{title}</h3>
-                <p>{text}</p>
-              </div>
-              <i>↘</i>
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
-      <DepthWork />
-
-      <section id="services" className="services">
-        <div className="services-head shell">
-          <span>[ CAPABILITIES / 05 ]</span>
-          <h2>
-            DESIGN FIRST.
-            <br />
-            DEVELOPMENT
-            <br />
-            WITHOUT COMPROMISE.
-          </h2>
-        </div>
-        <div className="service-list shell">
-          {capabilities.map(([no, title, detail]) => (
-            <a className="service swap-trigger" href="#contact" key={no}>
-              <span>[ {no} ]</span>
-              <h3>
-                <TextSwap>{title}</TextSwap>
-              </h3>
-              <p>{detail}</p>
-              <i>↗</i>
-            </a>
-          ))}
-        </div>
-      </section>
-
-      <AboutStudio />
-
-      <TestimonialSlider />
-
-      <section className="insights shell">
-        <motion.div
-          className="insights-head"
-          initial={reduce ? undefined : { opacity: 0, y: -12 }}
-          whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-10%" }}
-          transition={{ duration: 0.65, ease }}
-        >
-          <span>[ IDEAS / OBSERVATIONS ]</span>
-          <div className="insights-title-row">
-            <h2>
-              BUILDING DIGITAL.
-              <br />
-              THINKING BEYOND.
-            </h2>
-            <motion.a
-              className="section-cta swap-trigger insights-cta"
-              href="https://inkmedia.in/blogs/"
-              target="_blank"
-              rel="noreferrer"
-              initial={reduce ? undefined : { opacity: 0, y: -12 }}
-              whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-8%" }}
-              transition={{ duration: 0.65, delay: 0.16, ease }}
-            >
-              <TextSwap>[ EXPLORE MORE BLOGS ↗ ]</TextSwap>
-            </motion.a>
-          </div>
-        </motion.div>
-        <div className="article-list">
-          {insights.map((article, index) => (
+          <h1 aria-label="Websites built to make ambitious brands impossible to ignore">
+            <span className="hero-mask">
+              <motion.b
+                initial={reduce ? undefined : { y: "110%" }}
+                animate={reduce ? undefined : { y: loading ? "110%" : 0 }}
+                transition={{ duration: 1, ease }}
+              >
+                WEBSITES BUILT TO MAKE
+              </motion.b>
+            </span>
+            <span className="hero-mask hero-line-middle">
+              <motion.b
+                initial={reduce ? undefined : { y: "110%" }}
+                animate={reduce ? undefined : { y: loading ? "110%" : 0 }}
+                transition={{ duration: 1, delay: 0.08, ease }}
+              >
+                AMBITIOUS BRANDS
+              </motion.b>
+            </span>
+            <span className="hero-mask hero-line-last">
+              <motion.b
+                initial={reduce ? undefined : { y: "110%" }}
+                animate={reduce ? undefined : { y: loading ? "110%" : 0 }}
+                transition={{ duration: 1, delay: 0.16, ease }}
+              >
+                IMPOSSIBLE TO IGNORE
+              </motion.b>
+            </span>
+          </h1>
+          <div className="hero-bottom shell">
+            <motion.span {...heroStagger(0.65, 12)}>INK MEDIA</motion.span>
+            <motion.span {...heroStagger(0.72, 12)}>
+              CURRENT TIME: {clock} IST
+            </motion.span>
             <motion.a
               className="swap-trigger"
-              href={article.href}
-              key={article.href}
-              target="_blank"
-              rel="noreferrer"
-              initial={reduce ? undefined : { opacity: 0, y: -12 }}
-              whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-8%" }}
-              transition={{ duration: 0.65, delay: 0.12 + index * 0.09, ease }}
+              href="#work"
+              {...heroStagger(0.79, 12)}
             >
-              <div className="article-image">
-                <img src={article.image} alt="" width="1200" height="675" />
-                <span className="article-number">[ {article.number} ]</span>
-              </div>
-              <div className="article-copy">
-                <div className="article-meta">
-                  <span>{article.date}</span>
-                  <span>{article.readTime}</span>
-                </div>
-                <h3>
-                  <TextSwap>{article.title}</TextSwap>
-                </h3>
-                <p>{article.excerpt}</p>
-                <span className="article-link">
-                  <TextSwap>READ ARTICLE</TextSwap> <i>↗</i>
-                </span>
-              </div>
+              <TextSwap>SCROLL TO EXPLORE ↓</TextSwap>
             </motion.a>
-          ))}
-        </div>
-      </section>
+          </div>
+        </section>
 
+        <section className="statement">
+          <div className="statement-meta shell">
+            <span>[ STORY / 01 ]</span>
+            <span>WHAT WE BELIEVE</span>
+          </div>
+          <div className="statement-marquee" aria-hidden="true">
+            <span>
+              ENGINEERING IMMERSIVE WEB EXPERIENCES — ENGINEERING IMMERSIVE WEB
+              EXPERIENCES —{" "}
+            </span>
+          </div>
+          <Reveal className="statement-copy shell">
+            <p>THE RIGHT WEBSITE IS MORE THAN A WEBSITE.</p>
+            <h2>
+              IT’S YOUR BRAND’S
+              <br />
+              <span>BEST INTRODUCTION.</span>
+            </h2>
+          </Reveal>
+        </section>
+
+        <section className="journey">
+          <div className="journey-sticky">
+            <span>[ FROM IDEA TO IMPACT ]</span>
+            <h2>
+              ONE CONTINUOUS
+              <br />
+              DIGITAL STORY.
+            </h2>
+            <p>
+              A website isn’t just a platform—it’s where your brand takes shape
+              online. It sets the tone, builds trust and creates the right first
+              impression.
+            </p>
+          </div>
+          <div className="chapters">
+            {chapters.map(([no, title, text], i) => (
+              <Reveal className="chapter" delay={i * 0.03} key={no}>
+                <span>{no}</span>
+                <div>
+                  <h3>{title}</h3>
+                  <p>{text}</p>
+                </div>
+                <i>↘</i>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+
+        <DepthWork />
+
+        <section id="services" className="services">
+          <div className="services-head shell">
+            <span>[ CAPABILITIES / 05 ]</span>
+            <h2>
+              DESIGN FIRST.
+              <br />
+              DEVELOPMENT
+              <br />
+              WITHOUT COMPROMISE.
+            </h2>
+          </div>
+          <div className="service-list shell">
+            {capabilities.map(([no, title, detail]) => (
+              <a className="service swap-trigger" href="#contact" key={no}>
+                <span>[ {no} ]</span>
+                <h3>
+                  <TextSwap>{title}</TextSwap>
+                </h3>
+                <p>{detail}</p>
+                <i>↗</i>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        <AboutStudio />
+
+        <TestimonialSlider />
+
+        <section className="insights shell">
+          <motion.div
+            className="insights-head"
+            initial={reduce ? undefined : { opacity: 0, y: -12 }}
+            whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-10%" }}
+            transition={{ duration: 0.65, ease }}
+          >
+            <span>[ IDEAS / OBSERVATIONS ]</span>
+            <div className="insights-title-row">
+              <h2>
+                BUILDING DIGITAL.
+                <br />
+                THINKING BEYOND.
+              </h2>
+              <motion.a
+                className="section-cta swap-trigger insights-cta"
+                href="https://inkmedia.in/blogs/"
+                target="_blank"
+                rel="noreferrer"
+                initial={reduce ? undefined : { opacity: 0, y: -12 }}
+                whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-8%" }}
+                transition={{ duration: 0.65, delay: 0.16, ease }}
+              >
+                <TextSwap>[ EXPLORE MORE BLOGS ↗ ]</TextSwap>
+              </motion.a>
+            </div>
+          </motion.div>
+          <div className="article-list">
+            {insights.map((article, index) => (
+              <motion.a
+                className="swap-trigger"
+                href={article.href}
+                key={article.href}
+                target="_blank"
+                rel="noreferrer"
+                initial={reduce ? undefined : { opacity: 0, y: -12 }}
+                whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-8%" }}
+                transition={{
+                  duration: 0.65,
+                  delay: 0.12 + index * 0.09,
+                  ease,
+                }}
+              >
+                <div className="article-image">
+                  <img src={article.image} alt="" width="1200" height="675" />
+                  <span className="article-number">[ {article.number} ]</span>
+                </div>
+                <div className="article-copy">
+                  <div className="article-meta">
+                    <span>{article.date}</span>
+                    <span>{article.readTime}</span>
+                  </div>
+                  <h3>
+                    <TextSwap>{article.title}</TextSwap>
+                  </h3>
+                  <p>{article.excerpt}</p>
+                  <span className="article-link">
+                    <TextSwap>READ ARTICLE</TextSwap> <i>↗</i>
+                  </span>
+                </div>
+              </motion.a>
+            ))}
+          </div>
+        </section>
       </div>
       <SiteFooter />
     </main>
