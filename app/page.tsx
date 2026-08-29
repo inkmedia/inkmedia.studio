@@ -391,7 +391,7 @@ function DepthWork() {
       )}
       <div className="mobile-projects shell">
         <div className="mobile-work-head">
-          <span>[ SELECTED WORK / 04 ]</span>
+          <span>[ SELECTED WORK ]</span>
           <h2>
             BUILT TO BE
             <br />
@@ -823,7 +823,7 @@ export default function Home() {
 
         <section className="statement">
           <div className="statement-meta shell">
-            <span>[ STORY / 01 ]</span>
+            <span>[ STORY ]</span>
             <span>WHAT WE BELIEVE</span>
           </div>
           <div className="statement-marquee" aria-hidden="true">
@@ -874,7 +874,7 @@ export default function Home() {
 
         <section id="services" className="services">
           <div className="services-head shell">
-            <span>[ CAPABILITIES / 05 ]</span>
+            <span>[ CAPABILITIES ]</span>
             <h2>
               DESIGN FIRST.
               <br />
