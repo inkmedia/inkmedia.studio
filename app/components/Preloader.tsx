@@ -178,9 +178,14 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
     >
       <motion.div
         style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}
-        initial={{ scale: 1 }}
-        animate={leaving ? { scale: 0.06 } : { scale: 1 }}
-        transition={{ duration: reducedMotion ? 0.15 : 0.3, ease: [0.76, 0, 0.24, 1] }}
+        initial={{ scale: 1, opacity: 1 }}
+        animate={leaving ? { scale: 0.06, opacity: 0 } : { scale: 1, opacity: 1 }}
+        transition={reducedMotion
+          ? { duration: 0.15 }
+          : {
+              scale: { duration: 0.5, ease: [0.76, 0, 0.24, 1] },
+              opacity: { duration: 0.2, delay: 0.3, ease: "easeOut" },
+            }}
         onAnimationComplete={() => {
           if (!leaving) return;
           document.body.classList.remove("is-loading");
