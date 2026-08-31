@@ -30,7 +30,8 @@ function IconModel({ reducedMotion }: { reducedMotion: boolean }) {
     const elapsed = state.clock.elapsedTime;
     const entranceProgress = Math.min(elapsed / 1.05, 1);
     const entranceScale = 1 - Math.pow(1 - entranceProgress, 4);
-    const targetScale = entranceScale * (1 + Math.sin(elapsed * 0.52) * 0.055);
+    const targetScale =
+      entranceScale * (1 + Math.sin(elapsed * 0.52) * 0.055);
 
     group.current.rotation.y = -0.3 + elapsed * 0.16;
     group.current.rotation.x = THREE.MathUtils.damp(
