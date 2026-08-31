@@ -542,7 +542,7 @@ export default function Home() {
     const updateMobileHero = () => setMobileHero(mobileQuery.matches);
     updateMobileHero();
     mobileQuery.addEventListener("change", updateMobileHero);
-    const updateClock = () =>
+    const updateClock = () => {
       setClock(
         new Intl.DateTimeFormat("en-GB", {
           timeZone: "Asia/Kolkata",
@@ -552,6 +552,7 @@ export default function Home() {
           hour12: false,
         }).format(new Date()),
       );
+    };
     updateClock();
     const timer = window.setInterval(updateClock, 1000);
     return () => {
@@ -583,6 +584,12 @@ export default function Home() {
   };
 
   function moveHero(event: React.PointerEvent<HTMLElement>) {
+    if ((event.target as HTMLElement).closest(".hero-cta")) {
+      setHeroHover(false);
+      heroTravel.current.ready = false;
+      heroTravel.current.distance = 0;
+      return;
+    }
     const bounds = event.currentTarget.getBoundingClientRect();
     const localX = event.clientX - bounds.left;
     const localY = event.clientY - bounds.top;
@@ -646,11 +653,6 @@ export default function Home() {
           onPointerMove={moveHero}
           onPointerLeave={leaveHero}
         >
-          <div className="hero-rail shell">
-            <motion.span {...heroStagger(0.4)}>CREATIVE WEB STUDIO</motion.span>
-            <motion.span {...heroStagger(0.47)}>PUNE / WORLDWIDE</motion.span>
-            <motion.span {...heroStagger(0.54)}>IST — {clock}</motion.span>
-          </div>
           {mounted && !loading && (
             <Suspense fallback={null}>
               <HeroIcon3D reducedMotion={Boolean(reduce)} />
@@ -666,6 +668,18 @@ export default function Home() {
             style={{ y: heroSmoothY }}
             aria-hidden="true"
           />
+          {!mobileHero && (
+            <motion.div
+              className="hero-cursor-label"
+              style={{ y: heroSmoothY }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: heroHover ? 1 : 0 }}
+              transition={{ duration: 0.14 }}
+              aria-hidden="true"
+            >
+              CREATIVE WEB STUDIO
+            </motion.div>
+          )}
           {!mobileHero && (
             <motion.div
               className="hero-follow"
@@ -777,42 +791,60 @@ export default function Home() {
             high-performance, pixel-precise, content, SEO and accessible web
             experiences.
           </p>
-          <h1 aria-label="Websites built to make ambitious brands impossible to ignore">
-            <span className="hero-mask">
-              <motion.b
-                initial={reduce ? undefined : { y: "110%" }}
-                animate={reduce ? undefined : { y: loading ? "110%" : 0 }}
-                transition={{ duration: 1, ease }}
-              >
-                WEBSITES BUILT TO MAKE
-              </motion.b>
-            </span>
-            <span className="hero-mask hero-line-middle">
-              <motion.b
-                initial={reduce ? undefined : { y: "110%" }}
-                animate={reduce ? undefined : { y: loading ? "110%" : 0 }}
-                transition={{ duration: 1, delay: 0.08, ease }}
-              >
-                AMBITIOUS BRANDS
-              </motion.b>
-            </span>
-            <span className="hero-mask hero-line-last">
-              <motion.b
-                initial={reduce ? undefined : { y: "110%" }}
-                animate={reduce ? undefined : { y: loading ? "110%" : 0 }}
-                transition={{ duration: 1, delay: 0.16, ease }}
-              >
-                IMPOSSIBLE TO IGNORE
-              </motion.b>
-            </span>
-          </h1>
+          <div className="hero-content shell">
+            <h1 aria-label="Websites built to make ambitious brands impossible to ignore">
+              <span className="hero-mask">
+                <motion.b
+                  initial={reduce ? undefined : { y: "110%" }}
+                  animate={reduce ? undefined : { y: loading ? "110%" : 0 }}
+                  transition={{ duration: 1, ease }}
+                >
+                  WEBSITES BUILT TO MAKE
+                </motion.b>
+              </span>
+              <span className="hero-mask hero-line-middle">
+                <motion.b
+                  initial={reduce ? undefined : { y: "110%" }}
+                  animate={reduce ? undefined : { y: loading ? "110%" : 0 }}
+                  transition={{ duration: 1, delay: 0.08, ease }}
+                >
+                  AMBITIOUS BRANDS
+                </motion.b>
+              </span>
+              <span className="hero-mask hero-line-last">
+                <motion.b
+                  initial={reduce ? undefined : { y: "110%" }}
+                  animate={reduce ? undefined : { y: loading ? "110%" : 0 }}
+                  transition={{ duration: 1, delay: 0.16, ease }}
+                >
+                  IMPOSSIBLE TO IGNORE.
+                </motion.b>
+              </span>
+            </h1>
+            <motion.div className="hero-intro" {...heroStagger(0.42, 16)}>
+              <p>
+                Strategy, design and development for ambitious brands that care
+                how they show up online.
+              </p>
+              <div className="hero-actions">
+                <a className="hero-cta hero-cta-primary swap-trigger" href="#work">
+                  <TextSwap>[ VIEW SELECTED WORK ]</TextSwap>
+                </a>
+                <a className="hero-cta swap-trigger" href="#contact">
+                  <TextSwap>[ START A PROJECT ↗ ]</TextSwap>
+                </a>
+              </div>
+            </motion.div>
+          </div>
           <div className="hero-bottom shell">
-            <motion.span {...heroStagger(0.65, 12)}>INK MEDIA</motion.span>
-            <motion.span {...heroStagger(0.72, 12)}>
-              CURRENT TIME: {clock} IST
+            <motion.span className="hero-location" {...heroStagger(0.65, 12)}>
+              PUNE — AVAILABLE WORLDWIDE
+            </motion.span>
+            <motion.span className="hero-time" {...heroStagger(0.72, 12)}>
+              {clock} IST
             </motion.span>
             <motion.a
-              className="swap-trigger"
+              className="hero-scroll swap-trigger"
               href="#work"
               {...heroStagger(0.79, 12)}
             >
