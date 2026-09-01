@@ -1089,9 +1089,7 @@ export default function Home() {
                     <span>{article.date}</span>
                     <span>{article.readTime}</span>
                   </div>
-                  <h3>
-                    <TextSwap>{article.title}</TextSwap>
-                  </h3>
+                  <h3>{article.title}</h3>
                   <p>{article.excerpt}</p>
                   <span className="article-link">
                     <TextSwap>READ ARTICLE</TextSwap> <i>↗</i>

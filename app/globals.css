@@ -579,6 +579,10 @@ body.is-loading > .preloader {
 }
 .statement-copy h2 span {
   color: var(--blue);
+  background: linear-gradient(105deg, #63c7ed 0%, #0e78b6 48%, #063b88 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   padding-left: 8vw;
 }
 @keyframes marquee {
@@ -992,20 +996,34 @@ body.is-loading > .preloader {
   border-top: 1px solid;
 }
 .service {
+  position: relative;
+  isolation: isolate;
   min-height: 135px;
   display: grid;
   grid-template-columns: 90px 1fr 0.8fr 30px;
   align-items: center;
-  border-bottom: 1px solid;
-  transition:
-    padding 0.3s,
-    background 0.3s,
-    color 0.3s;
-}
-.service:hover {
   padding-inline: 18px;
-  background: var(--blue);
+  overflow: hidden;
+  border-bottom: 1px solid;
+  transition: color 0.4s ease;
+}
+.service::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(105deg, #63c7ed 0%, #0e78b6 48%, #063b88 100%);
+  transform: translateY(-101%);
+  transition: transform 520ms cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+.service:hover,
+.service:focus-visible {
   color: #fff;
+}
+.service:hover::before,
+.service:focus-visible::before {
+  transform: translateY(0);
 }
 .service > span,
 .service p {
@@ -1685,7 +1703,7 @@ form button:hover {
   }
   .service {
     grid-template-columns: 55px 1fr 25px;
-    padding: 25px 0;
+    padding: 25px 18px;
   }
   .service p {
     grid-column: 2;
