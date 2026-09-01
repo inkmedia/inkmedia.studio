@@ -120,7 +120,7 @@ a {
   grid-area: 1 / 1;
   transition: transform 520ms cubic-bezier(0.16, 1, 0.3, 1);
   transition-delay: calc(var(--roll-index) * 16ms);
-  will-change: transform;
+  will-change: auto;
 }
 .text-swap-character .text-swap-line:nth-child(2) {
   transform: translateY(110%);
@@ -145,6 +145,10 @@ a {
 .swap-trigger:hover .text-swap-character .text-swap-line:first-child,
 .swap-trigger:focus-visible .text-swap-character .text-swap-line:first-child {
   transform: translateY(-110%);
+}
+.swap-trigger:hover .text-swap-line,
+.swap-trigger:focus-visible .text-swap-line {
+  will-change: transform;
 }
 .swap-trigger:hover .text-swap-character .text-swap-line:nth-child(2),
 .swap-trigger:focus-visible .text-swap-character .text-swap-line:nth-child(2) {

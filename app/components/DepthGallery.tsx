@@ -50,6 +50,7 @@ function DepthTrail({ offset }: { offset: { offset: number } }) {
     [],
   );
   const trailPositions = useMemo(() => new Float32Array(61 * 3), []);
+  const lastTrailOffset = useRef(Number.NaN);
   const offsets = useMemo(
     () =>
       Array.from(
@@ -72,20 +73,26 @@ function DepthTrail({ offset }: { offset: { offset: number } }) {
     let start = value + 0.03;
     const end = Math.min(1, start + length);
     if (end >= 1) start = Math.max(0, 1 - length);
-    for (let index = 0; index < 61; index += 1) {
-      const point = curve.getPointAt(
-        start + (index / 60) * (end - start),
-        trailPoints[index],
-      );
-      const positionIndex = index * 3;
-      trailPositions[positionIndex] = point.x;
-      trailPositions[positionIndex + 1] = point.y;
-      trailPositions[positionIndex + 2] = point.z;
-    }
-    if (line.current?.geometry) {
-      line.current.geometry.setPositions(trailPositions);
-      line.current.computeLineDistances?.();
-      line.current.material.linewidth = 8 - 7 * value;
+    if (
+      !Number.isFinite(lastTrailOffset.current) ||
+      Math.abs(value - lastTrailOffset.current) > 0.00001
+    ) {
+      lastTrailOffset.current = value;
+      for (let index = 0; index < 61; index += 1) {
+        const point = curve.getPointAt(
+          start + (index / 60) * (end - start),
+          trailPoints[index],
+        );
+        const positionIndex = index * 3;
+        trailPositions[positionIndex] = point.x;
+        trailPositions[positionIndex + 1] = point.y;
+        trailPositions[positionIndex + 2] = point.z;
+      }
+      if (line.current?.geometry) {
+        line.current.geometry.setPositions(trailPositions);
+        line.current.computeLineDistances?.();
+        line.current.material.linewidth = 8 - 7 * value;
+      }
     }
     const tip = trailPoints[60];
     particles.current?.children.forEach((particle, index) => {

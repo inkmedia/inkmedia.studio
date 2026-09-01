@@ -34,6 +34,29 @@ import { RollingText as TextSwap } from "./components/RollingText";
 const DepthGallery = lazy(() => import("./components/DepthGallery"));
 const HeroIcon3D = lazy(() => import("./components/HeroIcon3D"));
 
+function IndiaClock() {
+  const [clock, setClock] = useState("—");
+
+  useEffect(() => {
+    const updateClock = () => {
+      setClock(
+        new Intl.DateTimeFormat("en-GB", {
+          timeZone: "Asia/Kolkata",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false,
+        }).format(new Date()),
+      );
+    };
+    updateClock();
+    const timer = window.setInterval(updateClock, 1000);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  return <>{clock} IST</>;
+}
+
 const projects = [
   {
     name: "TEJRAJ",
@@ -647,7 +670,6 @@ export default function Home() {
   const heroY = useMotionValue(0);
   const heroSmoothX = useSpring(heroX, { stiffness: 260, damping: 30 });
   const heroSmoothY = useSpring(heroY, { stiffness: 260, damping: 30 });
-  const [clock, setClock] = useState("—");
   const [heroActive, setHeroActive] = useState(2);
   const [heroHover, setHeroHover] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -660,6 +682,7 @@ export default function Home() {
     lastChange: 0,
     ready: false,
   });
+  const heroBounds = useRef<DOMRect | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -669,22 +692,13 @@ export default function Home() {
     const updateMobileHero = () => setMobileHero(mobileQuery.matches);
     updateMobileHero();
     mobileQuery.addEventListener("change", updateMobileHero);
-    const updateClock = () => {
-      setClock(
-        new Intl.DateTimeFormat("en-GB", {
-          timeZone: "Asia/Kolkata",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false,
-        }).format(new Date()),
-      );
+    const resetHeroBounds = () => {
+      heroBounds.current = null;
     };
-    updateClock();
-    const timer = window.setInterval(updateClock, 1000);
+    window.addEventListener("resize", resetHeroBounds, { passive: true });
     return () => {
-      window.clearInterval(timer);
       mobileQuery.removeEventListener("change", updateMobileHero);
+      window.removeEventListener("resize", resetHeroBounds);
     };
   }, []);
 
@@ -717,7 +731,9 @@ export default function Home() {
       heroTravel.current.distance = 0;
       return;
     }
-    const bounds = event.currentTarget.getBoundingClientRect();
+    const bounds =
+      heroBounds.current ?? event.currentTarget.getBoundingClientRect();
+    heroBounds.current = bounds;
     const localX = event.clientX - bounds.left;
     const localY = event.clientY - bounds.top;
     if (localY <= 88) {
@@ -753,6 +769,7 @@ export default function Home() {
     heroTravel.current.ready = false;
     heroTravel.current.distance = 0;
     heroTravel.current.lastChange = 0;
+    heroBounds.current = null;
   }
 
   function heroStagger(delay: number, y = -12) {
@@ -968,7 +985,7 @@ export default function Home() {
               PUNE — AVAILABLE WORLDWIDE
             </motion.span>
             <motion.span className="hero-time" {...heroStagger(0.72, 12)}>
-              {clock} IST
+              <IndiaClock />
             </motion.span>
             <motion.a
               className="hero-scroll swap-trigger"
