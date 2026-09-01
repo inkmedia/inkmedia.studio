@@ -1,6 +1,13 @@
 "use client";
 
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   AnimatePresence,
   motion,
@@ -9,8 +16,17 @@ import {
   useScroll,
   useSpring,
   useTransform,
+  useInView,
 } from "framer-motion";
-import { BrainCircuit, Gauge, PenTool } from "lucide-react";
+import {
+  BrainCircuit,
+  Code2,
+  Compass,
+  Gauge,
+  PanelsTopLeft,
+  PenTool,
+  TrendingUp,
+} from "lucide-react";
 import Preloader from "./components/Preloader";
 import { SiteFooter, SiteHeader } from "./components/SiteChrome";
 import { RollingText as TextSwap } from "./components/RollingText";
@@ -58,26 +74,34 @@ const capabilities = [
 ];
 
 const chapters = [
-  [
-    "01",
-    "STRATEGY",
-    "We deep-dive into your brand, goals and audience to find the clearest route forward.",
-  ],
-  [
-    "02",
-    "UX / UI",
-    "We turn that clarity into a distinct, intuitive experience where every detail earns its place.",
-  ],
-  [
-    "03",
-    "DEVELOPMENT",
-    "Clean code, responsive systems and purposeful motion bring the experience to life.",
-  ],
-  [
-    "04",
-    "GROWTH",
-    "We refine performance, search visibility and conversion after the website enters the world.",
-  ],
+  {
+    no: "01",
+    title: "STRATEGY",
+    text: "We deep-dive into your brand, goals and audience to find the clearest route forward.",
+    details: ["Positioning", "Sitemap", "Content direction"],
+    icon: Compass,
+  },
+  {
+    no: "02",
+    title: "UX / UI",
+    text: "We turn that clarity into a distinct, intuitive experience where every detail earns its place.",
+    details: ["Wireframes", "Design system", "Prototype"],
+    icon: PanelsTopLeft,
+  },
+  {
+    no: "03",
+    title: "DEVELOPMENT",
+    text: "Clean code, responsive systems and purposeful motion bring the experience to life.",
+    details: ["Next.js", "CMS", "Motion", "QA"],
+    icon: Code2,
+  },
+  {
+    no: "04",
+    title: "GROWTH",
+    text: "We refine performance, search visibility and conversion after the website enters the world.",
+    details: ["SEO", "Analytics", "CRO", "Iteration"],
+    icon: TrendingUp,
+  },
 ];
 
 const testimonials = Array.from({ length: 3 }, (_, index) => ({
@@ -155,6 +179,109 @@ function Reveal({
     >
       {children}
     </motion.div>
+  );
+}
+
+function JourneyChapter({
+  chapter,
+  index,
+  active,
+  onActivate,
+}: {
+  chapter: (typeof chapters)[number];
+  index: number;
+  active: boolean;
+  onActivate: (index: number) => void;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const reduce = useReducedMotion();
+  const isInView = useInView(ref, {
+    amount: 0.55,
+    margin: "-8% 0px -8% 0px",
+  });
+  const { no, title, text, details, icon: Icon } = chapter;
+
+  useEffect(() => {
+    if (isInView && !active) onActivate(index);
+  }, [active, index, isInView, onActivate]);
+
+  return (
+    <motion.div
+      ref={ref}
+      className={`chapter ${active ? "is-active" : ""}`}
+      initial={reduce ? undefined : { opacity: 0, y: 50 }}
+      whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-10%" }}
+      transition={{ duration: 0.8, delay: index * 0.03, ease }}
+    >
+      <span>{no}</span>
+      <div className="chapter-content">
+        <h3>{title}</h3>
+        <p>{text}</p>
+        <ul className="chapter-details" aria-label={`${title} deliverables`}>
+          {details.map((detail) => (
+            <li key={detail}>{detail}</li>
+          ))}
+        </ul>
+      </div>
+      <Icon className="chapter-icon" aria-hidden="true" />
+    </motion.div>
+  );
+}
+
+function JourneySection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [activeChapters, setActiveChapters] = useState<boolean[]>(() =>
+    chapters.map(() => false),
+  );
+  const activateChapter = useCallback((index: number) => {
+    setActiveChapters((current) => {
+      if (current[index]) return current;
+      return current.map((active, chapterIndex) =>
+        chapterIndex === index ? true : active,
+      );
+    });
+  }, []);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting && entry.boundingClientRect.top > 0) {
+        setActiveChapters(chapters.map(() => false));
+      }
+    });
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <section className="journey" ref={sectionRef}>
+      <div className="journey-sticky">
+        <span>[ FROM IDEA TO IMPACT ]</span>
+        <h2>
+          ONE CONTINUOUS
+          <br />
+          DIGITAL STORY.
+        </h2>
+        <p>
+          A website isn’t just a platform—it’s where your brand takes shape
+          online. It sets the tone, builds trust and creates the right first
+          impression.
+        </p>
+      </div>
+      <div className="chapters">
+        {chapters.map((chapter, index) => (
+          <JourneyChapter
+            chapter={chapter}
+            index={index}
+            active={activeChapters[index]}
+            onActivate={activateChapter}
+            key={chapter.no}
+          />
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -874,33 +1001,7 @@ export default function Home() {
           </Reveal>
         </section>
 
-        <section className="journey">
-          <div className="journey-sticky">
-            <span>[ FROM IDEA TO IMPACT ]</span>
-            <h2>
-              ONE CONTINUOUS
-              <br />
-              DIGITAL STORY.
-            </h2>
-            <p>
-              A website isn’t just a platform—it’s where your brand takes shape
-              online. It sets the tone, builds trust and creates the right first
-              impression.
-            </p>
-          </div>
-          <div className="chapters">
-            {chapters.map(([no, title, text], i) => (
-              <Reveal className="chapter" delay={i * 0.03} key={no}>
-                <span>{no}</span>
-                <div>
-                  <h3>{title}</h3>
-                  <p>{text}</p>
-                </div>
-                <i>↘</i>
-              </Reveal>
-            ))}
-          </div>
-        </section>
+        <JourneySection />
 
         <DepthWork />
 

@@ -91,7 +91,7 @@ body.page-is-transitioning {
   font-family: var(--font-display);
   font-size: clamp(4.5rem, 14.5vw, 14rem);
   font-weight: 300;
-  line-height: 0.78;
+  line-height: 0.92;
   letter-spacing: -0.07em;
   white-space: nowrap;
 }
@@ -111,7 +111,10 @@ a {
 }
 .text-swap-character {
   display: inline-grid;
-  overflow: hidden;
+  /* Preserve the vertical rolling reveal without clipping glyph overhang or
+     tight negative letter-spacing at either side of each character. */
+  overflow: visible;
+  clip-path: inset(-0.14em -0.2em);
 }
 .text-swap-line {
   grid-area: 1 / 1;
@@ -453,7 +456,10 @@ body.is-loading > .preloader {
 .hero-mask {
   display: block;
   overflow: hidden;
-  padding: 0.03em 0;
+  /* Futura's glyphs extend beyond its tight line box. Keep the reveal mask,
+     but leave enough room so caps and curved letters are never cropped. */
+  padding: 0.1em 0.04em;
+  margin: -0.1em -0.04em;
 }
 .hero-mask b {
   display: block;
@@ -627,6 +633,7 @@ body.is-loading > .preloader {
   display: grid;
   grid-template-columns: 60px 1fr 30px;
   border-bottom: 1px solid;
+  overflow: hidden;
 }
 .chapter > span {
   font-size: 10px;
@@ -642,9 +649,95 @@ body.is-loading > .preloader {
   font-size: 18px;
   color: #555;
 }
-.chapter i {
-  font-style: normal;
-  font-size: 24px;
+.chapter-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 28px;
+  max-width: 540px;
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 0.3s ease 0.55s,
+    transform 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.55s;
+}
+.chapter-details li {
+  position: relative;
+  z-index: 0;
+  padding: 5px 9px 6px;
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: #292929;
+  isolation: isolate;
+}
+.chapter-details li::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: #cce7ce;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.chapter-details li:nth-child(2)::after {
+  background: #f8e8bd;
+}
+.chapter-details li:nth-child(3)::after {
+  background: #f2cecc;
+}
+.chapter-details li:nth-child(4)::after {
+  background: #cbdcf6;
+}
+.chapter.is-active .chapter-details {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0s;
+}
+.chapter.is-active .chapter-details li::after {
+  transform: scaleX(1);
+}
+.chapter-details li:nth-child(1)::after {
+  transition-delay: 0.3s;
+}
+.chapter-details li:nth-child(2)::after {
+  transition-delay: 0.2s;
+}
+.chapter-details li:nth-child(3)::after {
+  transition-delay: 0.1s;
+}
+.chapter-details li:nth-child(4)::after {
+  transition-delay: 0s;
+}
+.chapter.is-active .chapter-details li:nth-child(1)::after {
+  transition-delay: 0s;
+}
+.chapter.is-active .chapter-details li:nth-child(2)::after {
+  transition-delay: 0.1s;
+}
+.chapter.is-active .chapter-details li:nth-child(3)::after {
+  transition-delay: 0.2s;
+}
+.chapter.is-active .chapter-details li:nth-child(4)::after {
+  transition-delay: 0.3s;
+}
+.chapter-icon {
+  width: 24px;
+  height: 24px;
+  stroke-width: 1.35;
+  transition: color 0.3s ease, transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.chapter:hover .chapter-icon {
+  color: var(--blue);
+  transform: rotate(-5deg) scale(1.08);
+}
+@media (prefers-reduced-motion: reduce) {
+  .chapter-details,
+  .chapter-details li::after {
+    transition: none;
+  }
 }
 .services-head > span {
   font-size: 10px;
@@ -655,7 +748,7 @@ body.is-loading > .preloader {
 .insights-head h2,
 .contact-title h2 {
   font-size: clamp(58px, 7.2vw, 118px);
-  line-height: 0.88;
+  line-height: 0.96;
   letter-spacing: -0.06em;
   font-weight: 300;
   margin: 38px 0 0;
@@ -1721,7 +1814,8 @@ form button:hover {
   .studio-copy h2,
   .insights-head h2,
   .contact-title h2 {
-    font-size: 43px;
+    font-size: clamp(36px, 11.5vw, 43px);
+    line-height: 1;
   }
   .chapter {
     grid-template-columns: 40px 1fr 20px;
@@ -2485,6 +2579,36 @@ h3,
 .quote blockquote {
   font-family: var(--font-display);
   font-weight: 400 !important;
+}
+.hero h1 {
+  font-weight: 300 !important;
+}
+/* Display type uses unusually tall capitals and deep curves. These shared
+   guards prevent those glyphs being shaved by section and animation masks. */
+h1,
+h2,
+h3,
+.statement-marquee,
+.sector-line,
+.quote blockquote,
+.footer-cta {
+  padding-block: 0.08em;
+  text-wrap: balance;
+}
+.text-swap-character {
+  padding-block: 0.08em;
+  margin-block: -0.08em;
+}
+.journey-sticky > span,
+.services-head > span,
+.studio-copy > span,
+.insights-head > span,
+.contact-title > span,
+.mobile-work-head > span {
+  display: block;
+  max-width: 100%;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
 }
 .hero-role,
 .hero-rail,
