@@ -28,9 +28,11 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
   const [progress, setProgress] = useState(0);
   const [wavePhase, setWavePhase] = useState(0);
   const [leaving, setLeaving] = useState(false);
+  const [portalReady, setPortalReady] = useState(false);
   const exitTimer = useRef<number | null>(null);
 
   useEffect(() => {
+    setPortalReady(true);
     document.body.classList.add("is-loading");
     const previousHtmlOverflow = document.documentElement.style.overflow;
     const previousBodyOverflow = document.body.style.overflow;
@@ -172,6 +174,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
         background: "#ffffff",
         color: "#111111",
         isolation: "isolate",
+        visibility: "visible",
       }}
       aria-label={`Loading Ink Media — ${Math.round(progress * 100)} percent`}
       role="status"
@@ -284,5 +287,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
     </motion.div>
   );
 
-  return createPortal(overlay, document.body);
+  // Render the cover in the initial HTML, then move it outside the page once
+  // mounted so page transforms and stacking contexts cannot trap the overlay.
+  return portalReady ? createPortal(overlay, document.body) : overlay;
 }

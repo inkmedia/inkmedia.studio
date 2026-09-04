@@ -2674,7 +2674,7 @@ h3,
   height: min(80vh, 770px);
   transform: translate(-50%, -50%);
   pointer-events: none;
-  opacity: 0.62;
+  opacity: 0.4;
 }
 .hero-model canvas {
   display: block;
@@ -2686,7 +2686,7 @@ h3,
     top: 51%;
     width: min(68vw, 470px);
     height: 34vh;
-    opacity: 0.46;
+    opacity: 0.4;
   }
 }
 

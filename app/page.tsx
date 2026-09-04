@@ -783,7 +783,7 @@ export default function Home() {
 
   return (
     <main>
-      {loading && mounted && <Preloader onComplete={() => setLoading(false)} />}
+      {loading && <Preloader onComplete={() => setLoading(false)} />}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
