@@ -1,0 +1,344 @@
+.about-page {
+  background: #f7f6f3;
+}
+.about-hero {
+  position: relative;
+  isolation: isolate;
+  min-height: max(760px, 100svh);
+  overflow: hidden;
+  background: #f7f6f3;
+}
+.about-art {
+  position: absolute;
+  inset: 60px 0 0;
+  z-index: -1;
+  background: url("/images/about-glass.png") center center / cover no-repeat;
+}
+.about-composer {
+  position: relative;
+  width: 100%;
+  padding: clamp(145px, 18vh, 200px) 20px 180px;
+  text-align: center;
+}
+.about-headline {
+  margin: 0 auto 24px;
+  width: fit-content;
+  max-width: 100%;
+  font-family: var(--font-display);
+  font-weight: 100;
+  font-size: clamp(50px, 6.5vw, 106px);
+  line-height: 0.99;
+  letter-spacing: -0.03em;
+  cursor: text;
+  user-select: text;
+}
+.about-headline--h2 {
+  font-size: clamp(44px, 5.4vw, 88px);
+}
+.about-headline--h3 {
+  font-size: clamp(36px, 4.4vw, 72px);
+}
+.about-creative {
+  /* Override the shared heading weight for this formatting control. */
+  font-weight: 100 !important;
+  display: table;
+  padding: 0.02em 0.12em 0.08em;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.065);
+}
+.about-intro {
+  margin-bottom: 4px;
+}
+.about-headline {
+  text-underline-offset: 0.08em;
+  text-decoration-thickness: 0.045em;
+}
+.about-creative::selection {
+  background: #dedcda;
+}
+.about-toolbar {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 7px 9px;
+  border: 1px solid #e5e3e0;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow:
+    0 2px 3px #00000009,
+    0 8px 24px #00000005;
+  color: #282828;
+  font-family: var(--font-body);
+}
+.about-toolbar button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.about-toolbar button:hover,
+.about-toolbar button[aria-pressed="true"] {
+  background: #eeedeb;
+}
+.about-toolbar button:focus-visible,
+.about-toolbar select:focus-visible {
+  outline: 2px solid #6d28d9;
+  outline-offset: 3px;
+}
+.about-heading-select {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.about-heading-select select {
+  width: 124px;
+  height: 36px;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  padding: 0 27px 0 9px;
+  font: inherit;
+  font-size: 16px;
+  color: inherit;
+  cursor: pointer;
+}
+.about-heading-select svg {
+  position: absolute;
+  right: 10px;
+  pointer-events: none;
+  color: #8a8a8a;
+}
+.about-toolbar-divider {
+  height: 21px;
+  width: 1px;
+  margin: 0 4px;
+  background: #eae9e7;
+}
+.about-color-control {
+  position: relative;
+}
+.about-toolbar .about-color-toggle {
+  width: 48px;
+  gap: 8px;
+}
+.about-color-toggle > span {
+  font-size: 23px;
+  line-height: 25px;
+  border-bottom: 3px solid;
+}
+.about-palette {
+  position: absolute;
+  z-index: 5;
+  right: -15px;
+  top: 48px;
+  width: 210px;
+  padding: 14px;
+  border: 1px solid #e5e3e0;
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 8px 30px #00000013;
+}
+.about-swatches {
+  display: flex;
+  justify-content: space-between;
+  gap: 7px;
+}
+.about-swatches button {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 0 0 1px #ddd;
+}
+.about-swatches button[aria-pressed="true"] {
+  outline: 2px solid #777;
+  outline-offset: 2px;
+}
+.about-custom-color {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  font-size: 13px;
+}
+.about-custom-color input {
+  width: 32px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.about-hero-foot {
+  position: absolute;
+  bottom: 23px;
+  left: 28px;
+  right: 28px;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: #55514e;
+}
+.about-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+@media (min-width: 1600px) {
+  .about-art {
+    background-position: center 40%;
+  }
+}
+@media (max-width: 640px) {
+  .about-hero {
+    min-height: max(700px, 100svh);
+  }
+  .about-composer {
+    padding: 155px 12px 160px;
+  }
+  .about-headline {
+    font-size: clamp(39px, 9.3vw, 59px);
+    margin-bottom: 25px;
+  }
+  .about-intro {
+    margin-bottom: 4px;
+  }
+  .about-headline--h2 {
+    font-size: clamp(34px, 8vw, 50px);
+  }
+  .about-headline--h3 {
+    font-size: clamp(28px, 6.7vw, 42px);
+  }
+  .about-art {
+    inset: 290px -210px 15px;
+    background-position: center bottom;
+  }
+  .about-toolbar {
+    gap: 1px;
+    padding: 6px;
+    border-radius: 12px;
+  }
+  .about-toolbar button {
+    width: 32px;
+    height: 36px;
+  }
+  .about-toolbar-divider {
+    margin: 0 2px;
+  }
+  .about-heading-select select {
+    width: 103px;
+    font-size: 14px;
+    padding-left: 5px;
+  }
+  .about-toolbar .about-color-toggle {
+    width: 41px;
+    gap: 5px;
+  }
+  .about-hero-foot {
+    left: 18px;
+    right: 18px;
+    font-size: 8px;
+  }
+  .about-hero-foot span:last-child {
+    display: none;
+  }
+}
+
+/* Stable wrappers keep the entrance from replaying when the heading level changes. */
+@keyframes about-rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes about-art-in {
+  from {
+    opacity: 0;
+    transform: scale(1.045) translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .about-art {
+    animation: about-art-in 1.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .about-intro {
+    animation: about-rise-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+  }
+  .about-creative-entrance {
+    animation: about-rise-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+  }
+  .about-toolbar {
+    animation: about-rise-in 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
+  }
+  .about-toolbar > :not(.about-toolbar-divider) {
+    animation: about-rise-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.6s both;
+  }
+  .about-toolbar > button:nth-of-type(1) {
+    animation-delay: 0.66s;
+  }
+  .about-toolbar > button:nth-of-type(2) {
+    animation-delay: 0.72s;
+  }
+  .about-toolbar > button:nth-of-type(3) {
+    animation-delay: 0.78s;
+  }
+  .about-toolbar > .about-color-control {
+    animation-delay: 0.84s;
+  }
+  .about-toolbar > button:last-child {
+    animation-delay: 0.9s;
+  }
+  .about-hero-foot {
+    animation: about-rise-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.95s both;
+  }
+  .about-toolbar:focus-within,
+  .about-toolbar:focus-within > * {
+    animation: none;
+  }
+}
+
+/* The route loader covers the incoming page. Removing its transition class
+   starts a fresh entrance instead of letting it finish behind the loader. */
+@media (prefers-reduced-motion: no-preference) {
+  body.page-is-transitioning
+    > .about-page
+    :is(
+      .about-art,
+      .about-intro,
+      .about-creative-entrance,
+      .about-toolbar,
+      .about-toolbar > :not(.about-toolbar-divider),
+      .about-hero-foot
+    ) {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+.about-creative[data-bold="true"] {
+  font-weight: 700 !important;
+}

@@ -27,13 +27,17 @@ export function SiteHeader({ loading = false }: { loading?: boolean }) {
         <img src="/ink-logo.png" alt="Ink Media" width="3375" height="3375" />
       </motion.a>
       <nav aria-label="Primary navigation">
-        <motion.a className="swap-trigger" href="#" {...enter(0.12)}>
+        <motion.a
+          className="swap-trigger"
+          href="/case-studies"
+          {...enter(0.12)}
+        >
           <SwapText>CASE STUDIES</SwapText>
         </motion.a>
-        <motion.a className="swap-trigger" href="#" {...enter(0.19)}>
+        <motion.a className="swap-trigger" href="/services" {...enter(0.19)}>
           <SwapText>SERVICES</SwapText>
         </motion.a>
-        <motion.a className="swap-trigger" href="#" {...enter(0.26)}>
+        <motion.a className="swap-trigger" href="/about" {...enter(0.26)}>
           <SwapText>ABOUT</SwapText>
         </motion.a>
       </nav>

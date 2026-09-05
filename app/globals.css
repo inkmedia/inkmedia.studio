@@ -71,6 +71,42 @@ body {
 body.page-is-transitioning {
   overflow: hidden;
 }
+.route-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  background: var(--paper);
+  color: var(--red);
+  cursor: progress;
+  touch-action: none;
+}
+.route-loader[hidden] { display: none; }
+.route-loader-logo {
+  width: clamp(72px, 10.8vw, 138px);
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3;
+}
+.route-loader-logo path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  animation: route-logo-draw 1s ease-in-out forwards;
+}
+@keyframes route-logo-draw {
+  0% { stroke-dashoffset: 1; opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .route-loader-logo path { animation: none; stroke-dashoffset: 0; }
+}
 .title-page {
   min-height: 100svh;
   background: var(--paper);
