@@ -311,7 +311,8 @@ body.is-loading > .preloader {
   mix-blend-mode: difference;
 }
 .nav {
-  position: absolute;
+  /* Keep navigation anchored to the viewport during scroll. */
+  position: fixed;
   z-index: 30;
   top: 0;
   left: 50%;
@@ -322,6 +323,20 @@ body.is-loading > .preloader {
   align-items: center;
   color: #000;
   border-bottom: 1px dashed rgba(0, 0, 0, 0.35);
+}
+.nav {
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.25s, box-shadow 0.25s;
+}
+.nav.nav-scrolled {
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 0 0 100vmax rgba(255, 255, 255, 0.96);
+  clip-path: inset(0 -100vmax);
+}
+.nav.nav-hidden:not(:focus-within) {
+  transform: translate(-50%, -105%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav { transition: none; }
 }
 .wordmark {
   display: block;

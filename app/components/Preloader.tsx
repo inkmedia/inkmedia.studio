@@ -213,7 +213,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
         />
         <div
           className="preloader-icon"
-          style={{ position: "relative", zIndex: 1, width: "min(40.32vmin, 364px)", height: "min(40.32vmin, 364px)" }}
+          style={{ position: "relative", zIndex: 1, width: "min(32.256vmin, 291.2px)", height: "min(32.256vmin, 291.2px)" }}
           aria-hidden="true"
         >
         <svg viewBox="0 0 1000 1000" width="100%" height="100%" style={{ display: "block" }}>
