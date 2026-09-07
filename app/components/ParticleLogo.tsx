@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 type Dot = {
   x: number;
@@ -15,7 +15,6 @@ type Dot = {
 
 export function ParticleLogo() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -33,6 +32,7 @@ export function ParticleLogo() {
     let builtWidth = 0;
     let builtHeight = 0;
     let sourceRequested = false;
+    let formationStarted = false;
     const source = new Image();
 
     const draw = (time: number) => {
@@ -188,10 +188,19 @@ export function ParticleLogo() {
           const sx = Math.min(239, Math.round(left + (x - offsetX) / scale));
           const sy = Math.min(239, Math.round(top + (y - offsetY) / scale));
           const sampled = sample(sx, sy);
-          if (sampled.index >= 0)
+          if (sampled.index >= 0) {
+            const seed = Math.abs(
+              Math.sin(sx * 12.9898 + sy * 78.233) * 43758.5453,
+            );
+            const random = seed - Math.floor(seed);
+            const secondSeed = Math.abs(
+              Math.sin(sx * 39.3467 + sy * 11.135) * 24634.6345,
+            );
+            const angle = (secondSeed - Math.floor(secondSeed)) * Math.PI * 2;
+            const scatter = 28 + random * 62;
             dots.push({
-              x,
-              y,
+              x: x + Math.cos(angle) * scatter,
+              y: y + Math.sin(angle) * scatter,
               homeX: x,
               homeY: y,
               vx: 0,
@@ -200,9 +209,15 @@ export function ParticleLogo() {
                 pixels[sampled.index] > pixels[sampled.index + 1] * 1.5,
               size: 1.7 * Math.max(0.48, Math.sqrt(sampled.coverage / 9)),
             });
+          }
         }
-      setReady(true);
-      wake();
+      if (motion.matches) {
+        dots.forEach((dot) => {
+          dot.x = dot.homeX;
+          dot.y = dot.homeY;
+        });
+      }
+      if (formationStarted) wake();
     };
     const move = (event: PointerEvent) => {
       if (event.pointerType === "touch" || motion.matches) return;
@@ -228,26 +243,33 @@ export function ParticleLogo() {
     };
     const intersection = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
-      if (visible) {
-        if (!sourceRequested) {
-          sourceRequested = true;
-          source.src = "/ink-logo.png";
-        } else {
-          wake();
-        }
-      } else {
+      if (visible && formationStarted) wake();
+      else if (!visible) {
         cancelAnimationFrame(frame);
         frame = 0;
         leave();
       }
     });
+    const startFormation = () => {
+      if (formationStarted) return;
+      formationStarted = true;
+      visible = true;
+      if (!sourceRequested) {
+        sourceRequested = true;
+        source.src = "/ink-logo.png";
+      } else {
+        wake();
+      }
+    };
     intersection.observe(canvas);
     const resize = new ResizeObserver(build);
     resize.observe(canvas);
     canvas.addEventListener("pointermove", move);
     canvas.addEventListener("pointerleave", leave);
+    window.addEventListener("ink-footer-reveal", startFormation);
     motion.addEventListener("change", resetMotion);
     source.onload = build;
+    if (canvas.closest("[data-revealed='true']")) startFormation();
     return () => {
       disposed = true;
       cancelAnimationFrame(frame);
@@ -255,20 +277,14 @@ export function ParticleLogo() {
       intersection.disconnect();
       canvas.removeEventListener("pointermove", move);
       canvas.removeEventListener("pointerleave", leave);
+      window.removeEventListener("ink-footer-reveal", startFormation);
       motion.removeEventListener("change", resetMotion);
       source.onload = null;
     };
   }, []);
 
   return (
-    <span className={`particle-logo${ready ? " is-ready" : ""}`}>
-      <img
-        src="/ink-logo.png"
-        alt=""
-        aria-hidden="true"
-        width="3375"
-        height="3375"
-      />
+    <span className="particle-logo">
       <canvas ref={canvasRef} aria-hidden="true" />
     </span>
   );

@@ -351,6 +351,23 @@ export function SiteFooter() {
             start: "top bottom",
             end: "bottom bottom",
             scrub: 1,
+            onUpdate: (trigger) => {
+              const logo = footer.current?.querySelector<HTMLElement>(
+                ".footer-logo",
+              );
+              const bounds = logo?.getBoundingClientRect();
+              const logoFullyVisible = Boolean(
+                bounds && bounds.top >= 0 && bounds.bottom <= window.innerHeight,
+              );
+              if (
+                trigger.progress < 0.98 ||
+                !logoFullyVisible ||
+                footer.current?.hasAttribute("data-revealed")
+              )
+                return;
+              footer.current?.setAttribute("data-revealed", "true");
+              window.dispatchEvent(new Event("ink-footer-reveal"));
+            },
           },
         },
       );
