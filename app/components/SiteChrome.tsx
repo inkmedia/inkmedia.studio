@@ -5,7 +5,10 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Mail, MapPin, Phone } from "lucide-react";
 import { RollingText as SwapText } from "./RollingText";
+
+import { ParticleLogo } from "./ParticleLogo";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -273,18 +276,12 @@ export function SiteFooter() {
           <div className="footer-columns">
             <div className="footer-brand">
               <Link
-                className="wordmark footer-logo"
+                className="footer-logo"
                 href="/"
-                aria-label="Back to top"
+                aria-label="Ink Media home"
               >
-                <img
-                  src="/ink-logo.png"
-                  alt="Ink Media"
-                  width="3375"
-                  height="3375"
-                />
+                <ParticleLogo />
               </Link>
-              <p>CREATIVE WEB STUDIO.</p>
             </div>
             <div>
               <span>IMP LINKS</span>
@@ -306,12 +303,18 @@ export function SiteFooter() {
             </div>
             <div>
               <span>GET IN TOUCH</span>
-              <a className="swap-trigger" href="mailto:contact@inkmedia.in">
+              <a className="footer-contact-item swap-trigger" href="mailto:contact@inkmedia.in">
+                <Mail aria-hidden="true" />
                 <SwapText>contact@inkmedia.in</SwapText>
               </a>
-              <a className="swap-trigger" href="tel:+919158310192">
+              <a className="footer-contact-item swap-trigger" href="tel:+919158310192">
+                <Phone aria-hidden="true" />
                 <SwapText>+91 91583 10192</SwapText>
               </a>
+              <address className="footer-contact-item">
+                <MapPin aria-hidden="true" />
+                <span>Hari Krupa, Rasta Peth,<br />Pune - 4110102</span>
+              </address>
             </div>
             <div>
               <span>FOLLOW US</span>
