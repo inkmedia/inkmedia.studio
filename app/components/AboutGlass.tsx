@@ -180,7 +180,12 @@ export default function AboutGlass() {
       });
     };
     const resize = () => {
-      const { width, height } = element.getBoundingClientRect();
+      // Route transitions temporarily scale the entire incoming page. Layout
+      // dimensions stay correct during that transform; bounding-client
+      // dimensions do not and previously left the canvas permanently narrow.
+      const width = element.clientWidth;
+      const height = element.clientHeight;
+      if (!width || !height) return;
       halfWidth = 5 * width / Math.max(height, 1);
       mobile = width < 640;
       camera.left = -halfWidth;
