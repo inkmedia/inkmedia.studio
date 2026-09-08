@@ -2241,6 +2241,10 @@ body.drawer-open {
   .footer-brand {
     grid-column: 1 / -1;
   }
+  .footer-logo {
+    width: 180px;
+    height: 148px;
+  }
   .project-drawer-grid {
     grid-template-columns: 1fr;
     gap: 48px;
@@ -2288,6 +2292,8 @@ body.drawer-open {
     grid-row: 3;
   }
   .footer-logo {
+    width: min(140px, 42vw);
+    height: 116px;
     margin-inline: auto;
   }
   .footer-bottom {

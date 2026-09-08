@@ -66,8 +66,12 @@ export function ParticleLogo() {
         )
           moving = true;
         context.fillStyle = dot.red ? "#ff3434" : "rgba(255,255,255,0.98)";
-        const inset = (1.7 - dot.size) / 2;
-        context.fillRect(dot.x + inset, dot.y + inset, dot.size, dot.size);
+        context.fillRect(
+          dot.x - dot.size / 2,
+          dot.y - dot.size / 2,
+          dot.size,
+          dot.size,
+        );
       }
       if (visible && !motion.matches && moving)
         frame = requestAnimationFrame(draw);
@@ -175,7 +179,9 @@ export function ParticleLogo() {
       const renderedHeight = sourceHeight * scale;
       const offsetX = (width - renderedWidth) / 2;
       const offsetY = (height - renderedHeight) / 2;
-      const spacing = 3.6;
+      const dotScale = Math.max(0.52, Math.min(1, width / 250));
+      const dotSize = 1.7 * dotScale;
+      const spacing = 3.6 * dotScale;
       const centerX = width / 2;
       const centerY = height / 2;
       const startX =
@@ -197,7 +203,7 @@ export function ParticleLogo() {
               Math.sin(sx * 39.3467 + sy * 11.135) * 24634.6345,
             );
             const angle = (secondSeed - Math.floor(secondSeed)) * Math.PI * 2;
-            const scatter = 28 + random * 62;
+            const scatter = (28 + random * 62) * dotScale;
             dots.push({
               x: x + Math.cos(angle) * scatter,
               y: y + Math.sin(angle) * scatter,
@@ -207,7 +213,8 @@ export function ParticleLogo() {
               vy: 0,
               red:
                 pixels[sampled.index] > pixels[sampled.index + 1] * 1.5,
-              size: 1.7 * Math.max(0.48, Math.sqrt(sampled.coverage / 9)),
+              size:
+                dotSize * Math.max(0.48, Math.sqrt(sampled.coverage / 9)),
             });
           }
         }
