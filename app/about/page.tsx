@@ -1,9 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { Bold, Italic, Underline, RotateCcw, ChevronDown } from "lucide-react";
 import { SiteHeader } from "../components/SiteChrome";
 import "./about.css";
+
+const AboutGlass = dynamic(() => import("../components/AboutGlass"), {
+  ssr: false,
+  loading: () => <div className="about-art about-glass" aria-hidden="true" />,
+});
 
 const wording = "Creative Things.";
 type TextStyle = {
@@ -75,7 +81,7 @@ export default function AboutPage() {
     <main className="about-page" id="top">
       <SiteHeader />
       <section className="about-hero" aria-label="About Ink Media">
-        <div className="about-art" aria-hidden="true" />
+        <AboutGlass />
         <div className="about-composer">
           <p className="about-headline about-intro">We make</p>
           <div className="about-creative-entrance">

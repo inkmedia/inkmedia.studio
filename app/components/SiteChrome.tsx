@@ -428,17 +428,22 @@ export function SiteFooter() {
             </div>
             <div>
               <span>GET IN TOUCH</span>
-              <a className="footer-contact-item swap-trigger" href="mailto:contact@inkmedia.in">
-                <Mail aria-hidden="true" />
-                <SwapText>contact@inkmedia.in</SwapText>
-              </a>
-              <a className="footer-contact-item swap-trigger" href="tel:+919158310192">
-                <Phone aria-hidden="true" />
-                <SwapText>+91 91583 10192</SwapText>
-              </a>
+              <div className="footer-contact-primary">
+                <a className="footer-contact-item swap-trigger" href="mailto:contact@inkmedia.in">
+                  <Mail aria-hidden="true" />
+                  <SwapText>contact@inkmedia.in</SwapText>
+                </a>
+                <a className="footer-contact-item swap-trigger" href="tel:+919158310192">
+                  <Phone aria-hidden="true" />
+                  <SwapText>+91 91583 10192</SwapText>
+                </a>
+              </div>
               <address className="footer-contact-item">
                 <MapPin aria-hidden="true" />
-                <span>Hari Krupa, Rasta Peth,<br />Pune - 4110102</span>
+                <span>
+                  Hari Krupa, Rasta Peth,
+                  <br className="footer-address-break" /> Pune - 4110102
+                </span>
               </address>
             </div>
             <div>

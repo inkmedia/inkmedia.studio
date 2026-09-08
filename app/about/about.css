@@ -10,9 +10,9 @@
 }
 .about-art {
   position: absolute;
-  inset: 60px 0 0;
+  inset: 0 0 0;
   z-index: -1;
-  background: url("/images/about-glass.png") center center / cover no-repeat;
+  background: url("/images/glass-bg.jpeg") center center / cover no-repeat;
 }
 .about-composer {
   position: relative;
@@ -342,3 +342,40 @@
 .about-creative[data-bold="true"] {
   font-weight: 700 !important;
 }
+
+/* Interactive glass occupies the hero; only actual text and controls intercept it. */
+.about-glass.about-art {
+  inset: 0;
+  z-index: 0;
+  background: none;
+  animation: none;
+}
+.about-glass canvas { display: block; opacity: 0; touch-action: none; }
+.about-glass.is-ready canvas { opacity: 1; }
+.about-composer { z-index: 1; pointer-events: none; }
+.about-headline, .about-toolbar { pointer-events: auto; }
+.about-hero-foot { pointer-events: none; z-index: 1; }
+.about-glass-controls {
+  position: absolute;
+  bottom: 62px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  white-space: nowrap;
+  font-size: 11px;
+  color: #655b70;
+}
+.about-glass-controls button {
+  border: 1px solid #d8d0df;
+  border-radius: 20px;
+  padding: 7px 12px;
+  background: #ffffffb8;
+  color: #51435e;
+  cursor: pointer;
+}
+.about-glass-controls button:focus-visible { outline: 2px solid #6d28d9; outline-offset: 3px; }
+
+.about-glass:not(.is-ready) + .about-glass-controls { display: none; }
