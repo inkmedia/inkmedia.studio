@@ -162,8 +162,23 @@ export default function AboutGlass() {
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let halfWidth = 8;
     let mobile = false;
-    const entranceStartedAt = performance.now();
+    let entranceStartedAt = document.body.classList.contains("page-is-transitioning")
+      ? Number.POSITIVE_INFINITY
+      : performance.now();
     let entranceComplete = motion.matches;
+    const transitionObserver = new MutationObserver(() => {
+      if (
+        !entranceComplete &&
+        Number.isFinite(entranceStartedAt) === false &&
+        !document.body.classList.contains("page-is-transitioning")
+      ) {
+        entranceStartedAt = performance.now();
+      }
+    });
+    transitionObserver.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
     const arrange = () => {
       discs.forEach((disc, i) => {
         // Keep the initial composition clear around the headline and toolbar.
@@ -353,7 +368,7 @@ export default function AboutGlass() {
     return () => {
       disposed = true;
       renderer.setAnimationLoop(null);
-      observer.disconnect(); visibility.disconnect();
+      observer.disconnect(); visibility.disconnect(); transitionObserver.disconnect();
       window.removeEventListener("blur", blur);
       canvas.removeEventListener("pointerdown", down);
       canvas.removeEventListener("pointermove", move);
