@@ -251,6 +251,10 @@
   line-height: 1.15;
   letter-spacing: -0.02em;
 }
+.about-capability:last-child h3 {
+  white-space: nowrap;
+  font-size: clamp(18px, 1.45vw, 24px);
+}
 .about-capability p {
   margin: 0;
   color: #625d58;
@@ -264,6 +268,7 @@
 @media (max-width: 540px) {
   .about-capabilities-grid { grid-template-columns: 1fr; gap: 12px; }
   .about-capability { padding: 20px; }
+  .about-capability:last-child h3 { white-space: normal; font-size: 21px; }
 }
 .about-team {
   max-width: 1600px;
