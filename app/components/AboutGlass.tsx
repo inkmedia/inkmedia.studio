@@ -3,8 +3,26 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
-const logos = ["ab-logo", "fco", "sc", "ngr", "hom", "ggg", "profile", "5", "7", "8"];
-type Disc = { group: THREE.Group; caustic: THREE.Mesh; velocity: THREE.Vector2; spin: number; radius: number; home: THREE.Vector2 };
+const logos = [
+  "ab-logo",
+  "fco",
+  "sc",
+  "ngr",
+  "hom",
+  "ggg",
+  "profile",
+  "5",
+  "7",
+  "8",
+];
+type Disc = {
+  group: THREE.Group;
+  caustic: THREE.Mesh;
+  velocity: THREE.Vector2;
+  spin: number;
+  radius: number;
+  home: THREE.Vector2;
+};
 
 export default function AboutGlass() {
   const host = useRef<HTMLDivElement>(null);
@@ -15,10 +33,19 @@ export default function AboutGlass() {
     if (!element) return;
     let renderer: THREE.WebGLRenderer;
     try {
-      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
-    } catch { return; }
+      renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: true,
+        powerPreference: "high-performance",
+      });
+    } catch {
+      return;
+    }
     const canvas = renderer.domElement;
-    canvas.setAttribute("aria-label", "Interactive glass client logos. Drag a disc and release to throw it.");
+    canvas.setAttribute(
+      "aria-label",
+      "Interactive glass client logos. Drag a disc and release to throw it.",
+    );
     element.appendChild(canvas);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -79,7 +106,8 @@ export default function AboutGlass() {
     // refraction buffers or shadow maps. Their projection follows each lens.
     const causticGeometry = new THREE.PlaneGeometry(1, 1);
     const causticMaterial = new THREE.ShaderMaterial({
-      transparent: true, depthWrite: false,
+      transparent: true,
+      depthWrite: false,
       vertexShader: `
         varying vec2 vUv;
         void main() {
@@ -118,8 +146,23 @@ export default function AboutGlass() {
     resources.push(causticGeometry, causticMaterial);
 
     // A gently convex lens face bends studio reflections across the disc.
-    const profile = [[0,-0.18],[0.35,-0.175],[0.7,-0.155],[0.94,-0.12],[1.025,-0.07],[1.045,0],[1.025,0.07],[0.94,0.12],[0.7,0.155],[0.35,0.175],[0,0.18]];
-    const geometry = new THREE.LatheGeometry(profile.map(([r, z]) => new THREE.Vector2(r, z)), 64);
+    const profile = [
+      [0, -0.18],
+      [0.35, -0.175],
+      [0.7, -0.155],
+      [0.94, -0.12],
+      [1.025, -0.07],
+      [1.045, 0],
+      [1.025, 0.07],
+      [0.94, 0.12],
+      [0.7, 0.155],
+      [0.35, 0.175],
+      [0, 0.18],
+    ];
+    const geometry = new THREE.LatheGeometry(
+      profile.map(([r, z]) => new THREE.Vector2(r, z)),
+      64,
+    );
     geometry.rotateX(Math.PI / 2);
     geometry.scale(1, 1, 1.3);
     const logoGeometry = new THREE.PlaneGeometry(1, 1);
@@ -131,38 +174,64 @@ export default function AboutGlass() {
       const radius = 0.75 + (i % 3) * 0.13;
       const group = new THREE.Group();
       group.scale.setScalar(radius);
-      group.rotation.set(0.2 + (i % 3) * 0.22, (i % 2 ? -1 : 1) * (0.25 + (i % 4) * 0.16), (i % 3 - 1) * 0.3);
+      group.rotation.set(
+        0.2 + (i % 3) * 0.22,
+        (i % 2 ? -1 : 1) * (0.25 + (i % 4) * 0.16),
+        ((i % 3) - 1) * 0.3,
+      );
       const glass = new THREE.Mesh(geometry, glassMaterial);
       glass.userData.index = i;
       hits.push(glass);
       group.add(glass);
-      loader.load(`/images/clients/${logo}.png`, texture => {
-        if (disposed) { texture.dispose(); return; }
+      loader.load(`/images/clients/${logo}.png`, (texture) => {
+        if (disposed) {
+          texture.dispose();
+          return;
+        }
         texture.colorSpace = THREE.SRGBColorSpace;
-        texture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+        texture.anisotropy = Math.min(
+          8,
+          renderer.capabilities.getMaxAnisotropy(),
+        );
         // Preserve soft alpha edges and keep the logo crisp above the glass highlight.
         const ink = new THREE.MeshBasicMaterial({
-          map: texture, side: THREE.DoubleSide, transparent: true,
-          depthWrite: false, toneMapped: false,
+          map: texture,
+          side: THREE.DoubleSide,
+          transparent: true,
+          depthWrite: false,
+          toneMapped: false,
         });
         resources.push(texture, ink);
         const label = new THREE.Mesh(logoGeometry, ink);
         label.renderOrder = 1;
         const aspect = texture.image.width / texture.image.height;
-        label.scale.set(aspect > 1 ? 1.5 : 1.5 * aspect, aspect > 1 ? 1.5 / aspect : 1.5, 1);
+        label.scale.set(
+          aspect > 1 ? 1.5 : 1.5 * aspect,
+          aspect > 1 ? 1.5 / aspect : 1.5,
+          1,
+        );
         group.add(label);
       });
       scene.add(group);
       const caustic = new THREE.Mesh(causticGeometry, causticMaterial);
       caustic.renderOrder = -1;
       scene.add(caustic);
-      discs.push({ group, caustic, radius, velocity: new THREE.Vector2(), spin: 0, home: new THREE.Vector2() });
+      discs.push({
+        group,
+        caustic,
+        radius,
+        velocity: new THREE.Vector2(),
+        spin: 0,
+        home: new THREE.Vector2(),
+      });
     });
 
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let halfWidth = 8;
     let mobile = false;
-    let entranceStartedAt = document.body.classList.contains("page-is-transitioning")
+    let entranceStartedAt = document.body.classList.contains(
+      "page-is-transitioning",
+    )
       ? Number.POSITIVE_INFINITY
       : performance.now();
     let entranceComplete = motion.matches;
@@ -183,15 +252,44 @@ export default function AboutGlass() {
       discs.forEach((disc, i) => {
         // Keep the initial composition clear around the headline and toolbar.
         const positions = mobile
-          ? [[-0.7,-1], [0.7,-2.4], [-0.7,-3.5], [0.8,-4], [-0.9,-2.2], [0.85,-0.6], [-0.6,-4], [0,-3], [0.8,-3.3], [-0.9,-0.4]]
-          : [[-0.85,1.8], [-0.85,-0.6], [-0.67,-2.8], [-0.34,-3.4], [0.02,-3.55], [0.48,-3.4], [0.79,-2.3], [0.88,0], [0.8,2.5], [0.52,-1.8]];
+          ? [
+              [-0.7, -1],
+              [0.7, -2.4],
+              [-0.7, -3.5],
+              [0.8, -4],
+              [-0.9, -2.2],
+              [0.85, -0.6],
+              [-0.6, -4],
+              [0, -3],
+              [0.8, -3.3],
+              [-0.9, -0.4],
+            ]
+          : [
+              [-0.85, 1.8],
+              [-0.85, -0.6],
+              [-0.67, -2.8],
+              [-0.34, -3.4],
+              [0.02, -3.55],
+              [0.48, -3.4],
+              [0.79, -2.3],
+              [0.88, 0],
+              [0.8, 2.5],
+              [0.52, -1.8],
+            ];
         disc.radius = (mobile ? 0.53 : 0.92) + (i % 3) * (mobile ? 0.04 : 0.14);
         disc.group.scale.setScalar(entranceComplete ? disc.radius : 0.001);
-        disc.home.set(positions[i][0] * (halfWidth - disc.radius), positions[i][1]);
+        disc.home.set(
+          positions[i][0] * (halfWidth - disc.radius),
+          positions[i][1],
+        );
         disc.group.position.set(disc.home.x, disc.home.y, 0);
         disc.velocity.set(0, 0);
         disc.spin = 0;
-        disc.group.rotation.set(0.2 + (i % 3) * 0.22, (i % 2 ? -1 : 1) * (0.25 + (i % 4) * 0.16), (i % 3 - 1) * 0.3);
+        disc.group.rotation.set(
+          0.2 + (i % 3) * 0.22,
+          (i % 2 ? -1 : 1) * (0.25 + (i % 4) * 0.16),
+          ((i % 3) - 1) * 0.3,
+        );
       });
     };
     const resize = () => {
@@ -201,7 +299,7 @@ export default function AboutGlass() {
       const width = element.clientWidth;
       const height = element.clientHeight;
       if (!width || !height) return;
-      halfWidth = 5 * width / Math.max(height, 1);
+      halfWidth = (5 * width) / Math.max(height, 1);
       mobile = width < 640;
       camera.left = -halfWidth;
       camera.right = halfWidth;
@@ -226,7 +324,10 @@ export default function AboutGlass() {
     const previousPointer = new THREE.Vector2();
     function locate(event: PointerEvent) {
       const rect = canvas.getBoundingClientRect();
-      pointer.set((event.clientX - rect.left) / rect.width * 2 - 1, 1 - (event.clientY - rect.top) / rect.height * 2);
+      pointer.set(
+        ((event.clientX - rect.left) / rect.width) * 2 - 1,
+        1 - ((event.clientY - rect.top) / rect.height) * 2,
+      );
       raycaster.setFromCamera(pointer, camera);
       raycaster.ray.intersectPlane(plane, point);
     }
@@ -237,7 +338,10 @@ export default function AboutGlass() {
       if (!hit) return;
       held = discs[hit.object.userData.index];
       activePointer = event.pointerId;
-      offset.set(held.group.position.x - point.x, held.group.position.y - point.y);
+      offset.set(
+        held.group.position.x - point.x,
+        held.group.position.y - point.y,
+      );
       held.velocity.set(0, 0);
       previousPointer.set(held.group.position.x, held.group.position.y);
       lastMove = performance.now();
@@ -247,14 +351,27 @@ export default function AboutGlass() {
     function move(event: PointerEvent) {
       locate(event);
       if (!held || activePointer !== event.pointerId) {
-        if (!held) canvas.style.cursor = raycaster.intersectObjects(hits, false).length ? "grab" : "default";
+        if (!held)
+          canvas.style.cursor = raycaster.intersectObjects(hits, false).length
+            ? "grab"
+            : "default";
         return;
       }
       const now = performance.now();
       const dt = Math.max((now - lastMove) / 1000, 0.008);
-      const x = THREE.MathUtils.clamp(point.x + offset.x, -halfWidth + held.radius, halfWidth - held.radius);
-      const y = THREE.MathUtils.clamp(point.y + offset.y, -4.7 + held.radius, 4.5 - held.radius);
-      sampledVelocity.set((x - previousPointer.x) / dt, (y - previousPointer.y) / dt).clampLength(0, 14);
+      const x = THREE.MathUtils.clamp(
+        point.x + offset.x,
+        -halfWidth + held.radius,
+        halfWidth - held.radius,
+      );
+      const y = THREE.MathUtils.clamp(
+        point.y + offset.y,
+        -4.7 + held.radius,
+        4.5 - held.radius,
+      );
+      sampledVelocity
+        .set((x - previousPointer.x) / dt, (y - previousPointer.y) / dt)
+        .clampLength(0, 14);
       held.velocity.lerp(sampledVelocity, 1 - Math.exp(-25 * dt));
       previousPointer.set(x, y);
       held.spin = -held.velocity.x * 0.15;
@@ -263,11 +380,18 @@ export default function AboutGlass() {
     }
     function release(event?: PointerEvent) {
       if (event && activePointer !== event.pointerId) return;
-      if (held && (!event || event.type !== "pointerup" || performance.now() - lastMove > 100)) held.velocity.set(0, 0);
+      if (
+        held &&
+        (!event ||
+          event.type !== "pointerup" ||
+          performance.now() - lastMove > 100)
+      )
+        held.velocity.set(0, 0);
       const id = activePointer;
       held = null;
       activePointer = null;
-      if (id !== null && canvas.hasPointerCapture(id)) canvas.releasePointerCapture(id);
+      if (id !== null && canvas.hasPointerCapture(id))
+        canvas.releasePointerCapture(id);
       canvas.style.cursor = "default";
     }
     const blur = () => release();
@@ -277,10 +401,16 @@ export default function AboutGlass() {
     canvas.addEventListener("pointercancel", release);
     canvas.addEventListener("lostpointercapture", release);
     window.addEventListener("blur", blur);
-    const contextLost = (event: Event) => { event.preventDefault(); element.classList.remove("is-ready"); ready = false; };
+    const contextLost = (event: Event) => {
+      event.preventDefault();
+      element.classList.remove("is-ready");
+      ready = false;
+    };
     canvas.addEventListener("webglcontextlost", contextLost);
     let visible = true;
-    const visibility = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; });
+    const visibility = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+    });
     visibility.observe(element);
     let previous = 0;
     let time = 0;
@@ -288,7 +418,8 @@ export default function AboutGlass() {
     renderer.setAnimationLoop((now) => {
       const dt = Math.min((now - previous) / 1000 || 0, 1 / 30);
       previous = now;
-      if (!visible || document.hidden || renderer.getContext().isContextLost()) return;
+      if (!visible || document.hidden || renderer.getContext().isContextLost())
+        return;
       time += dt;
       if (!entranceComplete) {
         let allVisible = true;
@@ -316,44 +447,66 @@ export default function AboutGlass() {
         if (!motion.matches) {
           disc.velocity.x += (disc.home.x - p.x) * 0.085 * dt;
           disc.velocity.y += (disc.home.y - p.y) * 0.085 * dt;
-          disc.group.rotation.x += Math.sin(time * 0.65 + disc.home.x) * 0.035 * dt;
-          disc.group.rotation.y += Math.cos(time * 0.5 + disc.home.y) * 0.065 * dt;
+          disc.group.rotation.x +=
+            Math.sin(time * 0.65 + disc.home.x) * 0.035 * dt;
+          disc.group.rotation.y +=
+            Math.cos(time * 0.5 + disc.home.y) * 0.065 * dt;
         }
         disc.group.rotation.z += disc.spin * dt;
         disc.spin *= Math.exp(-1.1 * dt);
         const boundX = Math.max(0, halfWidth - disc.radius);
-        if (Math.abs(p.x) > boundX) { p.x = Math.sign(p.x) * boundX; disc.velocity.x *= -0.72; }
+        if (Math.abs(p.x) > boundX) {
+          p.x = Math.sign(p.x) * boundX;
+          disc.velocity.x *= -0.72;
+        }
         if (p.y < -4.7 + disc.radius || p.y > 4.5 - disc.radius) {
-          p.y = THREE.MathUtils.clamp(p.y, -4.7 + disc.radius, 4.5 - disc.radius);
+          p.y = THREE.MathUtils.clamp(
+            p.y,
+            -4.7 + disc.radius,
+            4.5 - disc.radius,
+          );
           disc.velocity.y *= -0.72;
         }
       }
-      for (let i = 0; i < discs.length; i++) for (let j = i + 1; j < discs.length; j++) {
-        const a = discs[i], b = discs[j];
-        const dx = b.group.position.x - a.group.position.x, dy = b.group.position.y - a.group.position.y;
-        const distance = Math.hypot(dx, dy);
-        const separation = (a.radius + b.radius) * 0.85;
-        if (distance >= separation || distance < 0.0001) continue;
-        const nx = dx / distance, ny = dy / distance;
-        const wa = a === held ? 0 : 1, wb = b === held ? 0 : 1;
-        const correction = (separation - distance) / (wa + wb);
-        a.group.position.x -= nx * correction * wa; a.group.position.y -= ny * correction * wa;
-        b.group.position.x += nx * correction * wb; b.group.position.y += ny * correction * wb;
-        const speed = (b.velocity.x - a.velocity.x) * nx + (b.velocity.y - a.velocity.y) * ny;
-        if (speed < 0) {
-          const impulse = -1.7 * speed / (wa + wb);
-          a.velocity.x -= impulse * nx * wa; a.velocity.y -= impulse * ny * wa;
-          b.velocity.x += impulse * nx * wb; b.velocity.y += impulse * ny * wb;
-          a.spin -= impulse * 0.06; b.spin += impulse * 0.06;
+      for (let i = 0; i < discs.length; i++)
+        for (let j = i + 1; j < discs.length; j++) {
+          const a = discs[i],
+            b = discs[j];
+          const dx = b.group.position.x - a.group.position.x,
+            dy = b.group.position.y - a.group.position.y;
+          const distance = Math.hypot(dx, dy);
+          const separation = (a.radius + b.radius) * 0.85;
+          if (distance >= separation || distance < 0.0001) continue;
+          const nx = dx / distance,
+            ny = dy / distance;
+          const wa = a === held ? 0 : 1,
+            wb = b === held ? 0 : 1;
+          const correction = (separation - distance) / (wa + wb);
+          a.group.position.x -= nx * correction * wa;
+          a.group.position.y -= ny * correction * wa;
+          b.group.position.x += nx * correction * wb;
+          b.group.position.y += ny * correction * wb;
+          const speed =
+            (b.velocity.x - a.velocity.x) * nx +
+            (b.velocity.y - a.velocity.y) * ny;
+          if (speed < 0) {
+            const impulse = (-1.7 * speed) / (wa + wb);
+            a.velocity.x -= impulse * nx * wa;
+            a.velocity.y -= impulse * ny * wa;
+            b.velocity.x += impulse * nx * wb;
+            b.velocity.y += impulse * ny * wb;
+            a.spin -= impulse * 0.06;
+            b.spin += impulse * 0.06;
+          }
         }
-      }
       for (const disc of discs) {
         const tilt = Math.sin(disc.group.rotation.y);
         const visibleRadius = disc.group.scale.x;
         // Sunlight comes from the upper left, projecting down and to the right.
         disc.caustic.position.set(
           disc.group.position.x + 0.62 + tilt * 0.2,
-          disc.group.position.y - 0.65, -1.2,
+          disc.group.position.y - 0.65,
+          -1.2,
         );
         disc.caustic.scale.set(
           visibleRadius * (3.5 + tilt * 0.45),
@@ -363,12 +516,17 @@ export default function AboutGlass() {
         disc.caustic.rotation.z = -0.45 + disc.group.rotation.z * 0.12;
       }
       renderer.render(scene, camera);
-      if (!ready) { element.classList.add("is-ready"); ready = true; }
+      if (!ready) {
+        element.classList.add("is-ready");
+        ready = true;
+      }
     });
     return () => {
       disposed = true;
       renderer.setAnimationLoop(null);
-      observer.disconnect(); visibility.disconnect(); transitionObserver.disconnect();
+      observer.disconnect();
+      visibility.disconnect();
+      transitionObserver.disconnect();
       window.removeEventListener("blur", blur);
       canvas.removeEventListener("pointerdown", down);
       canvas.removeEventListener("pointermove", move);
@@ -376,7 +534,7 @@ export default function AboutGlass() {
       canvas.removeEventListener("pointercancel", release);
       canvas.removeEventListener("lostpointercapture", release);
       canvas.removeEventListener("webglcontextlost", contextLost);
-      resources.forEach(resource => resource.dispose());
+      resources.forEach((resource) => resource.dispose());
       renderer.dispose();
       canvas.remove();
       element.classList.remove("is-ready");
@@ -384,11 +542,13 @@ export default function AboutGlass() {
     };
   }, []);
 
-  return <>
-    <div ref={host} className="about-art about-glass" />
-    <div className="about-glass-controls">
+  return (
+    <>
+      <div ref={host} className="about-art about-glass" />
+      {/* <div className="about-glass-controls">
       <span>Grab a logo. Give it a spin.</span>
       <button type="button" onClick={() => reset.current()} aria-label="Reset glass logo positions">Reset ↺</button>
-    </div>
-  </>;
+    </div> */}
+    </>
+  );
 }
