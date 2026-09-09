@@ -253,7 +253,8 @@
 }
 .about-capability:last-child h3 {
   white-space: nowrap;
-  font-size: clamp(18px, 1.45vw, 24px);
+  font-size: 17px;
+  letter-spacing: -0.035em;
 }
 .about-capability p {
   margin: 0;
