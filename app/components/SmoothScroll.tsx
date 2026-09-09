@@ -25,24 +25,7 @@ export default function SmoothScroll() {
     });
     lenisRef.current = lenis;
 
-    const syncTabVisibility = () => {
-      if (document.hidden) {
-        // Do not let a backgrounded tab accumulate animation time or momentum.
-        lenis.stop();
-        return;
-      }
-
-      // Re-measure the viewport and align Lenis with the browser's real scroll
-      // position before its first visible animation frame.
-      lenis.resize();
-      lenis.scrollTo(window.scrollY, { immediate: true, force: true });
-      lenis.start();
-    };
-
-    document.addEventListener("visibilitychange", syncTabVisibility);
-
     return () => {
-      document.removeEventListener("visibilitychange", syncTabVisibility);
       lenis.destroy();
       lenisRef.current = null;
     };
