@@ -110,6 +110,16 @@ export default function PageTransition() {
         incomingPage.removeAttribute("aria-busy");
         if (loader.current) loader.current.hidden = true;
         transitioning.current = false;
+        if (incomingPage.classList.contains("services-page")) {
+          incomingPage.classList.remove("services-page--pending", "services-page--done");
+          // Restart the entrance even when Next restores Services from its route cache.
+          void incomingPage.offsetWidth;
+          incomingPage.classList.add("services-page--entering");
+          window.setTimeout(() => {
+            incomingPage.classList.remove("services-page--entering");
+            incomingPage.classList.add("services-page--done");
+          }, 1050);
+        }
     };
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const timeline = gsap.timeline({
