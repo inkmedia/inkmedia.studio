@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import Image from "next/image";
-import { Bold, Italic, Underline, RotateCcw, ChevronDown, Target, ScanLine, Layers, Sprout, Compass, PanelsTopLeft, CodeXml, TrendingUp, ArrowUpRight, Building2, Lightbulb, PenTool, Braces, MessagesSquare, Search, ListTree, Palette, MonitorCog, SlidersHorizontal, Rocket } from "lucide-react";
+import { Bold, Italic, Underline, RotateCcw, ChevronDown, Target, ScanLine, Layers, Sprout, Compass, PanelsTopLeft, CodeXml, TrendingUp, Lightbulb, PenTool, Braces, MessagesSquare, Search, ListTree, Palette, MonitorCog, SlidersHorizontal, Rocket } from "lucide-react";
 import { SiteFooter, SiteHeader } from "../components/SiteChrome";
 import { RollingText as TextSwap } from "../components/RollingText";
 import "./about.css";
@@ -317,41 +317,6 @@ export default function AboutPage() {
               <p>{capability.copy}</p>
             </article>
           ))}
-        </div>
-      </section>
-      <section className="about-expertise" aria-labelledby="about-expertise-title">
-        <div className="about-expertise-inner">
-          <div className="about-expertise-copy">
-            <p className="about-thinking-label">SPECIALIST EXPERTISE</p>
-            <h2 id="about-expertise-title">
-              Experience across industries. <span>Deeper expertise where it matters.</span>
-            </h2>
-            <h3><Building2 size={22} strokeWidth={1.5} aria-hidden="true" /> Real Estate &amp; Property</h3>
-            <p className="about-expertise-description">
-              Our work spans sectors, with a growing specialisation in property.
-              We connect brand, developments, locations and enquiries through
-              clear design and practical content management.
-            </p>
-            <a className="section-cta swap-trigger" href="#property-projects">
-              <TextSwap>[ EXPLORE REAL ESTATE EXPERTISE ↗ ]</TextSwap>
-            </a>
-          </div>
-          <div className="about-property-projects" id="property-projects">
-            {[
-              { name: "Tejraj", image: "/work/tejraj.webp", type: "Web design & development", href: "https://tejraj.in/" },
-              { name: "Goel Ganga", image: "/work/goel-ganga.jpg", type: "Digital experience", href: "https://goelganga.com/" },
-            ].map((project) => (
-              <a className="about-property-project swap-trigger" href={project.href} key={project.name} target="_blank" rel="noopener noreferrer" aria-label={`${project.name} — visit website (opens in a new tab)`}>
-                <div className="about-property-image">
-                  <Image src={project.image} alt={`${project.name} website project`} fill sizes="(max-width: 540px) 90vw, (max-width: 1000px) 44vw, 25vw" />
-                </div>
-                <div className="about-property-caption">
-                  <div><h3><TextSwap>{project.name}</TextSwap></h3><p>{project.type}</p></div>
-                  <ArrowUpRight size={20} strokeWidth={1.5} aria-hidden="true" />
-                </div>
-              </a>
-            ))}
-          </div>
         </div>
       </section>
       <section className="about-team" aria-labelledby="about-team-title">
