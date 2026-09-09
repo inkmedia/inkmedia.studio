@@ -165,7 +165,8 @@ a {
   transition: color 260ms ease;
 }
 .swap-trigger:hover,
-.swap-trigger:focus-visible {
+.swap-trigger:focus-visible,
+.nav .swap-trigger.is-active {
   color: #980009;
 }
 .work .swap-trigger:hover,

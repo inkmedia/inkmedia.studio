@@ -3,6 +3,7 @@
 import { FormEvent, useEffect, useId, useRef, useState } from "react";
 import { animate, motion, useMotionValue, useReducedMotion, useTransform } from "framer-motion";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Mail, MapPin, Phone } from "lucide-react";
@@ -13,6 +14,7 @@ import { ParticleLogo } from "./ParticleLogo";
 const ease = [0.16, 1, 0.3, 1] as const;
 
 export function SiteHeader({ loading = false }: { loading?: boolean }) {
+  const pathname = usePathname();
   const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const progress = useMotionValue(0);
@@ -139,22 +141,34 @@ export function SiteHeader({ loading = false }: { loading?: boolean }) {
       </motion.a>
       <nav aria-label="Primary navigation">
         <motion.a
-          className="swap-trigger"
+          className={`swap-trigger${pathname.startsWith("/case-studies") ? " is-active" : ""}`}
           href="/case-studies"
+          aria-current={pathname.startsWith("/case-studies") ? "page" : undefined}
           {...enter(0.12)}
         >
           <SwapText>CASE STUDIES</SwapText>
         </motion.a>
-        <motion.a className="swap-trigger" href="/services" {...enter(0.19)}>
+        <motion.a
+          className={`swap-trigger${pathname.startsWith("/services") ? " is-active" : ""}`}
+          href="/services"
+          aria-current={pathname.startsWith("/services") ? "page" : undefined}
+          {...enter(0.19)}
+        >
           <SwapText>SERVICES</SwapText>
         </motion.a>
-        <motion.a className="swap-trigger" href="/about" {...enter(0.26)}>
+        <motion.a
+          className={`swap-trigger${pathname.startsWith("/about") ? " is-active" : ""}`}
+          href="/about"
+          aria-current={pathname.startsWith("/about") ? "page" : undefined}
+          {...enter(0.26)}
+        >
           <SwapText>ABOUT</SwapText>
         </motion.a>
       </nav>
       <motion.a
-        className="nav-contact swap-trigger"
+        className={`nav-contact swap-trigger${pathname.startsWith("/contact") ? " is-active" : ""}`}
         href="/contact"
+        aria-current={pathname.startsWith("/contact") ? "page" : undefined}
         {...enter(0.33)}
       >
         <SwapText>[ START A PROJECT ]</SwapText>
