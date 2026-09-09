@@ -88,7 +88,6 @@ export default function PageTransition() {
       ".title-page-hero h1, .hero-content h1",
     );
 
-    window.scrollTo(0, 0);
     gsap.killTweensOf(incomingPage);
     gsap.killTweensOf(outgoingPage);
 
