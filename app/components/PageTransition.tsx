@@ -120,6 +120,11 @@ export default function PageTransition() {
             incomingPage.classList.add("services-page--done");
           }, 1050);
         }
+        if (incomingPage.classList.contains("contact-page")) {
+          incomingPage.classList.remove("contact-page--entering");
+          void incomingPage.offsetWidth;
+          incomingPage.classList.add("contact-page--entering");
+        }
     };
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const timeline = gsap.timeline({

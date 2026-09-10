@@ -8,12 +8,19 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { RollingText as SwapText } from "./RollingText";
+import { FacebookIcon, InstagramIcon, LinkedInIcon, XIcon } from "./SocialIcons";
 
 import { ParticleLogo } from "./ParticleLogo";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
-export function SiteHeader({ loading = false }: { loading?: boolean }) {
+export function SiteHeader({
+  loading = false,
+  compactScroll = false,
+}: {
+  loading?: boolean;
+  compactScroll?: boolean;
+}) {
   const pathname = usePathname();
   const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -65,7 +72,8 @@ export function SiteHeader({ loading = false }: { loading?: boolean }) {
       const elapsed = Math.min(now - previousTime, 32);
       previousTime = now;
       const y = Math.max(0, window.scrollY);
-      const target = loading ? 0 : Math.min(1, Math.max(0, (y - 20) / 580));
+      const scrollRange = compactScroll ? 220 : 580;
+      const target = loading ? 0 : Math.min(1, Math.max(0, (y - 20) / scrollRange));
       // Let the solid cap finish emerging even when a fast scroll skips the transition range.
       const current = progress.get();
       const next = reducedMotion ? target : Math.min(target, current + elapsed / 450);
@@ -97,7 +105,7 @@ export function SiteHeader({ loading = false }: { loading?: boolean }) {
       window.removeEventListener("scroll", onScroll);
       cancelAnimationFrame(frame);
     };
-  }, [loading, progress, reducedMotion]);
+  }, [compactScroll, loading, progress, reducedMotion]);
 
   const enter = (delay: number) => ({
     initial: { opacity: 0, y: -12 },
@@ -463,36 +471,36 @@ export function SiteFooter() {
             <div>
               <span>FOLLOW US</span>
               <a
-                className="swap-trigger"
+                className="swap-trigger footer-social footer-social--linkedin"
                 href="https://www.linkedin.com/company/ink-media-digital/"
                 target="_blank"
                 rel="noreferrer"
               >
-                <SwapText>LinkedIn ↗</SwapText>
+                <LinkedInIcon /><SwapText>LinkedIn ↗</SwapText>
               </a>
               <a
-                className="swap-trigger"
+                className="swap-trigger footer-social footer-social--instagram"
                 href="https://www.instagram.com/inkdigitalmedia/"
                 target="_blank"
                 rel="noreferrer"
               >
-                <SwapText>Instagram ↗</SwapText>
+                <InstagramIcon /><SwapText>Instagram ↗</SwapText>
               </a>
               <a
-                className="swap-trigger"
+                className="swap-trigger footer-social footer-social--facebook"
+                href="https://www.facebook.com/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <FacebookIcon /><SwapText>Facebook ↗</SwapText>
+              </a>
+              <a
+                className="swap-trigger footer-social footer-social--twitter"
                 href="https://twitter.com/"
                 target="_blank"
                 rel="noreferrer"
               >
-                <SwapText>Facebook ↗</SwapText>
-              </a>
-              <a
-                className="swap-trigger"
-                href="https://twitter.com/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <SwapText>Twitter ↗</SwapText>
+                <XIcon /><SwapText>Twitter ↗</SwapText>
               </a>
             </div>
           </div>

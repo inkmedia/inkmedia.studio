@@ -8,7 +8,7 @@ import "./services.css";
 const services = [
   { title: "Web Strategy", lines: ["Web", "Strategy"], image: "/work/house-of-memories.jpg", color: "#cce7ce", href: "/contact", label: "Clarity before creativity" },
   { title: "UX/UI Design", lines: ["UX/UI", "Design"], image: "/work/majestique.webp", color: "#f8e8bd", href: "/contact", label: "Designed around people" },
-  { title: "Web Development", lines: ["Web", "Development"], image: "/work/tejraj.webp", color: "#f2cecc", href: "/contact", label: "Built to perform" },
+  { title: "Web Development", lines: ["Web", "Development"], image: "/work/tejraj.webp", color: "#f2cecc", href: "/services/web-development", label: "Built to perform" },
   { title: "Redesign, Commerce & Optimisation", lines: ["Redesign, Commerce", "& Optimisation"], image: "/work/kiara.webp", color: "#cbdcf6", href: "/contact", label: "Room to grow" },
   { title: "Digital Marketing", lines: ["Digital", "Marketing"], image: "/work/goel-ganga.jpg", color: "#e3d2ee", href: "/contact", label: "Ideas that find an audience" },
 ];
