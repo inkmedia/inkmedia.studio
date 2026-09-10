@@ -101,7 +101,7 @@
 @media(max-width:700px){.wd-cta{border-radius:0 0 18px 18px;padding-bottom:92px}.wd-accordion button strong{font-size:16px}.wd-faq-answer p{margin-left:57px}}
 
 /* Page reveals */
-.wd-hero-line{display:block;overflow:hidden;padding:.05em .08em .06em;margin:-.05em -.08em -.06em}
+.wd-hero-line{display:block;overflow:hidden;padding:.18em .2em .16em;margin:-.18em -.2em -.16em}
 .wd-hero-line-inner{display:block;will-change:transform}
 .wd-hero-image{width:100%;min-width:100%;align-self:stretch}
 .wd-image-curtain{position:absolute;z-index:2;inset:-1px;background:var(--paper);pointer-events:none;will-change:transform}
@@ -118,6 +118,9 @@
 .wd-faq h2 em{color:#6f1018}
 
 .wd-hero h1 em,.wd-problem h2 em,.wd-approach h2 em,.wd-work h2 em,.wd-why h2 em,.wd-faq h2 em,.wd-tech-intro h2 em{
+  display:inline-block;
+  padding:.1em .14em .15em;
+  margin:-.1em -.14em -.15em;
   background:linear-gradient(105deg,#65070e 0%,#980009 46%,#d01a27 100%);
   -webkit-background-clip:text;
   background-clip:text;
