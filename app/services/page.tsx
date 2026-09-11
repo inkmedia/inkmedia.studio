@@ -9,7 +9,7 @@ const services = [
   {
     title: "Web Strategy",
     lines: ["Web", "Strategy"],
-    image: "/images/Web-strategy.webp",
+    image: "/images/WebStrategy.webp",
     color: "#cce7ce",
     href: "/contact",
     label: "Clarity before creativity",
