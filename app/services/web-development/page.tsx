@@ -4,6 +4,7 @@ import { SiteFooter, SiteHeader } from "../../components/SiteChrome";
 import { RollingText } from "../../components/RollingText";
 import FAQAccordion from "./FAQAccordion";
 import WebDevelopmentMotion from "./WebDevelopmentMotion";
+import MagneticDots from "./MagneticDots";
 import "./web-development.css";
 
 export const metadata: Metadata = {
@@ -140,7 +141,7 @@ export default function WebDevelopmentPage() {
         <div className="wd-faq-grid"><h2>Before we<br /><em>get building.</em></h2><FAQAccordion items={faqs} /></div>
       </section>
 
-      <section className="wd-cta shell" data-wd-reveal><span>[ HAVE A PROJECT IN MIND? ]</span><h2>Planning a web<br />development project?</h2><a className="section-cta swap-trigger" href="/contact"><RollingText>[ START A CONVERSATION ↗ ]</RollingText></a></section>
+      <section className="wd-cta shell" data-wd-reveal><MagneticDots /><span>[ HAVE A PROJECT IN MIND? ]</span><h2>Planning a web<br />development project?</h2><a className="section-cta swap-trigger" href="/contact"><RollingText>[ START A CONVERSATION ↗ ]</RollingText></a></section>
       </div>
       <SiteFooter />
     </main>
