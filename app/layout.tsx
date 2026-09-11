@@ -6,7 +6,10 @@ import PageTransition from "./components/PageTransition";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://inkmedia.in"),
-  title: "Ink Media — Web Design & Development Studio",
+  title: {
+    default: "Ink Media — Web Design & Development Studio",
+    template: "%s | Ink Media",
+  },
   description:
     "Strategy, UX/UI and high-performance web development for ambitious brands. Based in India, working worldwide.",
   keywords: [
@@ -24,12 +27,21 @@ export const metadata: Metadata = {
     type: "website",
     url: "/",
     siteName: "Ink Media",
+    images: [
+      {
+        url: "/ink-logo.png",
+        width: 3375,
+        height: 3375,
+        alt: "Ink Media logo",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Ink Media — Web Design & Development Studio",
     description:
       "Websites built to make ambitious brands impossible to ignore.",
+    images: ["/ink-logo.png"],
   },
   icons: {
     icon: [{ url: "/favicon.ico?v=2", type: "image/x-icon" }],

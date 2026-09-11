@@ -12,6 +12,27 @@ export const metadata: Metadata = {
   title: "Web Development Services | Ink Media",
   description: "Fast, scalable websites built around your business goals. Ink Media develops thoughtful digital experiences that are easy to manage and ready to grow.",
   alternates: { canonical: "/services/web-development" },
+  openGraph: {
+    title: "Web Development Services | Ink Media",
+    description:
+      "Fast, scalable websites engineered around your business goals and ready to grow.",
+    url: "/services/web-development",
+    images: [
+      {
+        url: "/images/Web-Development.webp",
+        width: 1448,
+        height: 1086,
+        alt: "Web development services by Ink Media",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Web Development Services | Ink Media",
+    description:
+      "Fast, scalable websites engineered around your business goals and ready to grow.",
+    images: ["/images/Web-Development.webp"],
+  },
 };
 
 const capabilities = [
