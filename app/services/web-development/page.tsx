@@ -70,7 +70,7 @@ export default function WebDevelopmentPage() {
             <a href="/contact" className="section-cta swap-trigger"><RollingText>[ START A PROJECT ↗ ]</RollingText></a>
           </div>
         </div>
-        <div className="wd-hero-image"><Image src="/images/web-development.png" alt="Web development interfaces and technology" fill priority sizes="100vw" /><span className="wd-image-curtain" aria-hidden="true" /></div>
+        <div className="wd-hero-image"><Image src="/images/Web-Development.webp" alt="Web development interfaces and technology" fill priority sizes="100vw" /><span className="wd-image-curtain" aria-hidden="true" /></div>
         <span className="wd-scroll">SCROLL TO EXPLORE ↓</span>
       </section>
 

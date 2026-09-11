@@ -2,7 +2,17 @@
 
 import { useEffect, useRef } from "react";
 
-export default function MagneticDots() {
+export default function MagneticDots({
+  idleColor = "rgba(152,0,9,.14)",
+  activeRgb = "190,112,118",
+  activeOpacity = 0.16,
+  activeOpacityRange = 0.3,
+}: {
+  idleColor?: string;
+  activeRgb?: string;
+  activeOpacity?: number;
+  activeOpacityRange?: number;
+} = {}) {
   const ref = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -34,8 +44,10 @@ export default function MagneticDots() {
         const x = dot.x + Math.cos(dot.angle) * lift;
         const y = dot.y + Math.sin(dot.angle) * lift;
         const length = 1 + dot.pull * 11;
-        ctx!.strokeStyle = dot.pull > .04 ? `rgba(152,0,9,${.22 + dot.pull * .5})` : "rgba(30,25,25,.2)";
-        ctx!.lineWidth = 1 + dot.pull * .35;
+        ctx!.strokeStyle = dot.pull > .04
+          ? `rgba(${activeRgb},${activeOpacity + dot.pull * activeOpacityRange})`
+          : idleColor;
+        ctx!.lineWidth = dot.pull > .04 ? 1 + dot.pull * .35 : 1.3;
         ctx!.lineCap = "round";
         ctx!.beginPath();
         ctx!.moveTo(x - Math.cos(dot.angle) * (length - 1) / 2, y - Math.sin(dot.angle) * (length - 1) / 2);
@@ -81,7 +93,7 @@ export default function MagneticDots() {
       section.removeEventListener("pointerleave", leave);
       motion.removeEventListener("change", leave);
     };
-  }, []);
+  }, [activeOpacity, activeOpacityRange, activeRgb, idleColor]);
 
   return <canvas ref={ref} className="wd-magnetic-dots" aria-hidden="true" />;
 }

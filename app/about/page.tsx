@@ -7,6 +7,7 @@ import Image from "next/image";
 import { Bold, Italic, Underline, RotateCcw, ChevronDown, Target, ScanLine, Layers, Sprout, Compass, PanelsTopLeft, CodeXml, TrendingUp, Lightbulb, PenTool, Braces, MessagesSquare, Search, ListTree, Palette, MonitorCog, SlidersHorizontal, Rocket } from "lucide-react";
 import { SiteFooter, SiteHeader } from "../components/SiteChrome";
 import { RollingText as TextSwap } from "../components/RollingText";
+import MagneticDots from "../services/web-development/MagneticDots";
 import "./about.css";
 
 const AboutGlass = dynamic(() => import("../components/AboutGlass"), {
@@ -400,6 +401,7 @@ export default function AboutPage() {
         </figure>
       </section>
       <section className="about-closing" aria-labelledby="about-closing-title">
+        <MagneticDots />
         <p className="about-thinking-label">LET’S WORK TOGETHER</p>
         <div className="about-closing-grid">
           <h2 id="about-closing-title">Have an important digital project in mind?</h2>
