@@ -42,6 +42,7 @@ export default function AboutPage() {
   const [palette, setPalette] = useState(false);
   const [message, setMessage] = useState("");
   const toolbarRef = useRef<HTMLDivElement>(null);
+  const capabilitiesRef = useRef<HTMLDivElement>(null);
   const Heading = level;
   const currentColor = style.color;
 
@@ -58,6 +59,51 @@ export default function AboutPage() {
     return () => {
       document.removeEventListener("keydown", onEscape);
       document.removeEventListener("pointerdown", closePalette);
+    };
+  }, []);
+
+  useEffect(() => {
+    const grid = capabilitiesRef.current;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (!grid) return;
+
+    let hovered: HTMLElement | null = null;
+    function resetHover() {
+      if (!hovered) return;
+      hovered.style.setProperty("--tilt-x", "0deg");
+      hovered.style.setProperty("--tilt-y", "0deg");
+      hovered.removeAttribute("data-hovered");
+      hovered = null;
+    }
+    function pointerMove(event: PointerEvent) {
+      const card = (event.target as HTMLElement).closest<HTMLElement>(
+        ".about-capability",
+      );
+      if (hovered !== card) resetHover();
+      if (!card || event.pointerType !== "mouse" || reduced.matches) return;
+
+      hovered = card;
+      const bounds = card.getBoundingClientRect();
+      const x = Math.max(
+        -1,
+        Math.min(1, ((event.clientX - bounds.left) / bounds.width) * 2 - 1),
+      );
+      const y = Math.max(
+        -1,
+        Math.min(1, ((event.clientY - bounds.top) / bounds.height) * 2 - 1),
+      );
+      card.style.setProperty("--tilt-x", `${-y * 4}deg`);
+      card.style.setProperty("--tilt-y", `${x * 6}deg`);
+      card.style.setProperty("--shine-x", `${(x + 1) * 50}%`);
+      card.style.setProperty("--shine-y", `${(y + 1) * 50}%`);
+      card.dataset.hovered = "true";
+    }
+
+    grid.addEventListener("pointermove", pointerMove);
+    grid.addEventListener("pointerleave", resetHover);
+    return () => {
+      grid.removeEventListener("pointermove", pointerMove);
+      grid.removeEventListener("pointerleave", resetHover);
     };
   }, []);
 
@@ -287,7 +333,7 @@ export default function AboutPage() {
             <TextSwap>[ EXPLORE OUR SERVICES ↗ ]</TextSwap>
           </Link>
         </div>
-        <div className="about-capabilities-grid">
+        <div className="about-capabilities-grid" ref={capabilitiesRef}>
           {[
             {
               title: "Web Strategy",

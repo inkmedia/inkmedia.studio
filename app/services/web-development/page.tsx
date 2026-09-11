@@ -5,6 +5,7 @@ import { RollingText } from "../../components/RollingText";
 import FAQAccordion from "./FAQAccordion";
 import WebDevelopmentMotion from "./WebDevelopmentMotion";
 import MagneticDots from "./MagneticDots";
+import InteractiveHighlight from "./InteractiveHighlight";
 import "./web-development.css";
 
 export const metadata: Metadata = {
@@ -64,7 +65,7 @@ export default function WebDevelopmentPage() {
       <section className="wd-hero shell">
         <div className="wd-eyebrow"><span>03 / WEB DEVELOPMENT</span><span>ENGINEERED FOR WHAT’S NEXT</span></div>
         <div className="wd-hero-title">
-          <h1><span className="wd-hero-line"><span className="wd-hero-line-inner">Websites that</span></span><span className="wd-hero-line"><span className="wd-hero-line-inner"><em>work as hard</em></span></span><span className="wd-hero-line"><span className="wd-hero-line-inner">as your business.</span></span></h1>
+          <h1><span className="wd-hero-line"><span className="wd-hero-line-inner">Websites that</span></span><span className="wd-hero-line"><span className="wd-hero-line-inner"><InteractiveHighlight /></span></span><span className="wd-hero-line"><span className="wd-hero-line-inner">as your business.</span></span></h1>
           <div className="wd-hero-copy">
             <p>We develop fast, dependable digital experiences that turn strong design into measurable business momentum.</p>
             <a href="/contact" className="section-cta swap-trigger"><RollingText>[ START A PROJECT ↗ ]</RollingText></a>

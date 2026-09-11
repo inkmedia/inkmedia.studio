@@ -131,6 +131,23 @@
 }
 
 /* Divider system: quiet section rules, dotted content structure. */
+.wd-hero h1 em.wd-flowing-gradient{
+  background-color:#790912;
+  background-image:
+    radial-gradient(ellipse at center,#d24950 0%,#b82633 25%,transparent 65%),
+    radial-gradient(ellipse at center,#4e0612 0%,#6b0a1b 30%,transparent 68%),
+    radial-gradient(ellipse at center,#c13646 0%,#a71428 28%,transparent 67%),
+    linear-gradient(115deg,#690813,#980009 50%,#7d1422);
+  background-repeat:no-repeat;
+  background-size:75% 210%,90% 230%,85% 190%,100% 100%;
+  animation:wd-gradient-flow 12s ease-in-out infinite;
+}
+@keyframes wd-gradient-flow{
+  0%,100%{background-position:-55% 20%,130% 90%,45% -30%,0 0;background-size:75% 210%,90% 230%,85% 190%,100% 100%}
+  33%{background-position:65% 90%,-35% 10%,140% 65%,0 0;background-size:105% 150%,70% 280%,110% 170%,100% 100%}
+  66%{background-position:145% -20%,55% 70%,-45% 100%,0 0;background-size:65% 260%,110% 160%,80% 240%,100% 100%}
+}
+@media(prefers-reduced-motion:reduce){.wd-hero h1 em.wd-flowing-gradient{animation:none;background-position:50% 50%}}
 .wd-section-label{border-bottom:1px solid rgba(0,0,0,.16)}
 .wd-section-label--light,.wd-capabilities .wd-section-label--light,.wd-tech .wd-section-label--light{border-color:rgba(0,0,0,.16)}
 .wd-problem ul,.wd-cap-list,.wd-stages,.wd-project-result,.wd-reasons,.wd-faq details{border-top:1px dashed rgba(0,0,0,.35)}
