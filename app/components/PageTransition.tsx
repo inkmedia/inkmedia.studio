@@ -105,6 +105,12 @@ export default function PageTransition() {
         if (parallaxContent) {
           gsap.set(parallaxContent, { clearProps: "transform,willChange" });
         }
+        // WebGL canvases can mount while the incoming page is scaled to 82%.
+        // That transform does not trigger ResizeObserver when it is cleared, so
+        // ask responsive canvases to measure their final, full-size container.
+        requestAnimationFrame(() => {
+          window.dispatchEvent(new Event("resize"));
+        });
         document.body.classList.remove("page-is-transitioning");
         incomingPage.inert = false;
         incomingPage.removeAttribute("aria-busy");

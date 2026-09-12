@@ -1,5 +1,6 @@
-import TitlePage from "../components/TitlePage";
+import CaseStudiesHero from "./CaseStudiesHero";
+import "./case-studies.css";
 
 export default function CaseStudiesPage() {
-  return <TitlePage title="CASE STUDIES" />;
+  return <CaseStudiesHero />;
 }
