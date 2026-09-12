@@ -165,6 +165,7 @@ export default function FeaturedCaseStudies() {
           <motion.article
             className={`featured-case featured-case--${study.size}`}
             key={study.client}
+            data-study={study.slug}
             role="button"
             tabIndex={0}
             aria-label={`View ${study.client} project details`}

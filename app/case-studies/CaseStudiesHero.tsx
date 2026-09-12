@@ -4,7 +4,9 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import { Component, useCallback, useEffect, useState, type ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { SiteHeader } from "../components/SiteChrome";
+import { SiteFooter, SiteHeader } from "../components/SiteChrome";
+import { RollingText } from "../components/RollingText";
+import MagneticDots from "../services/web-development/MagneticDots";
 import FeaturedCaseStudies from "./FeaturedCaseStudies";
 
 import { projects, wrap, type GalleryPosition } from "./gallery-data";
@@ -99,8 +101,9 @@ export default function CaseStudiesHero() {
 
   return (
     <main className={`case-page${lightHeader ? " is-light-header" : ""}`} id="top">
-      <SiteHeader />
-      <section className={`case-hero${ready ? " is-ready" : ""}${entered ? " is-entered" : ""}`} aria-label="Case studies"
+      <div className="site-page case-page-content">
+        <SiteHeader />
+        <section className={`case-hero${ready ? " is-ready" : ""}${entered ? " is-entered" : ""}`} aria-label="Case studies"
         onFocusCapture={() => setFocused(true)}
         onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false); }}>
         <div
@@ -169,8 +172,23 @@ export default function CaseStudiesHero() {
             Strategy. Design. Development.
           </motion.p>
         </div>
-      </section>
-      <FeaturedCaseStudies />
+        </section>
+        <FeaturedCaseStudies />
+        <section className="case-closing" aria-labelledby="case-closing-title">
+        <MagneticDots />
+        <p className="case-closing-label">LET’S WORK TOGETHER</p>
+        <div className="case-closing-grid">
+          <h2 id="case-closing-title">Have a project with similar challenges?</h2>
+          <div>
+            <p>See how the same thinking could apply to your website or digital platform.</p>
+            <a className="section-cta swap-trigger" href="/contact">
+              <RollingText>[ START A PROJECT → ]</RollingText>
+            </a>
+          </div>
+        </div>
+        </section>
+      </div>
+      <SiteFooter />
     </main>
   );
 }
