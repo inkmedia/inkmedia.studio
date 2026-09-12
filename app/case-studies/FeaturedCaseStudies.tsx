@@ -210,6 +210,7 @@ export default function FeaturedCaseStudies() {
             >
               <motion.div
                 className="case-modal"
+                key={activeStudy.slug}
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="case-modal-title"
@@ -218,29 +219,40 @@ export default function FeaturedCaseStudies() {
                 exit={{ opacity: 0, y: 18, scale: 0.99 }}
                 transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
               >
-                <div className="case-modal-visual" style={{ "--case-modal-color": activeStudy.modalColor } as CSSProperties}>
-                  <div className="case-modal-image-frame">
+                <motion.div
+                  className="case-modal-visual"
+                  style={{ "--case-modal-color": activeStudy.modalColor } as CSSProperties}
+                  initial={reducedMotion ? false : { clipPath: "inset(0 100% 0 0)" }}
+                  animate={{ clipPath: "inset(0 0% 0 0)" }}
+                  transition={{ duration: .8, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  <motion.div
+                    className="case-modal-image-frame"
+                    initial={reducedMotion ? false : { opacity: 0, scale: .92, y: 18 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    transition={{ duration: .9, delay: .18, ease: [0.16, 1, 0.3, 1] }}
+                  >
                     <Image src={activeStudy.image} alt={`${activeStudy.client} website`} fill sizes="(max-width: 800px) 80vw, 48vw" />
-                  </div>
-                </div>
+                  </motion.div>
+                </motion.div>
                 <div className="case-modal-content">
                   <button className="case-modal-close" onClick={() => setActiveStudy(null)} aria-label="Close project details"><X /></button>
-                  <p className="case-modal-eyebrow">[ {activeStudy.sector.toUpperCase()} ]</p>
-                  <h3 id="case-modal-title">{activeStudy.shortName}</h3>
-                  <p className="case-modal-scope">{activeStudy.scope}</p>
-                  <dl className="case-modal-details">
-                    <div><dt>Challenge</dt><dd>{activeStudy.challenge}</dd></div>
-                    <div><dt>Ink Media contribution</dt><dd>{activeStudy.contribution}</dd></div>
-                    <div><dt>Outcome</dt><dd>{activeStudy.outcome}</dd></div>
-                  </dl>
-                  <div className="case-modal-actions">
+                  <motion.p className="case-modal-eyebrow" initial={reducedMotion ? false : { opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .6, delay: .18, ease: [0.16, 1, 0.3, 1] }}>[ {activeStudy.sector.toUpperCase()} ]</motion.p>
+                  <motion.h3 id="case-modal-title" initial={reducedMotion ? false : { opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .72, delay: .25, ease: [0.16, 1, 0.3, 1] }}>{activeStudy.shortName}</motion.h3>
+                  <motion.p className="case-modal-scope" initial={reducedMotion ? false : { opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .6, delay: .34, ease: [0.16, 1, 0.3, 1] }}>{activeStudy.scope}</motion.p>
+                  <motion.dl className="case-modal-details" initial={reducedMotion ? false : "hidden"} animate="visible" variants={{ hidden: {}, visible: { transition: { staggerChildren: .08, delayChildren: .38 } } }}>
+                    <motion.div variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }}><dt>Challenge</dt><dd>{activeStudy.challenge}</dd></motion.div>
+                    <motion.div variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }}><dt>Ink Media contribution</dt><dd>{activeStudy.contribution}</dd></motion.div>
+                    <motion.div variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }}><dt>Outcome</dt><dd>{activeStudy.outcome}</dd></motion.div>
+                  </motion.dl>
+                  <motion.div className="case-modal-actions" initial={reducedMotion ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .55, delay: .66, ease: [0.16, 1, 0.3, 1] }}>
                     <a className="swap-trigger" href={activeStudy.website} target="_blank" rel="noreferrer"><RollingText>[ VISIT SITE ↗ ]</RollingText></a>
                     <Link className="swap-trigger" href={`/case-studies/${activeStudy.slug}`}><RollingText>[ READ FULL CASE STUDY ↗ ]</RollingText></Link>
-                  </div>
-                  <div className="case-modal-nav" aria-label="Navigate case studies">
+                  </motion.div>
+                  <motion.div className="case-modal-nav" aria-label="Navigate case studies" initial={reducedMotion ? false : { opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: .55, delay: .72, ease: [0.16, 1, 0.3, 1] }}>
                     <button onClick={() => navigateStudy(-1)} aria-label="Previous case study"><ArrowLeft /></button>
                     <button onClick={() => navigateStudy(1)} aria-label="Next case study"><ArrowRight /></button>
-                  </div>
+                  </motion.div>
                 </div>
               </motion.div>
             </motion.div>
