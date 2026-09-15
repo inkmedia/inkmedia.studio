@@ -12,6 +12,20 @@ type Category = "All" | "Real Estate" | "Hospitality";
 
 const studies = [
   {
+    client: "Amar Builders",
+    slug: "amar-builders",
+    website: "https://amarbuilders.com/",
+    modalColor: "#d8d6cf",
+    shortName: "Amar Builders",
+    sector: "Real Estate",
+    scope: "Strategy · UX/UI · Development",
+    challenge: "Bringing a long-standing real estate brand and its portfolio together in one clear, contemporary digital experience.",
+    contribution: "Strategy, UX/UI and development shaped a focused journey from brand credibility to effortless project discovery.",
+    outcome: "A more considered digital presence makes the portfolio easier to explore and the brand easier to trust.",
+    image: "/images/case-studies/Amar-Builders.webp",
+    size: "lead",
+  },
+  {
     client: "Goel Ganga Developments",
     slug: "goel-ganga-developments",
     website: "https://goelganga.com/",
@@ -183,7 +197,7 @@ export default function FeaturedCaseStudies() {
           >
             <div className="featured-case-image">
               <Image src={study.image} alt={`${study.client} website`} fill sizes="(max-width: 700px) 88vw, 58vw" />
-              <span>{String(index + 1).padStart(2, "0")}</span>
+                <span>{String(index + 1).padStart(2, "0")}</span>
             </div>
             <div className="featured-case-title">
               <h3>{study.shortName}</h3>
