@@ -22,6 +22,7 @@ export function SiteHeader({
   compactScroll?: boolean;
 }) {
   const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const progress = useMotionValue(0);
@@ -29,6 +30,8 @@ export function SiteHeader({
   const wasHidden = useRef(false);
   const reducedMotion = useReducedMotion();
   const clipId = useId();
+  const mobileMenu = useRef<HTMLDivElement>(null);
+  const mobileMenuTimeline = useRef<gsap.core.Timeline | null>(null);
   const wordOpacity = useTransform(progress, [0, 0.55, 1], [1, 0, 0]);
   const capTransform = useTransform(progress, (value) => {
     const p = reducedMotion ? (value === 1 ? 1 : 0) : value;
@@ -38,6 +41,70 @@ export function SiteHeader({
   const capFill = useTransform(reveal, [0, 0.65, 1], [0, 0, 1]);
   const capStroke = useTransform(reveal, [0, 0.8, 1], [1, 1, 0]);
   const draw = useTransform(reveal, [0, 0.75, 1], [0, 1, 1]);
+
+  useEffect(() => {
+    const menu = mobileMenu.current;
+    if (!menu) return;
+
+    mobileMenuTimeline.current?.kill();
+    if (menuOpen) {
+      document.body.classList.add("mobile-menu-open");
+      gsap.set(menu, { autoAlpha: 1, pointerEvents: "auto" });
+      mobileMenuTimeline.current = gsap
+        .timeline()
+        .fromTo(
+          menu,
+          { clipPath: "inset(0 0 100% 0)" },
+          { clipPath: "inset(0 0 0% 0)", duration: 0.72, ease: "power4.inOut" },
+        )
+        .fromTo(
+          menu.querySelectorAll(".mobile-menu-char"),
+          { yPercent: 120, opacity: 0 },
+          { yPercent: 0, opacity: 1, duration: 0.72, stagger: 0.018, ease: "power4.out" },
+          "-=0.3",
+        )
+        .fromTo(
+          menu.querySelectorAll(".mobile-menu-meta"),
+          { y: 16, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.45, stagger: 0.08, ease: "power3.out" },
+          "-=0.45",
+        );
+    } else {
+      document.body.classList.remove("mobile-menu-open");
+      if (gsap.getProperty(menu, "visibility") === "hidden") return;
+      mobileMenuTimeline.current = gsap
+        .timeline({
+          onComplete: () => gsap.set(menu, { autoAlpha: 0, pointerEvents: "none" }),
+        })
+        .to(menu.querySelectorAll(".mobile-menu-char"), {
+          yPercent: -110,
+          opacity: 0,
+          duration: 0.35,
+          stagger: { each: 0.009, from: "end" },
+          ease: "power3.in",
+        })
+        .to(menu, { clipPath: "inset(100% 0 0 0)", duration: 0.55, ease: "power4.inOut" }, "-=0.22");
+    }
+
+    return () => {
+      mobileMenuTimeline.current?.kill();
+    };
+  }, [menuOpen]);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => {
+      window.removeEventListener("keydown", closeOnEscape);
+      document.body.classList.remove("mobile-menu-open");
+    };
+  }, []);
 
   useEffect(() => {
     const returning = wasHidden.current && !hidden;
@@ -114,7 +181,7 @@ export function SiteHeader({
   });
 
   return (
-    <header className={`nav shell${hidden ? " nav-hidden" : ""}${scrolled ? " nav-scrolled" : ""}`} onFocusCapture={() => setHidden(false)}>
+    <header className={`nav shell${hidden ? " nav-hidden" : ""}${scrolled ? " nav-scrolled" : ""}${menuOpen ? " menu-open" : ""}`} onFocusCapture={() => setHidden(false)}>
       <motion.a
         className="wordmark"
         href="/"
@@ -181,6 +248,65 @@ export function SiteHeader({
       >
         <SwapText>[ START A PROJECT ]</SwapText>
       </motion.a>
+      <motion.button
+        className="mobile-menu-toggle"
+        type="button"
+        aria-label={menuOpen ? "Close menu" : "Open menu"}
+        aria-expanded={menuOpen}
+        aria-controls="mobile-menu"
+        onClick={() => setMenuOpen((open) => !open)}
+        {...enter(0.2)}
+      >
+        <span className="mobile-menu-toggle-icon" aria-hidden="true">
+          <i />
+          <i />
+        </span>
+      </motion.button>
+      <div ref={mobileMenu} id="mobile-menu" className="mobile-menu" aria-hidden={!menuOpen}>
+        <div className="mobile-menu-inner shell">
+          <span className="mobile-menu-meta">[ MENU ]</span>
+          <nav aria-label="Mobile navigation">
+            {[
+              ["HOME", "/"],
+              ["CASE STUDIES", "/case-studies"],
+              ["SERVICES", "/services"],
+              ["ABOUT", "/about"],
+              ["CONTACT", "/contact"],
+            ].map(([label, href]) => (
+              <Link
+                key={href}
+                href={href}
+                className={pathname === href || (href !== "/" && pathname.startsWith(href)) ? "is-active" : ""}
+                aria-current={pathname === href || (href !== "/" && pathname.startsWith(href)) ? "page" : undefined}
+                tabIndex={menuOpen ? 0 : -1}
+              >
+                <span className="mobile-menu-label" aria-label={label}>
+                  {Array.from(label).map((character, characterIndex) => (
+                    <span className="mobile-menu-char" aria-hidden="true" key={`${character}-${characterIndex}`}>
+                      {character === " " ? "\u00a0" : character}
+                    </span>
+                  ))}
+                </span>
+              </Link>
+            ))}
+          </nav>
+          <div className="mobile-menu-footer mobile-menu-meta">
+            <div className="mobile-menu-contact">
+              <span>GET IN TOUCH</span>
+              <a href="tel:+919158310192">+91 91583 10192</a>
+              <a href="mailto:contact@inkmedia.in">contact@inkmedia.in</a>
+            </div>
+            <div className="mobile-menu-socials">
+              <span>FOLLOW</span>
+              <div className="mobile-menu-social-icons" aria-label="Social media">
+                <a className="mobile-menu-social mobile-menu-social--linkedin" href="https://www.linkedin.com/company/ink-media-digital/" target="_blank" rel="noreferrer" aria-label="LinkedIn"><LinkedInIcon /></a>
+                <a className="mobile-menu-social mobile-menu-social--instagram" href="https://www.instagram.com/inkdigitalmedia/" target="_blank" rel="noreferrer" aria-label="Instagram"><InstagramIcon /></a>
+                <a className="mobile-menu-social mobile-menu-social--facebook" href="https://www.facebook.com/" target="_blank" rel="noreferrer" aria-label="Facebook"><FacebookIcon /></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </header>
   );
 }

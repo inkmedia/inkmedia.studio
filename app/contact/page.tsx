@@ -6,6 +6,7 @@ import { SiteHeader } from "../components/SiteChrome";
 import { RollingText } from "../components/RollingText";
 import { FacebookIcon, InstagramIcon, LinkedInIcon } from "../components/SocialIcons";
 import "./contact.css";
+import MagneticDots from "../services/web-development/MagneticDots";
 
 export default function ContactPage() {
   const [sent, setSent] = useState(false);
@@ -82,14 +83,32 @@ export default function ContactPage() {
             <button className="section-cta swap-trigger" type="submit" disabled={sent}><RollingText>{sent ? "[ ENQUIRY SENT — THANK YOU ]" : "[ SEND PROJECT ENQUIRY ↗ ]"}</RollingText></button>
           </div>
         </form>
-          <section className="contact-partnership" aria-labelledby="partnership-title">
-            <span>AGENCY PARTNERSHIPS</span>
-            <h2 id="partnership-title">Are you an agency looking for a development partner?</h2>
-            <p>We collaborate with branding agencies, creative studios and independent designers that need dependable web development and technical execution behind their client work.</p>
-            <a className="section-cta swap-trigger" href="mailto:contact@inkmedia.in?subject=Agency%20partnership"><RollingText>[ DISCUSS A PARTNERSHIP ↗ ]</RollingText></a>
-          </section>
         </section>
       </div>
+      <section className="contact-map" aria-label="Find Ink Media on Google Maps">
+        <iframe
+          title="Ink Media office location on Google Maps"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1146.542212021165!2d73.86497626961956!3d18.518964870571548!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2c16c2058a147%3A0x5cae7376762ba0fc!2sInk%20Media!5e1!3m2!1sen!2sin!4v1789535308584!5m2!1sen!2sin"
+          width="600"
+          height="450"
+          allowFullScreen
+          loading="lazy"
+          referrerPolicy="strict-origin-when-cross-origin"
+        />
+      </section>
+      <section className="contact-partnership" aria-labelledby="partnership-title">
+        <MagneticDots />
+        <div className="contact-partnership-inner">
+          <p className="contact-partnership-label">AGENCY PARTNERSHIPS</p>
+          <div className="contact-partnership-grid">
+            <h2 id="partnership-title">Are you an agency looking for a development partner?</h2>
+            <div>
+            <p>We collaborate with branding agencies, creative studios and independent designers that need dependable web development and technical execution behind their client work.</p>
+            <a className="section-cta swap-trigger" href="mailto:contact@inkmedia.in?subject=Agency%20partnership"><RollingText>[ DISCUSS A PARTNERSHIP ↗ ]</RollingText></a>
+            </div>
+          </div>
+        </div>
+      </section>
       </div>
       <footer className="contact-copyright">
         <span className="shell">All Right Reserved © 2026 | INK MEDIA</span>
