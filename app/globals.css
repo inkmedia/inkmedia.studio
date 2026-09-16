@@ -1759,20 +1759,23 @@ form button:hover {
   .mobile-menu {
     position: fixed;
     z-index: -1;
-    inset: 0;
+    top: 0;
+    left: calc((100vw - 100%) / -2);
     display: block;
     visibility: hidden;
     width: 100vw;
     height: 100svh;
+    transform: none;
     background: #fff;
     opacity: 0;
     pointer-events: none;
     clip-path: inset(0 0 100% 0);
   }
   .mobile-menu-inner {
+    width: 100%;
+    margin-inline: 0;
     height: 100%;
-    padding-top: 104px;
-    padding-bottom: 24px;
+    padding: 104px 16px 24px;
     display: flex;
     flex-direction: column;
   }
