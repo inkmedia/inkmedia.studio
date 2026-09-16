@@ -2102,13 +2102,13 @@ form button:hover {
     right: 16px;
   }
   .hero-content {
-    top: 69%;
+    top: 64%;
   }
   .hero h1 {
     font-size: 9.8vw;
   }
   .hero-mobile-capability {
-    top: 20%;
+    top: 15%;
     width: auto;
   }
   .hero-scroll {
@@ -3081,7 +3081,7 @@ h3,
 }
 @media (max-width: 900px) {
   .hero-model {
-    top: 51%;
+    top: 47%;
     width: min(68vw, 470px);
     height: 34vh;
     opacity: 0.4;
