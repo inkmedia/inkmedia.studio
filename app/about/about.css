@@ -993,7 +993,7 @@
   background: none;
   animation: none;
 }
-.about-glass canvas { display: block; opacity: 0; touch-action: none; }
+.about-glass canvas { display: block; opacity: 0; touch-action: pan-y; }
 .about-glass.is-ready canvas { opacity: 1; }
 .about-composer { z-index: 1; pointer-events: none; }
 .about-headline, .about-toolbar { pointer-events: auto; }

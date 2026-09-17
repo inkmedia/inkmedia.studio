@@ -319,6 +319,8 @@ export default function AboutGlass() {
     const offset = new THREE.Vector2();
     let held: Disc | null = null;
     let activePointer: number | null = null;
+    let pendingTouch = false;
+    const touchStart = new THREE.Vector2();
     let lastMove = 0;
     const sampledVelocity = new THREE.Vector2();
     const previousPointer = new THREE.Vector2();
@@ -345,8 +347,13 @@ export default function AboutGlass() {
       held.velocity.set(0, 0);
       previousPointer.set(held.group.position.x, held.group.position.y);
       lastMove = performance.now();
-      canvas.setPointerCapture(event.pointerId);
-      canvas.style.cursor = "grabbing";
+      if (event.pointerType === "touch") {
+        pendingTouch = true;
+        touchStart.set(event.clientX, event.clientY);
+      } else {
+        canvas.setPointerCapture(event.pointerId);
+        canvas.style.cursor = "grabbing";
+      }
     }
     function move(event: PointerEvent) {
       locate(event);
@@ -356,6 +363,17 @@ export default function AboutGlass() {
             ? "grab"
             : "default";
         return;
+      }
+      if (event.pointerType === "touch" && pendingTouch) {
+        const dx = event.clientX - touchStart.x;
+        const dy = event.clientY - touchStart.y;
+        if (Math.hypot(dx, dy) < 8) return;
+        if (Math.abs(dy) > Math.abs(dx)) {
+          release(event);
+          return;
+        }
+        pendingTouch = false;
+        canvas.setPointerCapture(event.pointerId);
       }
       const now = performance.now();
       const dt = Math.max((now - lastMove) / 1000, 0.008);
@@ -390,6 +408,7 @@ export default function AboutGlass() {
       const id = activePointer;
       held = null;
       activePointer = null;
+      pendingTouch = false;
       if (id !== null && canvas.hasPointerCapture(id))
         canvas.releasePointerCapture(id);
       canvas.style.cursor = "default";

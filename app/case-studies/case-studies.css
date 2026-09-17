@@ -1,8 +1,9 @@
 .case-page { background: #030407; min-height: 100svh; }
-.case-page-content { overflow: hidden; background: #f3f3f3; }
+.case-page-content { background: #f3f3f3; }
 .case-page .nav { z-index: 20; border-bottom: 0; color: #fff; pointer-events: none; }
-.case-page .nav a { pointer-events: auto; }
+.case-page .nav a, .case-page .mobile-menu-toggle { pointer-events: auto; }
 .case-page .wordmark image { filter: brightness(0) invert(1) !important; }
+.case-page .nav.menu-open .wordmark image { filter: brightness(.1) !important; }
 .case-page:not(.is-light-header) .nav.nav-scrolled::before { background: rgba(3,4,7,.86); }
 .case-page.is-light-header .nav { color: #111; }
 .case-page.is-light-header .wordmark image { filter: brightness(.1) !important; }
@@ -50,6 +51,18 @@
 .case-title-mask > span { display: block; }
 .case-bottom-label { position: absolute; right: 0; bottom: 0; margin: 0; font-size: 8px; letter-spacing: .08em; text-align: right; text-transform: uppercase; color: rgba(255,255,255,.5); white-space: nowrap; }
 @media (min-width: 600px) and (max-height: 740px) { .case-heading h1 { font-size: 36px; }  .case-hero-bottom { bottom: 22px; } }
+@media (max-width: 900px) {
+  .case-page:not(.is-light-header) .mobile-menu-toggle,
+  .case-page:not(.is-light-header) .mobile-menu-toggle:hover,
+  .case-page:not(.is-light-header) .mobile-menu-toggle:focus,
+  .case-page:not(.is-light-header) .mobile-menu-toggle:focus-visible,
+  .case-page:not(.is-light-header) .mobile-menu-toggle:active { color: #fff; }
+  .case-page .nav.menu-open .mobile-menu-toggle,
+  .case-page .nav.menu-open .mobile-menu-toggle:hover,
+  .case-page .nav.menu-open .mobile-menu-toggle:focus,
+  .case-page .nav.menu-open .mobile-menu-toggle:focus-visible,
+  .case-page .nav.menu-open .mobile-menu-toggle:active { color: #111; }
+}
 @media (max-width: 599px) {
   .case-hero { min-height: 580px; }
   .case-focus { width: 28cqh; height: 28cqh; }
@@ -140,11 +153,11 @@
   .featured-case-title > div { align-items: flex-start; }
   .featured-case-title p { max-width: none; text-align: left; }
   .featured-case[data-study="house-of-memories"] .featured-case-title h3 { font-size: clamp(19px, 6.1vw, 26px); }
-  .case-modal-backdrop { padding: 4vw; }
-  .case-modal { display: block; width: 92vw; height: 90vh; }
+  .case-modal-backdrop { z-index: 1000; align-items: center; padding: 16px; overflow-y: auto; }
+  .case-modal { display: block; width: 100%; max-height: calc(100svh - 32px); height: auto; overflow-y: auto; overscroll-behavior: contain; }
   .case-modal-visual { min-height: 250px; height: 34vh; }
   .case-modal-image-frame { inset: 24px; }
-  .case-modal-content { min-height: 56vh; padding: 32px 24px 28px; }
+  .case-modal-content { min-height: auto; padding: 32px 24px 28px; }
   .case-modal-close { top: 16px; right: 16px; }
   .case-modal h3 { font-size: clamp(30px, 9vw, 40px); }
   .case-modal-details { margin-top: 30px; }

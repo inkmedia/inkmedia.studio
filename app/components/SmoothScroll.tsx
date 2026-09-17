@@ -10,10 +10,16 @@ export default function SmoothScroll() {
   const lenisRef = useRef<Lenis | null>(null);
 
   useLayoutEffect(() => {
+    const previousRestoration = window.history.scrollRestoration;
+    window.history.scrollRestoration = "manual";
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const touchPointer = window.matchMedia("(pointer: coarse)");
 
-    if (reducedMotion.matches || touchPointer.matches) return;
+    if (reducedMotion.matches || touchPointer.matches) {
+      return () => {
+        window.history.scrollRestoration = previousRestoration;
+      };
+    }
 
     const lenis = new Lenis({
       autoRaf: true,
@@ -28,6 +34,7 @@ export default function SmoothScroll() {
     return () => {
       lenis.destroy();
       lenisRef.current = null;
+      window.history.scrollRestoration = previousRestoration;
     };
   }, []);
 
@@ -39,8 +46,17 @@ export default function SmoothScroll() {
     if (window.location.hash) return;
 
     // Clear any wheel momentum as well as the browser's scroll position.
-    lenisRef.current?.scrollTo(0, { immediate: true, force: true });
-    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    const reset = () => {
+      lenisRef.current?.scrollTo(0, { immediate: true, force: true });
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    };
+
+    // Reset immediately for the incoming route, then once more after the
+    // browser has committed the new page. Mobile Safari/Chrome may otherwise
+    // apply their saved scroll position after the first layout effect.
+    reset();
+    const frame = requestAnimationFrame(reset);
+    return () => cancelAnimationFrame(frame);
   }, [pathname]);
 
   return null;
